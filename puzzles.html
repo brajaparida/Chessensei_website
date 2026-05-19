@@ -203,11 +203,13 @@
 </head>
 <body>
 
+<!-- LOADING -->
 <div id="loading-screen">
   <div class="loading-logo">♟ ChessSensei</div>
   <div class="loading-spinner"></div>
 </div>
 
+<!-- LOGIN -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-icon">♟</div>
@@ -225,6 +227,7 @@
   </div>
 </div>
 
+<!-- PROFILE SETUP -->
 <div id="profile-screen">
   <div class="profile-card">
     <h2>Complete Your Profile</h2>
@@ -236,6 +239,7 @@
   </div>
 </div>
 
+<!-- MAIN APP -->
 <div id="app" style="display:none">
   <header>
     <div class="logo">
@@ -245,11 +249,13 @@
     <div class="header-right">
       <div class="tier-pill tier-1" id="tier-pill" style="display:none">⚡ Beginner</div>
       <div class="pts-badge" id="header-pts" style="display:none">⭐ 0 pts</div>
+      <!-- shown when logged in -->
       <div class="user-pill" id="user-pill" style="display:none">
         <div class="user-avatar-ph" id="user-avatar-ph"></div>
         <span class="user-name" id="user-display-name">—</span>
         <button class="signout-btn" onclick="signOut()" title="Sign out">↩</button>
       </div>
+      <!-- shown when guest -->
       <button class="btn-signin-header" id="signin-header-btn" onclick="showLoginModal()" style="display:none">Sign in free</button>
     </div>
   </header>
@@ -260,6 +266,7 @@
   </div>
 
   <main>
+    <!-- LEADERBOARD -->
     <div id="page-leaderboard" class="page active">
       <div class="lb-header">
         <div>
@@ -281,7 +288,9 @@
       </div>
     </div>
 
+    <!-- PUZZLES -->
     <div id="page-puzzles" class="page">
+      <!-- Guest banner — hidden when logged in -->
       <div class="guest-banner" id="guest-banner" style="display:none">
         <div class="guest-banner-text">👀 You're browsing as a guest. <strong>Sign in to save your points</strong> and appear on the leaderboard.</div>
         <button class="btn-signin-small" onclick="showLoginModal()">Sign in free →</button>
@@ -342,6 +351,7 @@
   </main>
 </div>
 
+<!-- LOGIN MODAL for guests -->
 <div id="login-modal">
   <div class="modal-card">
     <button class="modal-close" onclick="closeLoginModal()">✕</button>
@@ -375,14 +385,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true,
-    storageKey: 'chessensei-auth'
-  },
-  global: {
-    headers: {
-      'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${SUPABASE_KEY}`
-    }
+    detectSessionInUrl: true
   }
 });
 
@@ -658,7 +661,8 @@ function legal(pieces,from,toMove){
   const dirs={r:[[0,1],[0,-1],[1,0],[-1,0]],b:[[1,1],[1,-1],[-1,1],[-1,-1]],q:[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]],n:[[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]],k:[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]};
   if(p==='n'||p==='k'){for(const[dr,df]of dirs[p]){const nr=r+dr,nf=f+df;if(nr>=0&&nr<8&&nf>=0&&nf<8)tryAdd(nr*8+nf)}return dests}
   for(const[dr,df]of dirs[p]){let nr=r+dr,nf=f+df;while(nr>=0&&nr<8&&nf>=0&&nf<8){const idx=nr*8+nf,t=pieces[idx];if(t){if((t===t.toUpperCase())!==isW)dests.push(idx);break}dests.push(idx);nr+=dr;nf+=df}}
-  return dests}
+  return dests;
+}
 
 // ══════════════════════════════════════════
 //  BOARD RENDER
@@ -713,44 +717,6 @@ function loadPuzzle(pz){
   const tags=$('theme-tags');tags.innerHTML='';
   (pz.themes||'').split(' ').filter(Boolean).forEach(t=>{const el=document.createElement('span');el.className='theme-tag';el.textContent=t;tags.appendChild(el)});
   setToMove(tm);renderBoard(gameState.pieces);resetStatus();updateUI();
-}
-
-// ══════════════════════════════════════════
-//  POINTS SAVE (FIXED COMPONENT)
-// ══════════════════════════════════════════
-async function savePoints() {
-  if (!currentUser || !studentProfile) return;
-  setSaving(true);
-  
-  const today = new Date().toISOString().slice(0, 10);
-  console.log('Saving points via SDK:', userPoints);
-
-  try {
-    // Utilize native client routines to avoid endpoint RLS bypass flags
-    const { data, error } = await sb
-      .from('students')
-      .update({ 
-        points: userPoints, 
-        last_played: today 
-      })
-      .eq('id', currentUser.id);
-
-    if (error) {
-      console.error('Supabase save error:', JSON.stringify(error));
-      setSaving(false);
-      notif('Save error: ' + error.message, 'error');
-      return;
-    }
-
-    studentProfile.points = userPoints;
-    setSaving(false);
-    notif('✓ Points saved', 'success');
-
-  } catch (e) {
-    console.error('Unexpected save exception:', e);
-    setSaving(false);
-    notif('Save failed', 'error');
-  }
 }
 
 function setToMove(tm){
@@ -869,6 +835,32 @@ function addPts(delta){
   if(newTier.id>oldTier.id)tierUp(newTier);
   clearTimeout(savePtsTimeout);
   savePtsTimeout=setTimeout(savePoints,1500);
+}
+
+async function savePoints(){
+  if(!currentUser||!studentProfile)return;
+  setSaving(true);
+  const today=new Date().toISOString().slice(0,10);
+  console.log('Saving points via SDK:', userPoints);
+  try{
+    const{data,error}=await sb
+      .from('students')
+      .update({points:userPoints,last_played:today})
+      .eq('id',currentUser.id);
+    if(error){
+      console.error('Supabase save error:',JSON.stringify(error));
+      setSaving(false);
+      notif('Save error: '+error.message,'error');
+      return;
+    }
+    studentProfile.points=userPoints;
+    setSaving(false);
+    console.log('Points saved successfully:', userPoints);
+  } catch(e){
+    console.error('Unexpected save exception:',e);
+    setSaving(false);
+    notif('Save failed','error');
+  }
 }
 
 function setSaving(on){
