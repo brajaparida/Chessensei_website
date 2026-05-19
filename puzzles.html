@@ -518,23 +518,38 @@ async function updateStreak(){
 //  LEADERBOARD
 // ══════════════════════════════════════════
 async function loadLeaderboard(){
-  $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">Loading…</td></tr>';
-  const{data,error}=await sb.from('students').select('id,name,city,school,points,streak,avatar_url').order('points',{ascending:false}).limit(50);
-  if(error||!data){$('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">Could not load leaderboard.</td></tr>';return}
-  lbData=data;
-  // Dynamic city filters
-  const cities=[...new Set(data.map(d=>d.city).filter(Boolean))].sort();
-  const cf=$('city-filters');
-  cities.forEach(city=>{
-    if(knownCities.has(city))return;
-    knownCities.add(city);
-    const b=document.createElement('button');
-    b.className='filter-btn';b.textContent=city;
-    b.onclick=()=>filterLB(city,b);cf.appendChild(b);
-  });
-  const n=data.length;
-  $('lb-subtitle').textContent=n+' student'+(n!==1?'s':'')+' ranked • just now';
-  renderLB(lbFilter==='all'?lbData:lbData.filter(d=>d.city===lbFilter));
+  const tbody=$('lb-tbody');
+  if(tbody) tbody.innerHTML='<tr><td colspan="5" class="lb-empty">Loading…</td></tr>';
+  try{
+    const{data,error}=await sb.from('students')
+      .select('id,name,city,school,points,streak,avatar_url')
+      .order('points',{ascending:false})
+      .limit(50);
+    console.log('Leaderboard data:', JSON.stringify(data));
+    console.log('Leaderboard error:', JSON.stringify(error));
+    if(error) throw error;
+    if(!data||!data.length){
+      if(tbody) tbody.innerHTML='<tr><td colspan="5" class="lb-empty">No students yet — be the first!</td></tr>';
+      $('podium').innerHTML='<div class="lb-empty">No students yet 🏆</div>';
+      return;
+    }
+    lbData=data;
+    const cities=[...new Set(data.map(d=>d.city).filter(Boolean))].sort();
+    const cf=$('city-filters');
+    cities.forEach(city=>{
+      if(knownCities.has(city))return;
+      knownCities.add(city);
+      const b=document.createElement('button');
+      b.className='filter-btn';b.textContent=city;
+      b.onclick=()=>filterLB(city,b);cf.appendChild(b);
+    });
+    const n=data.length;
+    $('lb-subtitle').textContent=n+' student'+(n!==1?'s':'')+' ranked • just now';
+    renderLB(lbFilter==='all'?lbData:lbData.filter(d=>d.city===lbFilter));
+  } catch(e){
+    console.error('Leaderboard error full:', JSON.stringify(e), e.message, e.code);
+    if(tbody) tbody.innerHTML=`<tr><td colspan="5" class="lb-empty">Error: ${e.message||e.code||JSON.stringify(e)}</td></tr>`;
+  }
 }
 
 function filterLB(filter,btn){
@@ -821,7 +836,7 @@ async function savePoints(){
     .update({points:userPoints, last_played:today})
     .eq('id',currentUser.id)
     .select();
-  console.log('Save result:', data, 'Error:', error);
+  console.log('Save result:', JSON.stringify(data), 'Error:', JSON.stringify(error));
   setSaving(false);
   if(error)notif('Save error: '+error.message,'error');
   else studentProfile.points=userPoints;
