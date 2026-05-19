@@ -546,7 +546,11 @@ async function loadLeaderboard(){
       $('podium').innerHTML='<div class="lb-empty">No students yet 🏆</div>';
       return;
     }
-    lbData=data;
+    lbData=data.map(d=>{
+      // Show live points for current logged-in user
+      if(currentUser&&d.id===currentUser.id) return {...d, points:userPoints};
+      return d;
+    }).sort((a,b)=>b.points-a.points);
     const cities=[...new Set(data.map(d=>d.city).filter(Boolean))].sort();
     const cf=$('city-filters');
     cities.forEach(city=>{
@@ -844,30 +848,39 @@ async function savePoints(){
   if(!currentUser||!studentProfile)return;
   setSaving(true);
   const today=new Date().toISOString().slice(0,10);
-  console.log('Saving points:', userPoints, 'for user:', currentUser.id);
   // Get fresh session token
   const {data:{session}} = await sb.auth.getSession();
   const token = session?.access_token;
-  console.log('Session token exists:', !!token);
-  // Use fetch directly with the user's JWT token
+  console.log('Saving points:', userPoints, 'token:', token?'exists':'MISSING');
+  if(!token){
+    // Fallback — try with Supabase client directly
+    const{error}=await sb.from('students')
+      .update({points:userPoints,last_played:today})
+      .eq('id',currentUser.id);
+    console.log('Fallback save error:', JSON.stringify(error));
+    setSaving(false);
+    if(!error) studentProfile.points=userPoints;
+    return;
+  }
   const res = await fetch(`${SUPABASE_URL}/rest/v1/students?id=eq.${currentUser.id}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       'apikey': SUPABASE_KEY,
-      'Authorization': `Bearer ${token||SUPABASE_KEY}`,
-      'Prefer': 'return=representation'
+      'Authorization': `Bearer ${token}`
     },
-    body: JSON.stringify({points: userPoints, last_played: today})
+    body: JSON.stringify({points:userPoints, last_played:today})
   });
-  const result = await res.json();
-  console.log('Save result:', JSON.stringify(result), 'Status:', res.status);
-  setSaving(false);
-  if(!res.ok){
-    notif('Save error: '+res.status,'error');
-    console.error('Save failed:', result);
-  } else {
+  console.log('Save status:', res.status);
+  if(res.status===204||res.ok){
     studentProfile.points=userPoints;
+    setSaving(false);
+    notif('✓ Points saved','success');
+  } else {
+    const txt=await res.text();
+    console.error('Save failed:', res.status, txt);
+    setSaving(false);
+    notif('Save error '+res.status,'error');
   }
 }
 
