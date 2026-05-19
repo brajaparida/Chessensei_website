@@ -381,7 +381,20 @@
 // ══════════════════════════════════════════
 const SUPABASE_URL = 'https://zyhqrdtebcreoleyvwza.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_BXtAiKjIqua-Yvu5oGIVDw_oiQMMORX';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+    detectSessionInUrl: true,
+    storageKey: 'chessensei-auth'
+  },
+  global: {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    }
+  }
+});
 
 // ══════════════════════════════════════════
 //  TIERS
@@ -832,14 +845,30 @@ async function savePoints(){
   setSaving(true);
   const today=new Date().toISOString().slice(0,10);
   console.log('Saving points:', userPoints, 'for user:', currentUser.id);
-  const{data, error}=await sb.from('students')
-    .update({points:userPoints, last_played:today})
-    .eq('id',currentUser.id)
-    .select();
-  console.log('Save result:', JSON.stringify(data), 'Error:', JSON.stringify(error));
+  // Get fresh session token
+  const {data:{session}} = await sb.auth.getSession();
+  const token = session?.access_token;
+  console.log('Session token exists:', !!token);
+  // Use fetch directly with the user's JWT token
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/students?id=eq.${currentUser.id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${token||SUPABASE_KEY}`,
+      'Prefer': 'return=representation'
+    },
+    body: JSON.stringify({points: userPoints, last_played: today})
+  });
+  const result = await res.json();
+  console.log('Save result:', JSON.stringify(result), 'Status:', res.status);
   setSaving(false);
-  if(error)notif('Save error: '+error.message,'error');
-  else studentProfile.points=userPoints;
+  if(!res.ok){
+    notif('Save error: '+res.status,'error');
+    console.error('Save failed:', result);
+  } else {
+    studentProfile.points=userPoints;
+  }
 }
 
 function setSaving(on){
