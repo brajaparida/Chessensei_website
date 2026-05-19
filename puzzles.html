@@ -475,7 +475,6 @@ function showGuest(){
 
 function showApp(){
   hideEl('loading-screen');hideEl('login-screen');hideEl('profile-screen');showEl('app');
-  // Header — show user info, hide sign-in btn
   $('signin-header-btn').style.display='none';
   $('guest-banner').style.display='none';
   $('tier-pill').style.display='flex';
@@ -484,6 +483,8 @@ function showApp(){
   const p=studentProfile;
   $('user-display-name').textContent=p.name.split(' ')[0];
   $('user-avatar-ph').textContent=p.name[0].toUpperCase();
+  // Load points from Supabase profile (already set in onSignedIn)
+  userPoints=studentProfile.points||0;
   $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';
   $('your-pts-display').textContent=userPoints.toLocaleString();
   updateUI();loadLeaderboard();updateStreak();
@@ -843,6 +844,7 @@ function showSolved(){
 }
 function resetStatus(){
   $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">🧩</div><div class="status-title">Find the best move</div><div class="status-msg">Click a piece, then click its destination.</div><div class="pts-hint">Correct → <strong>+10 pts</strong> &nbsp;|&nbsp; Wrong → <span class="neg">−2 pts</span></div></div>`;
+  $('your-pts-display').textContent=userPoints.toLocaleString();
 }
 function nextPuzzle(){loadNextPuzzle()}
 
