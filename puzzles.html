@@ -11,8 +11,8 @@
     --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a28;--border:#2a2a3d;
     --gold:#f0c040;--gold2:#e8a020;--silver:#c0c8d8;--bronze:#cd7f32;
     --accent:#4af0b0;--accent2:#20c880;--text:#e8e8f0;--muted:#7070a0;
-    --danger:#f05050;--warn:#f0a030;--light-sq:#f0d9b5;--dark-sq:#b58863;
-    --highlight:rgba(74,240,176,0.35);--selected:rgba(74,240,176,0.55);
+    --danger:#f05050;--warn:#f0a030;--light-sq:#dee3e6;--dark-sq:#8ca2ad;
+    --highlight:rgba(100,180,255,0.45);--selected:rgba(100,180,255,0.65);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
@@ -117,18 +117,20 @@
 
   /* PUZZLE */
   .puzzle-layout{display:grid;grid-template-columns:min(460px,100%) 1fr;gap:24px;align-items:start}
-  .puzzle-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .puzzle-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3)}
   .puzzle-panel-header{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
   .puzzle-panel-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
   .puzzle-id{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
-  #board-wrap{padding:13px;user-select:none}
-  #board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border:2px solid var(--border);border-radius:8px;overflow:hidden}
-  .sq{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:clamp(18px,3.5vw,36px);transition:background .1s}
+  #board-wrap{padding:13px;user-select:none;background:#1a2a3a;border-radius:0 0 16px 16px}
+  #board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden;border:3px solid #2a3f52;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+  .sq{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;aspect-ratio:1;transition:background .1s}
   .sq.light{background:var(--light-sq)}.sq.dark{background:var(--dark-sq)}
-  .sq.selected{background:var(--selected)!important}.sq.hint{background:var(--highlight)!important}
-  .sq.last-move{outline:3px solid rgba(74,240,176,.5);outline-offset:-3px}.sq.wrong{background:rgba(240,80,80,.5)!important}
-  .coord{position:absolute;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;opacity:.6;line-height:1}
-  .coord-file{bottom:2px;right:3px}.coord-rank{top:2px;left:3px}
+  .sq.selected{background:var(--selected)!important}
+  .sq.hint{background:var(--highlight)!important}
+  .sq.wrong{background:rgba(240,80,80,.55)!important}
+  .coord{position:absolute;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;z-index:2}
+  .coord-file{bottom:2px;right:3px;color:var(--dark-sq)}.sq.dark .coord-file{color:var(--light-sq)}
+  .coord-rank{top:2px;left:3px;color:var(--dark-sq)}.sq.dark .coord-rank{color:var(--light-sq)}
   .to-move{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding:7px 11px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--silver)}
   .to-move-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
   .to-move-dot.white{background:#f8f8f0}.to-move-dot.black{background:#202020}
@@ -599,9 +601,16 @@ async function loadNextPuzzle(){
 }
 
 // ══════════════════════════════════════════
-//  CHESS ENGINE
+//  PIECES — Lichess cburnett SVG set
 // ══════════════════════════════════════════
-const PU={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
+const PIECE_URL = (piece) => {
+  const color = piece === piece.toUpperCase() ? 'w' : 'b';
+  const type = piece.toLowerCase();
+  const map = {k:'K',q:'Q',r:'R',b:'B',n:'N',p:'P'};
+  return `https://lichess1.org/assets/piece/cburnett/${color}${map[type]}.svg`;
+};
+
+
 function fenTo(fen){const b=Array(64).fill(null);let i=0;for(const ch of fen.split(' ')[0]){if(ch==='/')continue;if(isNaN(ch))b[i++]=ch;else i+=+ch}return b}
 function sn(i){return'abcdefgh'[i%8]+(8-Math.floor(i/8))}
 function si(n){return(8-+n[1])*8+n.charCodeAt(0)-97}
@@ -633,17 +642,35 @@ function legal(pieces,from,toMove){
 // ══════════════════════════════════════════
 function renderBoard(pieces,sel=null,hints=[],lastMv=null,wrong=[]){
   const board=$('board');board.innerHTML='';
+  const lastSqs = lastMv ? [si(lastMv.slice(0,2)), si(lastMv.slice(2,4))] : [];
   for(let i=0;i<64;i++){
-    const r=Math.floor(i/8),f=i%8,sq=document.createElement('div');
-    sq.className='sq '+((r+f)%2===0?'light':'dark');
-    if(sel===i)sq.classList.add('selected');
-    if(hints.includes(i))sq.classList.add('hint');
-    if(lastMv&&(si(lastMv.slice(0,2))===i||si(lastMv.slice(2,4))===i))sq.classList.add('last-move');
-    if(wrong.includes(i))sq.classList.add('wrong');
+    const r=Math.floor(i/8),f=i%8;
+    const isLight=(r+f)%2===0;
+    const sq=document.createElement('div');
+    sq.className='sq '+(isLight?'light':'dark');
+    if(sel===i) sq.classList.add('selected');
+    else if(hints.includes(i)) sq.classList.add('hint');
+    else if(lastSqs.includes(i)) sq.style.background = isLight ? 'rgba(100,160,255,.45)' : 'rgba(60,120,220,.55)';
+    if(wrong.includes(i)) sq.classList.add('wrong');
+    // Coordinates
     if(f===7){const rc=document.createElement('span');rc.className='coord coord-rank';rc.textContent=8-r;sq.appendChild(rc)}
     if(r===7){const fc=document.createElement('span');fc.className='coord coord-file';fc.textContent='abcdefgh'[f];sq.appendChild(fc)}
-    if(pieces[i]){const pe=document.createElement('span');pe.textContent=PU[pieces[i]];pe.style.cssText=`color:${pieces[i]===pieces[i].toUpperCase()?'#fffef0':'#1a1a1a'};text-shadow:${pieces[i]===pieces[i].toUpperCase()?'0 1px 3px rgba(0,0,0,.8)':'0 1px 2px rgba(255,255,255,.3)'};font-size:inherit;line-height:1;z-index:1;position:relative`;sq.appendChild(pe)}
-    sq.addEventListener('click',()=>onSq(i));board.appendChild(sq);
+    // Piece as Lichess SVG image
+    if(pieces[i]){
+      const img=document.createElement('img');
+      img.src=PIECE_URL(pieces[i]);
+      img.style.cssText='width:88%;height:88%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))';
+      img.draggable=false;
+      sq.appendChild(img);
+    }
+    // Hint dot for empty squares
+    if(hints.includes(i)&&!pieces[i]){
+      const dot=document.createElement('div');
+      dot.style.cssText='width:30%;height:30%;border-radius:50%;background:rgba(100,180,255,.6);pointer-events:none';
+      sq.appendChild(dot);
+    }
+    sq.addEventListener('click',()=>onSq(i));
+    board.appendChild(sq);
   }
 }
 
