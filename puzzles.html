@@ -843,7 +843,6 @@ function addPts(delta){
 async function savePoints(){
   if(!currentUser||!studentProfile)return;
   if(userPoints<=0)return;
-  if(userPoints<=studentProfile.points)return;
   setSaving(true);
   console.log('Saving points via RPC:', userPoints);
   try{
@@ -854,11 +853,8 @@ async function savePoints(){
       notif('Save error: '+error.message,'error');
       return;
     }
-    // Verify
-    const{data:verify}=await sb
-      .from('students').select('points').eq('id',currentUser.id).single();
-    console.log('Verified points in DB:', verify?.points);
     studentProfile.points=userPoints;
+    console.log('Saved successfully:', userPoints);
     setSaving(false);
   } catch(e){
     console.error('Save exception:',e);
