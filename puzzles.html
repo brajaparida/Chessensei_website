@@ -842,29 +842,34 @@ function addPts(delta){
 
 async function savePoints(){
   if(!currentUser||!studentProfile)return;
-  if(userPoints<=0)return; // never overwrite with 0
-  if(userPoints<=studentProfile.points)return; // never save lower than what DB has
+  if(userPoints<=0)return;
+  if(userPoints<=studentProfile.points)return;
   setSaving(true);
   const today=new Date().toISOString().slice(0,10);
   console.log('Saving points via SDK:', userPoints);
   try{
-    const{data,error}=await sb
+    const{error}=await sb
       .from('students')
       .update({points:userPoints,last_played:today})
       .eq('id',currentUser.id);
     if(error){
-      console.error('Supabase save error:',JSON.stringify(error));
+      console.error('Save error:',JSON.stringify(error));
       setSaving(false);
       notif('Save error: '+error.message,'error');
       return;
     }
+    // Verify the save worked by reading back
+    const{data:verify,error:verifyErr}=await sb
+      .from('students')
+      .select('points')
+      .eq('id',currentUser.id)
+      .single();
+    console.log('Verified points in DB:', verify?.points, 'Error:', JSON.stringify(verifyErr));
     studentProfile.points=userPoints;
     setSaving(false);
-    console.log('Points saved successfully:', userPoints);
   } catch(e){
-    console.error('Unexpected save exception:',e);
+    console.error('Save exception:',e);
     setSaving(false);
-    notif('Save failed','error');
   }
 }
 
