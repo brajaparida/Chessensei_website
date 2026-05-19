@@ -681,7 +681,7 @@ function loadPuzzle(pz){
   const tm=pz.fen.split(' ')[1];
   usedIds.add(pz.id);
   const moves=Array.isArray(pz.moves)?pz.moves:pz.moves.split(' ');
-  gameState={pz,pieces:fenTo(pz.fen),moves,idx:0,sel:null,toMove:tm,solved:false,lastMv:null};
+  gameState={pz,pieces:fenTo(pz.fen),moves,idx:0,sel:null,toMove:tm,solved:false,lastMv:null,wrongAttempts:0,ptsPenalised:false};
   $('puzzle-id-label').textContent='ID: '+pz.id;
   $('lichess-link').href=pz.game_url||'#';
   const pct=Math.min(100,Math.max(5,((pz.rating-300)/1700)*100));
@@ -733,17 +733,69 @@ function doMove(from,to){
       },550);
     }
   } else {
-    addPts(-2);
+    // Wrong move
+    gameState.wrongAttempts++;
+    // Deduct -2 pts only on the FIRST wrong attempt per puzzle
+    if(!gameState.ptsPenalised){
+      addPts(-2);
+      gameState.ptsPenalised=true;
+    }
     const board=$('board');board.classList.add('shake');
     renderBoard(gameState.pieces,null,[],gameState.lastMv,[from,to]);
     setTimeout(()=>{board.classList.remove('shake');renderBoard(gameState.pieces,null,[],gameState.lastMv)},400);
-    notif('❌ Not the best move — try again!','error');
+    // After 2 wrong attempts, show "Show Answer" button
+    if(gameState.wrongAttempts>=2){
+      showAnswerButton();
+      notif('❌ Wrong again. You can now reveal the answer.','error');
+    } else {
+      notif('❌ Not the best move — try again!','error');
+    }
   }
 }
 
-// ══════════════════════════════════════════
-//  POINTS → SUPABASE
-// ══════════════════════════════════════════
+function showAnswerButton(){
+  // Only inject once
+  if($('show-answer-btn')) return;
+  const card=$('puzzle-status-card');
+  const btn=document.createElement('button');
+  btn.id='show-answer-btn';
+  btn.onclick=showAnswer;
+  btn.style.cssText='margin-top:10px;padding:9px 20px;border-radius:10px;border:1px solid var(--danger);background:rgba(240,80,80,.1);color:var(--danger);font-size:13px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;width:100%';
+  btn.textContent='👁 Show Answer';
+  card.appendChild(btn);
+}
+
+async function showAnswer(){
+  if(!gameState||gameState.solved)return;
+  gameState.solved=true; // lock board
+  // Remove the show answer button
+  const btn=$('show-answer-btn');if(btn)btn.remove();
+  // Play all remaining correct moves one by one with delay
+  const playNext=(idx)=>{
+    if(idx>=gameState.moves.length){
+      // Done — show failed status
+      $('puzzle-status-card').innerHTML=`
+        <div class="puzzle-status">
+          <div class="status-icon">💡</div>
+          <div class="status-title">Answer Revealed</div>
+          <div class="status-msg">Study the moves and try the next one!</div>
+          <button class="btn btn-gold" onclick="nextPuzzle()" style="margin-top:6px;width:auto;padding:10px 26px">Next Puzzle ▶</button>
+        </div>`;
+      notif('💡 Answer shown — 0 pts awarded','error');
+      return;
+    }
+    const mv=gameState.moves[idx];
+    gameState.pieces=applyMv(gameState.pieces,mv);
+    gameState.lastMv=mv;
+    gameState.toMove=gameState.toMove==='w'?'b':'w';
+    setToMove(gameState.toMove);
+    renderBoard(gameState.pieces,null,[],gameState.lastMv);
+    setTimeout(()=>playNext(idx+1), 800);
+  };
+  playNext(gameState.idx);
+}
+
+
 function addPts(delta){
   if(!currentUser)return; // guest — no points
   const oldTier=getTier(userPoints);
