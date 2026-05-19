@@ -385,7 +385,8 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: {
     persistSession: true,
     autoRefreshToken: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    clockSkewInSeconds: 3600  // tolerate up to 1 hour clock difference
   }
 });
 
@@ -844,20 +845,24 @@ async function savePoints(){
   if(!currentUser||!studentProfile)return;
   if(userPoints<=0)return;
   setSaving(true);
-  console.log('Saving points via RPC:', userPoints);
+  console.log('Saving points:', userPoints, 'user:', currentUser.id);
   try{
-    const{error}=await sb.rpc('update_my_points',{new_points:userPoints});
+    const rpcPromise=sb.rpc('update_my_points',{
+      user_id: currentUser.id,
+      new_points: userPoints
+    });
+    const timeout=new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000));
+    const{error}=await Promise.race([rpcPromise,timeout]);
     if(error){
-      console.error('RPC save error:',JSON.stringify(error));
+      console.error('RPC error:',JSON.stringify(error));
       setSaving(false);
-      notif('Save error: '+error.message,'error');
       return;
     }
     studentProfile.points=userPoints;
-    console.log('Saved successfully:', userPoints);
+    console.log('Saved OK:', userPoints);
     setSaving(false);
-  } catch(e){
-    console.error('Save exception:',e);
+  }catch(e){
+    console.error('Save error:',e.message);
     setSaving(false);
   }
 }
