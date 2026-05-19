@@ -833,12 +833,17 @@ function addPts(delta){
   if(delta>0)ptsPopup('+'+delta);
   updateUI();
   if(newTier.id>oldTier.id)tierUp(newTier);
-  clearTimeout(savePtsTimeout);
-  savePtsTimeout=setTimeout(savePoints,1500);
+  // Only trigger save on positive points gain
+  if(delta>0){
+    clearTimeout(savePtsTimeout);
+    savePtsTimeout=setTimeout(savePoints,1500);
+  }
 }
 
 async function savePoints(){
   if(!currentUser||!studentProfile)return;
+  if(userPoints<=0)return; // never overwrite with 0
+  if(userPoints<=studentProfile.points)return; // never save lower than what DB has
   setSaving(true);
   const today=new Date().toISOString().slice(0,10);
   console.log('Saving points via SDK:', userPoints);
