@@ -370,9 +370,10 @@
   </div>
 </div>
 
-<div class="pts-popup-val" id="pts-popup-val">+10</div><div class="pts-popup-label">Points Earned!</div></div>
+<div class="pts-popup" id="pts-popup"><div class="pts-popup-val" id="pts-popup-val">+10</div><div class="pts-popup-label">Points Earned!</div></div>
 <div class="notif" id="notif"></div>
 <div class="upgrade-banner" id="upgrade-banner"></div>
+
 
 <script>
 // ══════════════════════════════════════════
@@ -815,9 +816,14 @@ async function savePoints(){
   if(!currentUser||!studentProfile)return;
   setSaving(true);
   const today=new Date().toISOString().slice(0,10);
-  const{error}=await sb.from('students').update({points:userPoints,last_played:today}).eq('id',currentUser.id);
+  console.log('Saving points:', userPoints, 'for user:', currentUser.id);
+  const{data, error}=await sb.from('students')
+    .update({points:userPoints, last_played:today})
+    .eq('id',currentUser.id)
+    .select();
+  console.log('Save result:', data, 'Error:', error);
   setSaving(false);
-  if(error)notif('Could not save points','error');
+  if(error)notif('Save error: '+error.message,'error');
   else studentProfile.points=userPoints;
 }
 
