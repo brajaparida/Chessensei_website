@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChessSensei — Puzzle Master</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#0a0a0f;--surface:#12121a;--surface2:#1a1a28;--border:#2a2a3d;
+    --gold:#f0c040;--gold2:#e8a020;--silver:#c0c8d8;--bronze:#cd7f32;
+    --accent:#4af0b0;--accent2:#20c880;--text:#e8e8f0;--muted:#7070a0;
+    --danger:#f05050;--warn:#f0a030;--light-sq:#f0d9b5;--dark-sq:#b58863;
+    --highlight:rgba(74,240,176,0.35);--selected:rgba(74,240,176,0.55);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;overflow-x:hidden}
+  body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.4}
+
+  /* LOADING */
+  #loading-screen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px}
+  .loading-logo{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .loading-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* LOGIN */
+  #login-screen{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:998}
+  .login-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:48px 40px;text-align:center;max-width:400px;width:90%}
+  .login-icon{width:64px;height:64px;background:var(--gold);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);display:flex;align-items:center;justify-content:center;font-size:28px;color:#000;font-weight:900;margin:0 auto 20px}
+  .login-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;margin-bottom:6px}
+  .login-title span{color:var(--gold)}
+  .login-sub{color:var(--muted);font-size:14px;margin-bottom:32px;line-height:1.6}
+  .btn-google{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+  .btn-google:hover{border-color:var(--accent);background:rgba(74,240,176,.06)}
+  .login-perks{display:flex;flex-direction:column;gap:8px;margin-top:24px;text-align:left}
+  .perk{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+
+  /* PROFILE SETUP */
+  #profile-screen{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:997;padding:20px}
+  .profile-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 36px;max-width:440px;width:100%}
+  .profile-card h2{font-family:'Playfair Display',serif;font-size:24px;font-weight:900;margin-bottom:4px}
+  .profile-card p{color:var(--muted);font-size:13px;margin-bottom:28px}
+  .form-group{margin-bottom:16px}
+  .form-group label{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+  .form-group input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
+  .form-group input:focus{border-color:var(--accent)}
+  .btn-save{width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:opacity .2s}
+  .btn-save:hover{opacity:.85}
+  .btn-save:disabled{opacity:.5;cursor:not-allowed}
+
+  /* HEADER */
+  header{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#14141e,transparent);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-icon{width:32px;height:32px;background:var(--gold);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);display:flex;align-items:center;justify-content:center;font-size:15px;color:#000;font-weight:900}
+  .logo-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .logo-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+  .header-right{display:flex;align-items:center;gap:10px}
+  .pts-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700;font-family:'DM Mono',monospace}
+  .tier-pill{display:flex;align-items:center;gap:5px;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:1px solid;transition:all .4s}
+  .tier-1{background:rgba(74,240,176,.1);border-color:var(--accent);color:var(--accent)}
+  .tier-2{background:rgba(240,192,64,.1);border-color:var(--gold);color:var(--gold)}
+  .tier-3{background:rgba(240,160,48,.1);border-color:var(--warn);color:var(--warn)}
+  .tier-4{background:rgba(240,80,80,.1);border-color:var(--danger);color:var(--danger)}
+  .user-pill{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:24px;padding:5px 12px 5px 5px}
+  .user-avatar-ph{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000}
+  .user-name{font-size:12px;font-weight:500}
+  .signout-btn{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;padding:2px 4px;font-family:'DM Sans',sans-serif}
+  .signout-btn:hover{color:var(--danger)}
+
+  /* TABS */
+  .nav-tabs{display:flex;gap:4px;padding:10px 28px 0;border-bottom:1px solid var(--border)}
+  .tab{padding:10px 20px;border:none;background:none;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;border-radius:8px 8px 0 0;transition:all .2s;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif}
+  .tab:hover{color:var(--text)}.tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(240,192,64,.06)}
+  main{max-width:1200px;margin:0 auto;padding:24px 18px}
+  .page{display:none}.page.active{display:block}
+
+  /* LEADERBOARD */
+  .lb-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;flex-wrap:wrap;gap:14px}
+  .lb-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:900;line-height:1}
+  .lb-title span{color:var(--gold)}
+  .lb-subtitle{color:var(--muted);font-size:13px;margin-top:4px}
+  .lb-filters{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .filter-btn{padding:6px 15px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);font-size:12px;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
+  .filter-btn:hover,.filter-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(240,192,64,.08)}
+  .lb-refresh{background:none;border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:6px 13px;font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s}
+  .lb-refresh:hover{border-color:var(--accent);color:var(--accent)}
+  .podium{display:flex;justify-content:center;align-items:flex-end;gap:10px;margin-bottom:28px}
+  .podium-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:18px 14px;text-align:center;transition:transform .2s;flex:1;max-width:200px}
+  .podium-card:hover{transform:translateY(-4px)}
+  .podium-card.gold{border-color:var(--gold);background:linear-gradient(180deg,rgba(240,192,64,.12),var(--surface));transform:translateY(-14px)}
+  .podium-card.gold:hover{transform:translateY(-18px)}
+  .podium-card.silver{border-color:rgba(192,200,216,.4)}.podium-card.bronze{border-color:rgba(205,127,50,.4)}
+  .podium-rank{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;margin-bottom:7px}
+  .podium-card.gold .podium-rank{color:var(--gold)}.podium-card.silver .podium-rank{color:var(--silver)}.podium-card.bronze .podium-rank{color:var(--bronze)}
+  .podium-avatar{width:48px;height:48px;border-radius:50%;margin:0 auto 9px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#000;overflow:hidden}
+  .podium-name{font-size:13px;font-weight:600;margin-bottom:2px}.podium-school{font-size:11px;color:var(--muted);margin-bottom:9px}
+  .podium-pts{font-family:'DM Mono',monospace;font-size:16px;font-weight:500}
+  .podium-card.gold .podium-pts{color:var(--gold)}.podium-card.silver .podium-pts{color:var(--silver)}.podium-card.bronze .podium-pts{color:var(--bronze)}
+  .lb-table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  table{width:100%;border-collapse:collapse}
+  thead th{text-align:left;padding:12px 18px;font-size:11px;color:var(--muted);font-weight:500;letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--surface2)}
+  tbody tr{border-bottom:1px solid rgba(42,42,61,.5);transition:background .15s}
+  tbody tr:last-child{border-bottom:none}tbody tr:hover{background:rgba(74,240,176,.04)}
+  tbody tr.my-row{background:rgba(74,240,176,.07)!important;border-left:3px solid var(--accent)}
+  tbody td{padding:12px 18px;font-size:14px}
+  .rank-cell{font-family:'DM Mono',monospace;font-weight:500;color:var(--muted);width:44px}
+  .rank-cell.top{color:var(--gold);font-weight:700}
+  .student-cell{display:flex;align-items:center;gap:9px}
+  .st-avatar{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#000;flex-shrink:0;overflow:hidden}
+  .st-name{font-weight:500}.st-city{font-size:12px;color:var(--muted)}
+  .school-cell{font-size:13px;color:var(--silver)}
+  .pts-cell{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;color:var(--accent);text-align:right}
+  .streak-cell{text-align:right}
+  .streak-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(240,192,64,.12);color:var(--gold);border-radius:12px;padding:3px 10px;font-size:12px;font-family:'DM Mono',monospace}
+  .lb-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
+
+  /* PUZZLE */
+  .puzzle-layout{display:grid;grid-template-columns:min(460px,100%) 1fr;gap:24px;align-items:start}
+  .puzzle-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+  .puzzle-panel-header{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  .puzzle-panel-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
+  .puzzle-id{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+  #board-wrap{padding:13px;user-select:none}
+  #board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border:2px solid var(--border);border-radius:8px;overflow:hidden}
+  .sq{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;font-size:clamp(18px,3.5vw,36px);transition:background .1s}
+  .sq.light{background:var(--light-sq)}.sq.dark{background:var(--dark-sq)}
+  .sq.selected{background:var(--selected)!important}.sq.hint{background:var(--highlight)!important}
+  .sq.last-move{outline:3px solid rgba(74,240,176,.5);outline-offset:-3px}.sq.wrong{background:rgba(240,80,80,.5)!important}
+  .coord{position:absolute;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;opacity:.6;line-height:1}
+  .coord-file{bottom:2px;right:3px}.coord-rank{top:2px;left:3px}
+  .to-move{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding:7px 11px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--silver)}
+  .to-move-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
+  .to-move-dot.white{background:#f8f8f0}.to-move-dot.black{background:#202020}
+  .puzzle-info-panel{display:flex;flex-direction:column;gap:13px}
+  .info-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
+  .info-card h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:11px}
+  .xp-section{margin-bottom:13px}
+  .xp-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+  .xp-label span{color:var(--muted)}
+  .xp-bar{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+  .xp-fill{height:100%;border-radius:3px;transition:width .6s cubic-bezier(.34,1.56,.64,1)}
+  .ladder-row{display:flex;align-items:center;gap:9px;margin-bottom:8px;opacity:.4;transition:opacity .3s}
+  .ladder-row:last-child{margin-bottom:0}.ladder-row.active{opacity:1}
+  .ladder-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .ladder-label{font-size:12px;font-weight:500;flex:1}
+  .ladder-bar{flex:2;height:3px;border-radius:2px;background:var(--border);overflow:hidden}
+  .ladder-fill{height:100%;border-radius:2px;transition:width .5s}
+  .ladder-pts{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);white-space:nowrap}
+  .puzzle-status{text-align:center;padding:14px 10px}
+  .status-icon{font-size:36px;margin-bottom:6px}
+  .status-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:700;margin-bottom:4px}
+  .status-msg{font-size:13px;color:var(--muted);margin-bottom:10px}
+  .pts-hint{font-size:13px}.pts-hint strong{color:var(--accent)}.neg{color:var(--danger)}
+  .meta-row{display:flex;justify-content:space-between;margin-bottom:8px}
+  .meta-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:4px}
+  .meta-value{font-size:14px;font-weight:500}
+  .rating-bar{height:4px;border-radius:2px;background:var(--border);margin-top:5px;overflow:hidden}
+  .rating-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--gold));border-radius:2px;transition:width .5s}
+  .theme-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+  .theme-tag{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 9px;font-size:11px;color:var(--muted)}
+  .btn{display:flex;align-items:center;justify-content:center;gap:7px;padding:10px 20px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;transition:all .2s;width:100%;margin-bottom:8px;text-decoration:none}
+  .btn:last-child{margin-bottom:0}
+  .btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000}
+  .btn-gold:hover{opacity:.85;transform:translateY(-1px)}
+  .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
+  .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+  .saving-indicator{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;min-height:16px}
+
+  @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+  #board.shake{animation:shake .3s ease}
+  .pts-popup{position:fixed;left:50%;top:50%;transform:translate(-50%,-50%) scale(0);background:var(--surface);border:2px solid var(--accent);border-radius:20px;padding:20px 36px;text-align:center;z-index:500;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+  .pts-popup.show{transform:translate(-50%,-50%) scale(1)}
+  .pts-popup-val{font-family:'Playfair Display',serif;font-size:44px;font-weight:900;color:var(--accent)}
+  .pts-popup-label{color:var(--muted);font-size:13px;margin-top:2px}
+  .notif{position:fixed;top:72px;right:20px;background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:11px 16px;font-size:13px;z-index:200;transform:translateX(120%);transition:transform .3s;max-width:250px}
+  .notif.show{transform:translateX(0)}.notif.success{border-color:var(--accent)}.notif.error{border-color:var(--danger)}
+  .upgrade-banner{position:fixed;bottom:-60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border-radius:14px;padding:12px 24px;font-size:14px;font-weight:700;z-index:300;transition:bottom .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
+  .upgrade-banner.show{bottom:24px}
+  @media(max-width:860px){.puzzle-layout{grid-template-columns:1fr}header{padding:10px 14px}main{padding:16px 10px}.nav-tabs{padding:8px 10px 0}}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading-screen">
+  <div class="loading-logo">♟ ChessSensei</div>
+  <div class="loading-spinner"></div>
+</div>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-icon">♟</div>
+    <div class="login-title">Chess<span>Sensei</span></div>
+    <div class="login-sub">Sign in to track your progress, earn points, and climb the leaderboard.</div>
+    <button class="btn-google" onclick="signInWithGoogle()">
+      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continue with Google
+    </button>
+    <div class="login-perks">
+      <div class="perk"><span>🏆</span><span>Appear on the leaderboard</span></div>
+      <div class="perk"><span>⭐</span><span>Points saved after every puzzle</span></div>
+      <div class="perk"><span>🔥</span><span>Track your daily streak</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE SETUP -->
+<div id="profile-screen">
+  <div class="profile-card">
+    <h2>Complete Your Profile</h2>
+    <p>This appears on the leaderboard. Takes 10 seconds.</p>
+    <div class="form-group"><label>Your Name</label><input type="text" id="profile-name" placeholder="e.g. Aarav K"></div>
+    <div class="form-group"><label>City</label><input type="text" id="profile-city" placeholder="e.g. Bangalore"></div>
+    <div class="form-group"><label>School / Academy</label><input type="text" id="profile-school" placeholder="e.g. DPS Whitefield"></div>
+    <button class="btn-save" id="save-profile-btn" onclick="saveProfile()">Save & Start Playing →</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+  <header>
+    <div class="logo">
+      <div class="logo-icon">♟</div>
+      <div><div class="logo-text">ChessSensei</div><div class="logo-sub">Puzzle Master</div></div>
+    </div>
+    <div class="header-right">
+      <div class="tier-pill tier-1" id="tier-pill">⚡ Beginner</div>
+      <div class="pts-badge" id="header-pts">⭐ 0 pts</div>
+      <div class="user-pill">
+        <div class="user-avatar-ph" id="user-avatar-ph"></div>
+        <span class="user-name" id="user-display-name">—</span>
+        <button class="signout-btn" onclick="signOut()" title="Sign out">↩</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="nav-tabs">
+    <button class="tab active" onclick="switchTab('leaderboard',this)">🏆 Leaderboard</button>
+    <button class="tab" onclick="switchTab('puzzles',this)">♟ Solve Puzzles</button>
+  </div>
+
+  <main>
+    <!-- LEADERBOARD -->
+    <div id="page-leaderboard" class="page active">
+      <div class="lb-header">
+        <div>
+          <div class="lb-title">Puzzle <span>Masters</span></div>
+          <div class="lb-subtitle" id="lb-subtitle">Loading rankings…</div>
+        </div>
+        <div class="lb-filters">
+          <button class="filter-btn active" onclick="filterLB('all',this)">All India</button>
+          <div id="city-filters" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+          <button class="lb-refresh" onclick="loadLeaderboard()">↻ Refresh</button>
+        </div>
+      </div>
+      <div class="podium" id="podium"><div class="lb-empty">Loading…</div></div>
+      <div class="lb-table-wrap">
+        <table>
+          <thead><tr><th>Rank</th><th>Student</th><th>School / Academy</th><th style="text-align:right">Points</th><th style="text-align:right">Streak</th></tr></thead>
+          <tbody id="lb-tbody"><tr><td colspan="5" class="lb-empty">Loading…</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PUZZLES -->
+    <div id="page-puzzles" class="page">
+      <div class="puzzle-layout">
+        <div class="puzzle-panel">
+          <div class="puzzle-panel-header">
+            <div class="puzzle-panel-title">Solve the Puzzle</div>
+            <div class="puzzle-id" id="puzzle-id-label">Loading…</div>
+          </div>
+          <div id="board-wrap">
+            <div class="to-move" id="to-move-indicator">
+              <div class="to-move-dot white" id="to-move-dot"></div>
+              <span id="to-move-text">White to move</span>
+            </div>
+            <div id="board"></div>
+          </div>
+        </div>
+
+        <div class="puzzle-info-panel">
+          <div class="info-card" id="puzzle-status-card">
+            <div class="puzzle-status"><div class="status-icon">⏳</div><div class="status-title">Loading puzzle…</div></div>
+          </div>
+
+          <div class="info-card">
+            <h3>Your Progress</h3>
+            <div class="xp-section">
+              <div class="xp-label"><span id="xp-tier-name">Beginner</span><span id="xp-next-label">100 pts to next tier</span></div>
+              <div class="xp-bar"><div class="xp-fill" id="xp-fill" style="width:0%;background:var(--accent)"></div></div>
+            </div>
+            <div id="ladder-rows"></div>
+          </div>
+
+          <div class="info-card">
+            <h3>Puzzle Info</h3>
+            <div class="meta-row">
+              <div>
+                <div class="meta-label">Difficulty</div>
+                <div class="meta-value" id="puzzle-rating-label">—</div>
+                <div class="rating-bar"><div class="rating-fill" id="rating-fill" style="width:0%"></div></div>
+              </div>
+              <div style="text-align:right">
+                <div class="meta-label">Your Points</div>
+                <div class="meta-value" id="your-pts-display" style="color:var(--accent);font-family:'DM Mono',monospace;font-size:20px">0</div>
+              </div>
+            </div>
+            <div><div class="meta-label" style="margin-bottom:6px">Themes</div><div class="theme-tags" id="theme-tags"></div></div>
+          </div>
+
+          <div class="info-card">
+            <button class="btn btn-gold" onclick="nextPuzzle()">▶ Next Puzzle</button>
+            <a class="btn btn-outline" id="lichess-link" href="#" target="_blank">🔗 View on Lichess</a>
+            <div class="saving-indicator" id="saving-indicator"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="pts-popup" id="pts-popup"><div class="pts-popup-val" id="pts-popup-val">+10</div><div class="pts-popup-label">Points Earned!</div></div>
+<div class="notif" id="notif"></div>
+<div class="upgrade-banner" id="upgrade-banner"></div>
+
+<script>
+// ══════════════════════════════════════════
+//  SUPABASE CONFIG
+// ══════════════════════════════════════════
+const SUPABASE_URL = 'https://zyhqrdtebcreoleyvwza.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_BXtAiKjIqua-Yvu5oGIVDw_oiQMMORX';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ══════════════════════════════════════════
+//  TIERS
+// ══════════════════════════════════════════
+const TIERS = [
+  {id:1,name:'Beginner',    emoji:'⚡',minPts:0,  maxPts:100, color:'var(--accent)', cls:'tier-1', minR:0,    maxR:800},
+  {id:2,name:'Intermediate',emoji:'🔥',minPts:100,maxPts:300, color:'var(--gold)',   cls:'tier-2', minR:800,  maxR:1400},
+  {id:3,name:'Advanced',    emoji:'⚔️',minPts:300,maxPts:600, color:'var(--warn)',   cls:'tier-3', minR:1400, maxR:1700},
+  {id:4,name:'Expert',      emoji:'👑',minPts:600,maxPts:Infinity,color:'var(--danger)',cls:'tier-4',minR:1700,maxR:9999},
+];
+function getTier(pts){for(let i=TIERS.length-1;i>=0;i--)if(pts>=TIERS[i].minPts)return TIERS[i];return TIERS[0]}
+
+// ══════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════
+let currentUser=null, studentProfile=null, userPoints=0;
+let gameState=null, puzzlePool=[], usedIds=new Set(), puzzleReady=false;
+let lbData=[], lbFilter='all', knownCities=new Set();
+let savePtsTimeout=null;
+
+// ══════════════════════════════════════════
+//  SCREEN HELPERS
+// ══════════════════════════════════════════
+const $=id=>document.getElementById(id);
+function hideEl(id){$(id).style.display='none'}
+function showEl(id,flex=false){$(id).style.display=flex?'flex':'block'}
+
+// ══════════════════════════════════════════
+//  AUTH
+// ══════════════════════════════════════════
+async function signInWithGoogle(){
+  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
+  if(error)notif('Login failed: '+error.message,'error');
+}
+
+async function signOut(){await sb.auth.signOut();location.reload()}
+
+async function initAuth(){
+  const{data:{session}}=await sb.auth.getSession();
+  if(session?.user) await onSignedIn(session.user);
+  else showLogin();
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    if(event==='SIGNED_IN'&&session?.user)await onSignedIn(session.user);
+  });
+}
+
+async function onSignedIn(user){
+  currentUser=user;
+  const{data,error}=await sb.from('students').select('*').eq('id',user.id).single();
+  if(data){studentProfile=data;userPoints=data.points||0;showApp()}
+  else{
+    const meta=user.user_metadata||{};
+    $('profile-name').value=meta.full_name||meta.name||'';
+    showProfileSetup();
+  }
+}
+
+async function saveProfile(){
+  const btn=$('save-profile-btn');
+  const name=$('profile-name').value.trim();
+  const city=$('profile-city').value.trim();
+  const school=$('profile-school').value.trim();
+  if(!name||!city||!school){notif('Please fill in all fields','error');return}
+  btn.disabled=true;btn.textContent='Saving…';
+  const meta=currentUser.user_metadata||{};
+  const{error}=await sb.from('students').insert({
+    id:currentUser.id,name,email:currentUser.email,
+    avatar_url:meta.avatar_url||meta.picture||null,
+    city,school,points:0,streak:0,last_played:null
+  });
+  if(error){notif('Error: '+error.message,'error');btn.disabled=false;btn.textContent='Save & Start Playing →';return}
+  studentProfile={id:currentUser.id,name,city,school,points:0,streak:0};
+  userPoints=0;showApp();
+}
+
+// ══════════════════════════════════════════
+//  SCREENS
+// ══════════════════════════════════════════
+function showLogin(){hideEl('loading-screen');showEl('login-screen',true)}
+function showProfileSetup(){hideEl('loading-screen');hideEl('login-screen');showEl('profile-screen',true)}
+function showApp(){
+  hideEl('loading-screen');hideEl('login-screen');hideEl('profile-screen');showEl('app');
+  const p=studentProfile;
+  $('user-display-name').textContent=p.name.split(' ')[0];
+  $('user-avatar-ph').textContent=p.name[0].toUpperCase();
+  $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';
+  $('your-pts-display').textContent=userPoints.toLocaleString();
+  updateUI();loadLeaderboard();updateStreak();
+}
+
+// ══════════════════════════════════════════
+//  STREAK
+// ══════════════════════════════════════════
+async function updateStreak(){
+  if(!studentProfile)return;
+  const today=new Date().toISOString().slice(0,10);
+  if(studentProfile.last_played===today)return;
+  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
+  const newStreak=studentProfile.last_played===yesterday?(studentProfile.streak||0)+1:1;
+  await sb.from('students').update({last_played:today,streak:newStreak}).eq('id',currentUser.id);
+  studentProfile.last_played=today;studentProfile.streak=newStreak;
+}
+
+// ══════════════════════════════════════════
+//  LEADERBOARD
+// ══════════════════════════════════════════
+async function loadLeaderboard(){
+  $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">Loading…</td></tr>';
+  const{data,error}=await sb.from('students').select('id,name,city,school,points,streak,avatar_url').order('points',{ascending:false}).limit(50);
+  if(error||!data){$('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">Could not load leaderboard.</td></tr>';return}
+  lbData=data;
+  // Dynamic city filters
+  const cities=[...new Set(data.map(d=>d.city).filter(Boolean))].sort();
+  const cf=$('city-filters');
+  cities.forEach(city=>{
+    if(knownCities.has(city))return;
+    knownCities.add(city);
+    const b=document.createElement('button');
+    b.className='filter-btn';b.textContent=city;
+    b.onclick=()=>filterLB(city,b);cf.appendChild(b);
+  });
+  const n=data.length;
+  $('lb-subtitle').textContent=n+' student'+(n!==1?'s':'')+' ranked • just now';
+  renderLB(lbFilter==='all'?lbData:lbData.filter(d=>d.city===lbFilter));
+}
+
+function filterLB(filter,btn){
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');lbFilter=filter;
+  renderLB(filter==='all'?lbData:lbData.filter(d=>d.city===filter));
+}
+
+const AV_COLORS=['#4af0b0','#f0c040','#f08040','#c040f0','#40b0f0','#f04070','#70f040','#40d0f0'];
+function avColor(name){let h=0;for(const c of name)h=(h*31+c.charCodeAt(0))%AV_COLORS.length;return AV_COLORS[h]}
+function avHTML(d,size=30){
+  if(d.avatar_url)return`<img src="${d.avatar_url}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover">`;
+  const c=avColor(d.name||'?');
+  return`<div style="width:${size}px;height:${size}px;border-radius:50%;background:linear-gradient(135deg,${c},${c}99);display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*.4)}px;font-weight:700;color:#000">${(d.name||'?')[0].toUpperCase()}</div>`;
+}
+
+function renderLB(data){
+  if(!data.length){
+    $('podium').innerHTML='<div class="lb-empty">No students yet — be the first! 🏆</div>';
+    $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">No students found.</td></tr>';return;
+  }
+  // Podium
+  const podium=$('podium');
+  const order=[1,0,2],cls=['silver','gold','bronze'],medals=['🥈','🥇','🥉'];
+  podium.innerHTML='';
+  order.forEach((i,pos)=>{
+    if(!data[i])return;
+    const d=data[i],card=document.createElement('div');
+    card.className='podium-card '+cls[pos];
+    card.innerHTML=`<div class="podium-rank">${medals[pos]}</div><div class="podium-avatar">${avHTML(d,48)}</div><div class="podium-name">${d.name}</div><div class="podium-school">${d.school||'—'}</div><div class="podium-pts">${(d.points||0).toLocaleString()}</div>`;
+    podium.appendChild(card);
+  });
+  // Table
+  const tbody=$('lb-tbody');tbody.innerHTML='';
+  data.forEach((d,i)=>{
+    const isMe=currentUser&&d.id===currentUser.id;
+    const tr=document.createElement('tr');
+    if(isMe)tr.className='my-row';
+    tr.innerHTML=`<td class="rank-cell ${i<3?'top':''}">${i+1}</td><td><div class="student-cell"><div class="st-avatar">${avHTML(d,30)}</div><div><div class="st-name">${d.name}${isMe?' <span style="font-size:10px;color:var(--accent)">(you)</span>':''}</div><div class="st-city">${d.city||'—'}</div></div></div></td><td class="school-cell">${d.school||'—'}</td><td class="pts-cell">${(d.points||0).toLocaleString()}</td><td class="streak-cell"><span class="streak-badge">🔥 ${d.streak||0}d</span></td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ══════════════════════════════════════════
+//  PUZZLES FROM SUPABASE
+// ══════════════════════════════════════════
+async function fetchPuzzlesForTier(tier){
+  const{data,error}=await sb.from('puzzles').select('id,fen,moves,rating,themes,game_url').gte('rating',tier.minR).lt('rating',tier.maxR).order('popularity',{ascending:false}).limit(30);
+  if(error||!data?.length)return[];
+  return data;
+}
+
+async function pickPuzzle(){
+  const tier=getTier(userPoints);
+  let pool=puzzlePool.filter(p=>!usedIds.has(p.id));
+  if(!pool.length){puzzlePool=await fetchPuzzlesForTier(tier);usedIds.clear();pool=puzzlePool}
+  if(!pool.length)return null;
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+
+async function loadNextPuzzle(){
+  resetStatus();$('puzzle-id-label').textContent='Loading…';
+  const pz=await pickPuzzle();
+  if(!pz){notif('No puzzles found in Supabase','error');return}
+  loadPuzzle(pz);
+}
+
+// ══════════════════════════════════════════
+//  CHESS ENGINE
+// ══════════════════════════════════════════
+const PU={K:'♔',Q:'♕',R:'♖',B:'♗',N:'♘',P:'♙',k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
+function fenTo(fen){const b=Array(64).fill(null);let i=0;for(const ch of fen.split(' ')[0]){if(ch==='/')continue;if(isNaN(ch))b[i++]=ch;else i+=+ch}return b}
+function sn(i){return'abcdefgh'[i%8]+(8-Math.floor(i/8))}
+function si(n){return(8-+n[1])*8+n.charCodeAt(0)-97}
+function applyMv(pieces,mv){
+  const from=si(mv.slice(0,2)),to=si(mv.slice(2,4)),promo=mv[4];
+  const np=[...pieces];let pc=np[from];
+  if(promo)pc=pc===pc.toUpperCase()?promo.toUpperCase():promo;
+  np[to]=pc;np[from]=null;
+  if((pc==='P'||pc==='p')&&from%8!==to%8&&!np[to])np[pc==='P'?to+8:to-8]=null;
+  if(pc==='K'&&Math.abs(from-to)===2){if(to===6){np[5]='R';np[7]=null}if(to===2){np[3]='R';np[0]=null}}
+  if(pc==='k'&&Math.abs(from-to)===2){if(to===62){np[61]='r';np[63]=null}if(to===58){np[59]='r';np[56]=null}}
+  return np;
+}
+function legal(pieces,from,toMove){
+  const pc=pieces[from];if(!pc)return[];
+  const isW=pc===pc.toUpperCase();if((toMove==='w')!==isW)return[];
+  const dests=[],f=from%8,r=Math.floor(from/8),p=pc.toLowerCase();
+  const tryAdd=idx=>{if(idx<0||idx>63)return;const t=pieces[idx];if(t&&(t===t.toUpperCase())===isW)return;dests.push(idx)};
+  if(p==='p'){const dir=isW?-1:1,st=isW?6:1,fwd=from+dir*8;if(!pieces[fwd]){dests.push(fwd);if(r===st&&!pieces[from+dir*16])dests.push(from+dir*16)}
+    [-1,1].forEach(df=>{const cap=from+dir*8+df;if(f+df>=0&&f+df<8&&pieces[cap]&&(pieces[cap]===pieces[cap].toUpperCase())!==isW)dests.push(cap)});return dests}
+  const dirs={r:[[0,1],[0,-1],[1,0],[-1,0]],b:[[1,1],[1,-1],[-1,1],[-1,-1]],q:[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]],n:[[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]],k:[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]};
+  if(p==='n'||p==='k'){for(const[dr,df]of dirs[p]){const nr=r+dr,nf=f+df;if(nr>=0&&nr<8&&nf>=0&&nf<8)tryAdd(nr*8+nf)}return dests}
+  for(const[dr,df]of dirs[p]){let nr=r+dr,nf=f+df;while(nr>=0&&nr<8&&nf>=0&&nf<8){const idx=nr*8+nf,t=pieces[idx];if(t){if((t===t.toUpperCase())!==isW)dests.push(idx);break}dests.push(idx);nr+=dr;nf+=df}}
+  return dests;
+}
+
+// ══════════════════════════════════════════
+//  BOARD RENDER
+// ══════════════════════════════════════════
+function renderBoard(pieces,sel=null,hints=[],lastMv=null,wrong=[]){
+  const board=$('board');board.innerHTML='';
+  for(let i=0;i<64;i++){
+    const r=Math.floor(i/8),f=i%8,sq=document.createElement('div');
+    sq.className='sq '+((r+f)%2===0?'light':'dark');
+    if(sel===i)sq.classList.add('selected');
+    if(hints.includes(i))sq.classList.add('hint');
+    if(lastMv&&(si(lastMv.slice(0,2))===i||si(lastMv.slice(2,4))===i))sq.classList.add('last-move');
+    if(wrong.includes(i))sq.classList.add('wrong');
+    if(f===7){const rc=document.createElement('span');rc.className='coord coord-rank';rc.textContent=8-r;sq.appendChild(rc)}
+    if(r===7){const fc=document.createElement('span');fc.className='coord coord-file';fc.textContent='abcdefgh'[f];sq.appendChild(fc)}
+    if(pieces[i]){const pe=document.createElement('span');pe.textContent=PU[pieces[i]];pe.style.cssText=`color:${pieces[i]===pieces[i].toUpperCase()?'#fffef0':'#1a1a1a'};text-shadow:${pieces[i]===pieces[i].toUpperCase()?'0 1px 3px rgba(0,0,0,.8)':'0 1px 2px rgba(255,255,255,.3)'};font-size:inherit;line-height:1;z-index:1;position:relative`;sq.appendChild(pe)}
+    sq.addEventListener('click',()=>onSq(i));board.appendChild(sq);
+  }
+}
+
+// ══════════════════════════════════════════
+//  PUZZLE LOGIC
+// ══════════════════════════════════════════
+function loadPuzzle(pz){
+  const tm=pz.fen.split(' ')[1];
+  usedIds.add(pz.id);
+  const moves=Array.isArray(pz.moves)?pz.moves:pz.moves.split(' ');
+  gameState={pz,pieces:fenTo(pz.fen),moves,idx:0,sel:null,toMove:tm,solved:false,lastMv:null};
+  $('puzzle-id-label').textContent='ID: '+pz.id;
+  $('lichess-link').href=pz.game_url||'#';
+  const pct=Math.min(100,Math.max(5,((pz.rating-300)/1700)*100));
+  $('rating-fill').style.width=pct+'%';
+  $('puzzle-rating-label').textContent=pz.rating+' Elo';
+  const tags=$('theme-tags');tags.innerHTML='';
+  (pz.themes||'').split(' ').filter(Boolean).forEach(t=>{const el=document.createElement('span');el.className='theme-tag';el.textContent=t;tags.appendChild(el)});
+  setToMove(tm);renderBoard(gameState.pieces);resetStatus();updateUI();
+}
+
+function setToMove(tm){
+  $('to-move-dot').className='to-move-dot '+(tm==='w'?'white':'black');
+  $('to-move-text').textContent=(tm==='w'?'White':'Black')+' to move';
+}
+
+function onSq(idx){
+  if(!gameState||gameState.solved)return;
+  if(gameState.sel===null){
+    const pc=gameState.pieces[idx];if(!pc)return;
+    if((gameState.toMove==='w')!==(pc===pc.toUpperCase()))return;
+    gameState.sel=idx;renderBoard(gameState.pieces,idx,legal(gameState.pieces,idx,gameState.toMove),gameState.lastMv);
+  } else {
+    const from=gameState.sel;
+    if(from===idx){gameState.sel=null;renderBoard(gameState.pieces,null,[],gameState.lastMv);return}
+    const pc=gameState.pieces[idx];
+    if(pc&&(gameState.toMove==='w')===(pc===pc.toUpperCase())){gameState.sel=idx;renderBoard(gameState.pieces,idx,legal(gameState.pieces,idx,gameState.toMove),gameState.lastMv);return}
+    gameState.sel=null;doMove(from,idx);
+  }
+}
+
+function doMove(from,to){
+  const expFull=gameState.moves[gameState.idx],exp=expFull.slice(0,4),mv=sn(from)+sn(to);
+  if(mv===exp){
+    gameState.pieces=applyMv(gameState.pieces,expFull);gameState.lastMv=expFull;
+    gameState.toMove=gameState.toMove==='w'?'b':'w';gameState.idx++;
+    if(gameState.idx>=gameState.moves.length){gameState.solved=true;renderBoard(gameState.pieces,null,[],gameState.lastMv);addPts(10);showSolved()}
+    else{
+      renderBoard(gameState.pieces,null,[],gameState.lastMv);setToMove(gameState.toMove);
+      setTimeout(()=>{
+        if(!gameState)return;
+        const opp=gameState.moves[gameState.idx];
+        gameState.pieces=applyMv(gameState.pieces,opp);gameState.lastMv=opp;
+        gameState.toMove=gameState.toMove==='w'?'b':'w';gameState.idx++;
+        setToMove(gameState.toMove);
+        if(gameState.idx>=gameState.moves.length){gameState.solved=true;renderBoard(gameState.pieces,null,[],gameState.lastMv);addPts(10);showSolved()}
+        else renderBoard(gameState.pieces,null,[],gameState.lastMv);
+      },550);
+    }
+  } else {
+    addPts(-2);
+    const board=$('board');board.classList.add('shake');
+    renderBoard(gameState.pieces,null,[],gameState.lastMv,[from,to]);
+    setTimeout(()=>{board.classList.remove('shake');renderBoard(gameState.pieces,null,[],gameState.lastMv)},400);
+    notif('❌ Not the best move — try again!','error');
+  }
+}
+
+// ══════════════════════════════════════════
+//  POINTS → SUPABASE
+// ══════════════════════════════════════════
+function addPts(delta){
+  const oldTier=getTier(userPoints);
+  userPoints=Math.max(0,userPoints+delta);
+  const newTier=getTier(userPoints);
+  $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';
+  $('your-pts-display').textContent=userPoints.toLocaleString();
+  if(delta>0)ptsPopup('+'+delta);
+  updateUI();
+  if(newTier.id>oldTier.id)tierUp(newTier);
+  clearTimeout(savePtsTimeout);
+  savePtsTimeout=setTimeout(savePoints,1500);
+}
+
+async function savePoints(){
+  if(!currentUser||!studentProfile)return;
+  setSaving(true);
+  const today=new Date().toISOString().slice(0,10);
+  const{error}=await sb.from('students').update({points:userPoints,last_played:today}).eq('id',currentUser.id);
+  setSaving(false);
+  if(error)notif('Could not save points','error');
+  else studentProfile.points=userPoints;
+}
+
+function setSaving(on){
+  const el=$('saving-indicator');
+  el.textContent=on?'💾 Saving…':'✓ Saved to your account';
+  if(!on)setTimeout(()=>el.textContent='',2500);
+}
+
+// ══════════════════════════════════════════
+//  UI HELPERS
+// ══════════════════════════════════════════
+function ptsPopup(val){const p=$('pts-popup');$('pts-popup-val').textContent=val;p.className='pts-popup show';setTimeout(()=>p.className='pts-popup',1300)}
+function tierUp(tier){
+  const b=$('upgrade-banner');
+  b.textContent='🎉 Tier Up! You\'re now '+tier.emoji+' '+tier.name+' — harder puzzles unlocked!';
+  b.className='upgrade-banner show';setTimeout(()=>b.className='upgrade-banner',3500);
+  puzzlePool=[];usedIds.clear();
+}
+function notif(msg,type='success'){const el=$('notif');el.textContent=msg;el.className='notif '+type+' show';setTimeout(()=>el.className='notif',2500)}
+function showSolved(){
+  $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">✅</div><div class="status-title">Puzzle Solved!</div><div class="status-msg">+10 points saved to your account.</div><button class="btn btn-gold" onclick="nextPuzzle()" style="margin-top:6px;width:auto;padding:10px 26px">Next Puzzle ▶</button></div>`;
+  notif('🎉 Correct! +10 points','success');
+}
+function resetStatus(){
+  $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">🧩</div><div class="status-title">Find the best move</div><div class="status-msg">Click a piece, then click its destination.</div><div class="pts-hint">Correct → <strong>+10 pts</strong> &nbsp;|&nbsp; Wrong → <span class="neg">−2 pts</span></div></div>`;
+}
+function nextPuzzle(){loadNextPuzzle()}
+
+function updateUI(){
+  const tier=getTier(userPoints);
+  $('tier-pill').textContent=tier.emoji+' '+tier.name;
+  $('tier-pill').className='tier-pill '+tier.cls;
+  $('xp-tier-name').textContent=tier.name;
+  $('xp-fill').style.background=tier.color;
+  const xf=$('xp-fill'),xn=$('xp-next-label');
+  if(tier.maxPts===Infinity){xf.style.width='100%';xn.textContent='Max tier 👑'}
+  else{xf.style.width=Math.min(100,((userPoints-tier.minPts)/(tier.maxPts-tier.minPts))*100)+'%';xn.textContent=(tier.maxPts-userPoints)+' pts to next tier'}
+  const ladder=$('ladder-rows');ladder.innerHTML='';
+  TIERS.forEach(t=>{
+    const row=document.createElement('div');row.className='ladder-row'+(t.id===getTier(userPoints).id?' active':'');
+    const pct=t.id<getTier(userPoints).id?100:t.id===getTier(userPoints).id&&t.maxPts!==Infinity?Math.max(0,((userPoints-t.minPts)/(t.maxPts-t.minPts))*100):0;
+    row.innerHTML=`<div class="ladder-dot" style="background:${t.color}"></div><div class="ladder-label">${t.emoji} ${t.name}</div><div class="ladder-bar"><div class="ladder-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="ladder-pts">${t.minPts}–${t.maxPts===Infinity?'∞':t.maxPts}</div>`;
+    ladder.appendChild(row);
+  });
+}
+
+function switchTab(tab,el){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');$('page-'+tab).classList.add('active');
+  if(tab==='puzzles'&&!puzzleReady){puzzleReady=true;loadNextPuzzle()}
+  if(tab==='leaderboard')loadLeaderboard();
+}
+
+// ══════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════
+initAuth();
+</script>
+</body>
+</html>
