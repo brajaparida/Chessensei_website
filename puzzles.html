@@ -124,20 +124,26 @@
   .guest-banner{background:linear-gradient(135deg,rgba(74,240,176,.1),rgba(240,192,64,.08));border:1px solid rgba(74,240,176,.2);border-radius:12px;padding:12px 18px;display:none;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
   .guest-banner-text{font-size:13px;color:var(--silver)}.guest-banner-text strong{color:var(--accent)}
   .btn-signin-small{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
-  .puzzle-layout{display:grid;grid-template-columns:min(460px,100%) 1fr;gap:24px;align-items:start}
-  .puzzle-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3)}
-  .puzzle-panel-header{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+  /* info panel LEFT, board RIGHT, board bigger */
+  .puzzle-layout{display:grid;grid-template-columns:280px 1fr;gap:24px;align-items:start}
+  .puzzle-info-panel{order:1}
+  .puzzle-panel{order:2;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:visible;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+  .puzzle-panel-header{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0}
   .puzzle-panel-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
   .puzzle-id{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
-  #board-wrap{padding:13px;user-select:none;background:#1a2a3a;border-radius:0 0 16px 16px}
+  /* Board outer with external coords */
+  .board-outer{padding:13px;user-select:none;background:#1a2a3a;border-radius:0 0 16px 16px}
+  .board-with-coords{display:flex;align-items:stretch}
+  .rank-labels{display:flex;flex-direction:column;padding-right:4px;flex-shrink:0;width:18px}
+  .rank-label{font-size:10px;font-weight:700;font-family:'DM Mono',monospace;color:rgba(180,200,220,.7);flex:1;display:flex;align-items:center;justify-content:flex-end}
+  .board-and-files{display:flex;flex-direction:column;flex:1;min-width:0}
+  .file-labels{display:flex;padding-top:4px}
+  .file-label{font-size:10px;font-weight:700;font-family:'DM Mono',monospace;color:rgba(180,200,220,.7);flex:1;text-align:center}
   #board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden;border:3px solid #2a3f52;box-shadow:0 8px 32px rgba(0,0,0,.5)}
   .sq{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;aspect-ratio:1;transition:background .1s}
   .sq.light{background:var(--light-sq)}.sq.dark{background:var(--dark-sq)}
   .sq.selected{background:var(--selected)!important}.sq.hint{background:var(--highlight)!important}
   .sq.wrong{background:rgba(240,80,80,.55)!important}
-  .coord{position:absolute;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;z-index:2}
-  .coord-file{bottom:2px;right:3px;color:var(--dark-sq)}.sq.dark .coord-file{color:var(--light-sq)}
-  .coord-rank{top:2px;left:3px;color:var(--dark-sq)}.sq.dark .coord-rank{color:var(--light-sq)}
   .to-move{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding:7px 11px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--silver)}
   .to-move-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
   .to-move-dot.white{background:#f8f8f0}.to-move-dot.black{background:#202020}
@@ -185,7 +191,7 @@
   .notif.show{transform:translateX(0)}.notif.success{border-color:var(--accent)}.notif.error{border-color:var(--danger)}
   .upgrade-banner{position:fixed;bottom:-60px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border-radius:14px;padding:12px 24px;font-size:14px;font-weight:700;z-index:300;transition:bottom .4s cubic-bezier(.34,1.56,.64,1);white-space:nowrap}
   .upgrade-banner.show{bottom:24px}
-  @media(max-width:860px){.puzzle-layout{grid-template-columns:1fr}header{padding:10px 14px}main{padding:16px 10px}.nav-tabs{padding:8px 10px 0}}
+  @media(max-width:960px){.puzzle-layout{grid-template-columns:1fr}header{padding:10px 14px}main{padding:16px 10px}.nav-tabs{padding:8px 10px 0}}
 </style>
 </head>
 <body>
@@ -283,12 +289,18 @@
             <div class="puzzle-panel-title">Solve the Puzzle</div>
             <div class="puzzle-id" id="puzzle-id-label">Loading…</div>
           </div>
-          <div id="board-wrap">
+          <div class="board-outer">
             <div class="to-move" id="to-move-indicator">
               <div class="to-move-dot white" id="to-move-dot"></div>
               <span id="to-move-text">White to move</span>
             </div>
-            <div id="board"></div>
+            <div class="board-with-coords">
+              <div class="rank-labels" id="rank-labels"></div>
+              <div class="board-and-files">
+                <div id="board"></div>
+                <div class="file-labels" id="file-labels"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="puzzle-info-panel">
@@ -320,7 +332,6 @@
           </div>
           <div class="info-card">
             <button class="btn btn-gold" onclick="nextPuzzle()">▶ Next Puzzle</button>
-            <a class="btn btn-outline" id="lichess-link" href="#" target="_blank">🔗 View on Lichess</a>
           </div>
         </div>
       </div>
@@ -675,12 +686,23 @@ function legal(pieces,from,toMove){
 }
 
 // ══════════════════════════════════════════
-//  BOARD RENDER
+//  BOARD RENDER — flip + external coords
 // ══════════════════════════════════════════
 function renderBoard(pieces,sel=null,hints=[],lastMv=null,wrong=[]){
   const board=$('board');board.innerHTML='';
   const lastSqs=lastMv?[si(lastMv.slice(0,2)),si(lastMv.slice(2,4))]:[];
-  for(let i=0;i<64;i++){
+  // Flip board when black to move so active player is always at bottom
+  const flipped=gameState&&gameState.toMove==='b';
+
+  // External rank labels (left)
+  const rl=$('rank-labels');
+  if(rl){rl.innerHTML='';for(let r=0;r<8;r++){const el=document.createElement('div');el.className='rank-label';el.textContent=flipped?r+1:8-r;rl.appendChild(el);}}
+  // External file labels (bottom)
+  const fl=$('file-labels');
+  if(fl){fl.innerHTML='';const files=flipped?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];files.forEach(f=>{const el=document.createElement('div');el.className='file-label';el.textContent=f;fl.appendChild(el);});}
+
+  for(let vi=0;vi<64;vi++){
+    const i=flipped?(63-vi):vi;
     const r=Math.floor(i/8),f=i%8,isLight=(r+f)%2===0;
     const sq=document.createElement('div');
     sq.className='sq '+(isLight?'light':'dark');
@@ -688,8 +710,6 @@ function renderBoard(pieces,sel=null,hints=[],lastMv=null,wrong=[]){
     else if(hints.includes(i))sq.classList.add('hint');
     else if(lastSqs.includes(i))sq.style.background=isLight?'rgba(100,160,255,.45)':'rgba(60,120,220,.55)';
     if(wrong.includes(i))sq.classList.add('wrong');
-    if(f===7){const rc=document.createElement('span');rc.className='coord coord-rank';rc.textContent=8-r;sq.appendChild(rc)}
-    if(r===7){const fc=document.createElement('span');fc.className='coord coord-file';fc.textContent='abcdefgh'[f];sq.appendChild(fc)}
     if(pieces[i]){
       const img=document.createElement('img');
       img.src=PIECE_URL(pieces[i]);
@@ -713,7 +733,7 @@ function loadPuzzle(pz){
   const moves=Array.isArray(pz.moves)?pz.moves:pz.moves.split(' ');
   gameState={pz,pieces:fenTo(pz.fen),moves,idx:0,sel:null,toMove:tm,solved:false,lastMv:null,wrongAttempts:0,ptsPenalised:false};
   $('puzzle-id-label').textContent='ID: '+pz.id;
-  $('lichess-link').href=pz.game_url||'#';
+  // puzzle link removed
   const pct=Math.min(100,Math.max(5,((pz.rating-300)/1700)*100));
   $('rating-fill').style.width=pct+'%';
   $('puzzle-rating-label').textContent=pz.rating+' Elo';
@@ -787,7 +807,7 @@ async function showAnswer(){
   const btn=$('show-answer-btn');if(btn)btn.remove();
   const playNext=idx=>{
     if(idx>=gameState.moves.length){
-      $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">💡</div><div class="status-title">Answer Revealed</div><div class="status-msg">Study the moves and try the next one!</div><button class="btn btn-gold" onclick="nextPuzzle()" style="margin-top:6px;width:auto;padding:10px 26px">Next Puzzle ▶</button></div>`;
+      $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">💡</div><div class="status-title">Answer Revealed</div><div class="status-msg">Study the moves. Click Next Puzzle below!</div></div>`;
       notif('💡 Answer shown — 0 pts','error');return;
     }
     const mv=gameState.moves[idx];
@@ -816,7 +836,7 @@ function ptsPopup(val){const p=$('pts-popup');$('pts-popup-val').textContent=val
 function tierUp(tier){const b=$('upgrade-banner');b.textContent='🎉 Tier Up! '+tier.emoji+' '+tier.name+' — harder puzzles unlocked!';b.className='upgrade-banner show';setTimeout(()=>b.className='upgrade-banner',3500);puzzlePool=[];usedIds.clear()}
 function notif(msg,type='success'){const el=$('notif');el.textContent=msg;el.className='notif '+type+' show';setTimeout(()=>el.className='notif',2500)}
 function showSolved(){
-  $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">✅</div><div class="status-title">Puzzle Solved!</div><div class="status-msg">+10 points saved to your account.</div><button class="btn btn-gold" onclick="nextPuzzle()" style="margin-top:6px;width:auto;padding:10px 26px">Next Puzzle ▶</button></div>`;
+  $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">✅</div><div class="status-title">Puzzle Solved!</div><div class="status-msg">+10 points saved. Click Next Puzzle below!</div></div>`;
   notif('🎉 Correct! +10 points','success');
 }
 function resetStatus(){
