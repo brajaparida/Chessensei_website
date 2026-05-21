@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ChessSensei — Puzzle Master</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<!-- Supabase (for puzzles only) -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root{
@@ -24,17 +27,18 @@
   .loading-spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
 
-  /* LOGIN */
-  #login-screen{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:998}
-  .login-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:48px 40px;text-align:center;max-width:400px;width:90%}
-  .login-icon{width:64px;height:64px;background:var(--gold);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);display:flex;align-items:center;justify-content:center;font-size:28px;color:#000;font-weight:900;margin:0 auto 20px}
-  .login-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:900;margin-bottom:6px}
-  .login-title span{color:var(--gold)}
-  .login-sub{color:var(--muted);font-size:14px;margin-bottom:32px;line-height:1.6}
-  .btn-google{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px;border-radius:12px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif}
-  .btn-google:hover{border-color:var(--accent);background:rgba(74,240,176,.06)}
-  .login-perks{display:flex;flex-direction:column;gap:8px;margin-top:24px;text-align:left}
+  /* LOGIN MODAL */
+  #login-modal{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:600;padding:20px}
+  #login-modal.show{display:flex}
+  .modal-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 36px;text-align:center;max-width:380px;width:100%;position:relative}
+  .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+  .modal-close:hover{color:var(--text)}
+  .modal-icon{font-size:40px;margin-bottom:12px}
+  .modal-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin-bottom:6px}
+  .modal-sub{color:var(--muted);font-size:13px;margin-bottom:24px;line-height:1.6}
+  .login-perks{display:flex;flex-direction:column;gap:8px;margin-top:20px;text-align:left}
   .perk{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted)}
+  #google-signin-btn{margin:0 auto}
 
   /* PROFILE SETUP */
   #profile-screen{position:fixed;inset:0;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;z-index:997;padding:20px}
@@ -46,8 +50,7 @@
   .form-group input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s}
   .form-group input:focus{border-color:var(--accent)}
   .btn-save{width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:opacity .2s}
-  .btn-save:hover{opacity:.85}
-  .btn-save:disabled{opacity:.5;cursor:not-allowed}
+  .btn-save:hover{opacity:.85}.btn-save:disabled{opacity:.5;cursor:not-allowed}
 
   /* HEADER */
   header{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#14141e,transparent);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
@@ -56,17 +59,19 @@
   .logo-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
   .logo-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
   .header-right{display:flex;align-items:center;gap:10px}
-  .pts-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700;font-family:'DM Mono',monospace}
-  .tier-pill{display:flex;align-items:center;gap:5px;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:1px solid;transition:all .4s}
+  .pts-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700;font-family:'DM Mono',monospace;display:none}
+  .tier-pill{display:none;align-items:center;gap:5px;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:1px solid;transition:all .4s}
   .tier-1{background:rgba(74,240,176,.1);border-color:var(--accent);color:var(--accent)}
   .tier-2{background:rgba(240,192,64,.1);border-color:var(--gold);color:var(--gold)}
   .tier-3{background:rgba(240,160,48,.1);border-color:var(--warn);color:var(--warn)}
   .tier-4{background:rgba(240,80,80,.1);border-color:var(--danger);color:var(--danger)}
-  .user-pill{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:24px;padding:5px 12px 5px 5px}
+  .user-pill{display:none;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--border);border-radius:24px;padding:5px 12px 5px 5px}
+  .user-avatar-img{width:26px;height:26px;border-radius:50%;object-fit:cover}
   .user-avatar-ph{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--gold));display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#000}
   .user-name{font-size:12px;font-weight:500}
   .signout-btn{font-size:11px;color:var(--muted);background:none;border:none;cursor:pointer;padding:2px 4px;font-family:'DM Sans',sans-serif}
   .signout-btn:hover{color:var(--danger)}
+  .btn-signin-header{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
 
   /* TABS */
   .nav-tabs{display:flex;gap:4px;padding:10px 28px 0;border-bottom:1px solid var(--border)}
@@ -116,6 +121,9 @@
   .lb-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
 
   /* PUZZLE */
+  .guest-banner{background:linear-gradient(135deg,rgba(74,240,176,.1),rgba(240,192,64,.08));border:1px solid rgba(74,240,176,.2);border-radius:12px;padding:12px 18px;display:none;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .guest-banner-text{font-size:13px;color:var(--silver)}.guest-banner-text strong{color:var(--accent)}
+  .btn-signin-small{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
   .puzzle-layout{display:grid;grid-template-columns:min(460px,100%) 1fr;gap:24px;align-items:start}
   .puzzle-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.3)}
   .puzzle-panel-header{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
@@ -125,8 +133,7 @@
   #board{display:grid;grid-template-columns:repeat(8,1fr);width:100%;aspect-ratio:1;border-radius:6px;overflow:hidden;border:3px solid #2a3f52;box-shadow:0 8px 32px rgba(0,0,0,.5)}
   .sq{display:flex;align-items:center;justify-content:center;cursor:pointer;position:relative;aspect-ratio:1;transition:background .1s}
   .sq.light{background:var(--light-sq)}.sq.dark{background:var(--dark-sq)}
-  .sq.selected{background:var(--selected)!important}
-  .sq.hint{background:var(--highlight)!important}
+  .sq.selected{background:var(--selected)!important}.sq.hint{background:var(--highlight)!important}
   .sq.wrong{background:rgba(240,80,80,.55)!important}
   .coord{position:absolute;font-size:9px;font-weight:700;font-family:'DM Mono',monospace;line-height:1;z-index:2}
   .coord-file{bottom:2px;right:3px;color:var(--dark-sq)}.sq.dark .coord-file{color:var(--light-sq)}
@@ -167,26 +174,6 @@
   .btn-gold:hover{opacity:.85;transform:translateY(-1px)}
   .btn-outline{background:transparent;color:var(--text);border:1px solid var(--border)}
   .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-  .saving-indicator{font-size:11px;color:var(--muted);text-align:center;margin-top:6px;min-height:16px}
-
-  /* LOGIN MODAL (guest tries to solve) */
-  #login-modal{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;z-index:600;padding:20px}
-  #login-modal.show{display:flex}
-  .modal-card{background:var(--surface);border:1px solid var(--border);border-radius:24px;padding:40px 36px;text-align:center;max-width:380px;width:100%;position:relative}
-  .modal-close{position:absolute;top:14px;right:16px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;line-height:1}
-  .modal-close:hover{color:var(--text)}
-  .modal-icon{font-size:40px;margin-bottom:12px}
-  .modal-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin-bottom:6px}
-  .modal-sub{color:var(--muted);font-size:13px;margin-bottom:24px;line-height:1.6}
-
-  /* GUEST BANNER on puzzle page */
-  .guest-banner{background:linear-gradient(135deg,rgba(74,240,176,.1),rgba(240,192,64,.08));border:1px solid rgba(74,240,176,.2);border-radius:12px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
-  .guest-banner-text{font-size:13px;color:var(--silver)}
-  .guest-banner-text strong{color:var(--accent)}
-  .btn-signin-small{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
-
-  /* Sign in button in header for guests */
-  .btn-signin-header{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
 
   @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
   #board.shake{animation:shake .3s ease}
@@ -209,19 +196,17 @@
   <div class="loading-spinner"></div>
 </div>
 
-<!-- LOGIN -->
-<div id="login-screen">
-  <div class="login-card">
-    <div class="login-icon">♟</div>
-    <div class="login-title">Chess<span>Sensei</span></div>
-    <div class="login-sub">Sign in to track your progress, earn points, and climb the leaderboard.</div>
-    <button class="btn-google" onclick="signInWithGoogle()">
-      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continue with Google
-    </button>
+<!-- LOGIN MODAL -->
+<div id="login-modal">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeLoginModal()">✕</button>
+    <div class="modal-icon">♟</div>
+    <div class="modal-title">Sign in to Play</div>
+    <div class="modal-sub">Sign in with Google to solve puzzles, earn points, and appear on the leaderboard.</div>
+    <div id="google-signin-btn"></div>
     <div class="login-perks">
       <div class="perk"><span>🏆</span><span>Appear on the leaderboard</span></div>
-      <div class="perk"><span>⭐</span><span>Points saved after every puzzle</span></div>
+      <div class="perk"><span>⭐</span><span>Points saved automatically</span></div>
       <div class="perk"><span>🔥</span><span>Track your daily streak</span></div>
     </div>
   </div>
@@ -247,15 +232,13 @@
       <div><div class="logo-text">ChessSensei</div><div class="logo-sub">Puzzle Master</div></div>
     </div>
     <div class="header-right">
-      <div class="tier-pill tier-1" id="tier-pill" style="display:none">⚡ Beginner</div>
-      <div class="pts-badge" id="header-pts" style="display:none">⭐ 0 pts</div>
-      <!-- shown when logged in -->
-      <div class="user-pill" id="user-pill" style="display:none">
+      <div class="tier-pill tier-1" id="tier-pill">⚡ Beginner</div>
+      <div class="pts-badge" id="header-pts">⭐ 0 pts</div>
+      <div class="user-pill" id="user-pill">
         <div class="user-avatar-ph" id="user-avatar-ph"></div>
         <span class="user-name" id="user-display-name">—</span>
         <button class="signout-btn" onclick="signOut()" title="Sign out">↩</button>
       </div>
-      <!-- shown when guest -->
       <button class="btn-signin-header" id="signin-header-btn" onclick="showLoginModal()" style="display:none">Sign in free</button>
     </div>
   </header>
@@ -290,9 +273,8 @@
 
     <!-- PUZZLES -->
     <div id="page-puzzles" class="page">
-      <!-- Guest banner — hidden when logged in -->
-      <div class="guest-banner" id="guest-banner" style="display:none">
-        <div class="guest-banner-text">👀 You're browsing as a guest. <strong>Sign in to save your points</strong> and appear on the leaderboard.</div>
+      <div class="guest-banner" id="guest-banner">
+        <div class="guest-banner-text">👀 Browsing as guest. <strong>Sign in to save your points</strong> and appear on the leaderboard.</div>
         <button class="btn-signin-small" onclick="showLoginModal()">Sign in free →</button>
       </div>
       <div class="puzzle-layout">
@@ -309,12 +291,10 @@
             <div id="board"></div>
           </div>
         </div>
-
         <div class="puzzle-info-panel">
           <div class="info-card" id="puzzle-status-card">
             <div class="puzzle-status"><div class="status-icon">⏳</div><div class="status-title">Loading puzzle…</div></div>
           </div>
-
           <div class="info-card">
             <h3>Your Progress</h3>
             <div class="xp-section">
@@ -323,7 +303,6 @@
             </div>
             <div id="ladder-rows"></div>
           </div>
-
           <div class="info-card">
             <h3>Puzzle Info</h3>
             <div class="meta-row">
@@ -339,11 +318,9 @@
             </div>
             <div><div class="meta-label" style="margin-bottom:6px">Themes</div><div class="theme-tags" id="theme-tags"></div></div>
           </div>
-
           <div class="info-card">
             <button class="btn btn-gold" onclick="nextPuzzle()">▶ Next Puzzle</button>
             <a class="btn btn-outline" id="lichess-link" href="#" target="_blank">🔗 View on Lichess</a>
-            <div class="saving-indicator" id="saving-indicator"></div>
           </div>
         </div>
       </div>
@@ -351,52 +328,27 @@
   </main>
 </div>
 
-<!-- LOGIN MODAL for guests -->
-<div id="login-modal">
-  <div class="modal-card">
-    <button class="modal-close" onclick="closeLoginModal()">✕</button>
-    <div class="modal-icon">♟</div>
-    <div class="modal-title">Sign in to Play</div>
-    <div class="modal-sub">Create a free account to solve puzzles, earn points, and appear on the leaderboard.</div>
-    <button class="btn-google" onclick="signInWithGoogle()">
-      <svg width="20" height="20" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continue with Google
-    </button>
-    <div class="login-perks" style="margin-top:20px">
-      <div class="perk"><span>🏆</span><span>Appear on the leaderboard</span></div>
-      <div class="perk"><span>⭐</span><span>Points saved automatically</span></div>
-      <div class="perk"><span>🔥</span><span>Track your daily streak</span></div>
-    </div>
-  </div>
-</div>
-
 <div class="pts-popup" id="pts-popup"><div class="pts-popup-val" id="pts-popup-val">+10</div><div class="pts-popup-label">Points Earned!</div></div>
 <div class="notif" id="notif"></div>
 <div class="upgrade-banner" id="upgrade-banner"></div>
 
-
 <script>
 // ══════════════════════════════════════════
-//  SUPABASE CONFIG
+//  CONFIG
 // ══════════════════════════════════════════
-const SUPABASE_URL = 'https://zyhqrdtebcreoleyvwza.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_BXtAiKjIqua-Yvu5oGIVDw_oiQMMORX';
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-  auth: {
-    persistSession: true,
-    autoRefreshToken: true,
-    detectSessionInUrl: true,
-    clockSkewInSeconds: 3600  // tolerate up to 1 hour clock difference
-  }
-});
+const GOOGLE_CLIENT_ID = '657780843906-44t088cc4q9soqs6cl7qi2g40i0al52c.apps.googleusercontent.com';
+const APPS_SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbzH2GHmPEbtDesuZ8dKisQ-XSYrX6wK1wgf5UOeh5rbY4yvzhCaJky59qhgu8PhyrYMrQ/exec';
+const SUPABASE_URL     = 'https://zyhqrdtebcreoleyvwza.supabase.co';
+const SUPABASE_KEY     = 'sb_publishable_BXtAiKjIqua-Yvu5oGIVDw_oiQMMORX';
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ══════════════════════════════════════════
 //  TIERS
 // ══════════════════════════════════════════
-const TIERS = [
-  {id:1,name:'Beginner',    emoji:'⚡',minPts:0,  maxPts:100, color:'var(--accent)', cls:'tier-1', minR:0,    maxR:800},
-  {id:2,name:'Intermediate',emoji:'🔥',minPts:100,maxPts:300, color:'var(--gold)',   cls:'tier-2', minR:800,  maxR:1400},
-  {id:3,name:'Advanced',    emoji:'⚔️',minPts:300,maxPts:600, color:'var(--warn)',   cls:'tier-3', minR:1400, maxR:1700},
+const TIERS=[
+  {id:1,name:'Beginner',    emoji:'⚡',minPts:0,  maxPts:100,  color:'var(--accent)',cls:'tier-1',minR:0,   maxR:800},
+  {id:2,name:'Intermediate',emoji:'🔥',minPts:100,maxPts:300,  color:'var(--gold)',  cls:'tier-2',minR:800, maxR:1400},
+  {id:3,name:'Advanced',    emoji:'⚔️',minPts:300,maxPts:600,  color:'var(--warn)',  cls:'tier-3',minR:1400,maxR:1700},
   {id:4,name:'Expert',      emoji:'👑',minPts:600,maxPts:Infinity,color:'var(--danger)',cls:'tier-4',minR:1700,maxR:9999},
 ];
 function getTier(pts){for(let i=TIERS.length-1;i>=0;i--)if(pts>=TIERS[i].minPts)return TIERS[i];return TIERS[0]}
@@ -404,46 +356,123 @@ function getTier(pts){for(let i=TIERS.length-1;i>=0;i--)if(pts>=TIERS[i].minPts)
 // ══════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════
-let currentUser=null, studentProfile=null, userPoints=0;
-let gameState=null, puzzlePool=[], usedIds=new Set(), puzzleReady=false;
-let lbData=[], lbFilter='all', knownCities=new Set();
+let currentUser=null,userPoints=0,studentProfile=null;
+let gameState=null,puzzlePool=[],usedIds=new Set(),puzzleReady=false;
+let lbData=[],lbFilter='all',knownCities=new Set();
 let savePtsTimeout=null;
 
 // ══════════════════════════════════════════
-//  SCREEN HELPERS
+//  HELPERS
 // ══════════════════════════════════════════
 const $=id=>document.getElementById(id);
 function hideEl(id){$(id).style.display='none'}
 function showEl(id,flex=false){$(id).style.display=flex?'flex':'block'}
 
 // ══════════════════════════════════════════
-//  AUTH
+//  GOOGLE IDENTITY LOGIN
 // ══════════════════════════════════════════
-async function signInWithGoogle(){
-  const{error}=await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}});
-  if(error)notif('Login failed: '+error.message,'error');
-}
-
-async function signOut(){await sb.auth.signOut();location.reload()}
-
-async function initAuth(){
-  const{data:{session}}=await sb.auth.getSession();
-  if(session?.user) await onSignedIn(session.user);
-  else showGuest();
-  sb.auth.onAuthStateChange(async(event,session)=>{
-    if(event==='SIGNED_IN'&&session?.user)await onSignedIn(session.user);
+function initGoogleLogin(){
+  google.accounts.id.initialize({
+    client_id: GOOGLE_CLIENT_ID,
+    callback: handleGoogleResponse,
+    auto_select: false,
+    cancel_on_tap_outside: false,
   });
+  // Render button inside modal
+  google.accounts.id.renderButton($('google-signin-btn'),{
+    theme:'filled_black', size:'large', text:'continue_with',
+    shape:'rectangular', width:280
+  });
+  // Try silent sign-in first
+  google.accounts.id.prompt();
 }
 
-async function onSignedIn(user){
-  currentUser=user;
+function handleGoogleResponse(response){
+  // Decode JWT
+  const payload = JSON.parse(atob(response.credential.split('.')[1]));
+  currentUser = {
+    email: payload.email,
+    name:  payload.name,
+    picture: payload.picture,
+    sub: payload.sub
+  };
   closeLoginModal();
-  const{data,error}=await sb.from('students').select('*').eq('id',user.id).single();
-  if(data){studentProfile=data;userPoints=data.points||0;showApp()}
-  else{
-    const meta=user.user_metadata||{};
-    $('profile-name').value=meta.full_name||meta.name||'';
-    showProfileSetup();
+  hideEl('profile-screen');
+  onSignedIn();
+}
+
+function showLoginModal(){$('login-modal').classList.add('show')}
+function closeLoginModal(){$('login-modal').classList.remove('show')}
+$('login-modal').addEventListener('click',e=>{if(e.target===$('login-modal'))closeLoginModal()});
+
+function signOut(){
+  google.accounts.id.disableAutoSelect();
+  localStorage.removeItem('chessensei_user');
+  localStorage.removeItem('chessensei_profile');
+  localStorage.removeItem('chessensei_points');
+  currentUser=null;studentProfile=null;userPoints=0;
+  location.reload();
+}
+
+// ══════════════════════════════════════════
+//  GOOGLE SHEETS API
+// ══════════════════════════════════════════
+async function sheetsCall(params){
+  const url=APPS_SCRIPT_URL+'?'+new URLSearchParams(params);
+  const res=await fetch(url);
+  return res.json();
+}
+
+async function getStudent(email){
+  try{
+    const data=await sheetsCall({action:'getStudent',email});
+    return data;
+  }catch(e){console.error('getStudent error:',e);return{found:false}}
+}
+
+async function saveStudentProfile(profile){
+  try{
+    const data=await sheetsCall({action:'saveStudent',...profile});
+    return data;
+  }catch(e){console.error('saveStudent error:',e);return{error:e.message}}
+}
+
+async function updatePointsInSheet(email,points){
+  try{
+    console.log('Saving to Sheet:',email,points);
+    const data=await sheetsCall({action:'updatePoints',email,points});
+    console.log('Sheet save result:',data);
+    return data;
+  }catch(e){console.error('updatePoints error:',e);return{error:e.message}}
+}
+
+async function getLeaderboardFromSheet(){
+  try{
+    const data=await sheetsCall({action:'getLeaderboard'});
+    return Array.isArray(data)?data:[];
+  }catch(e){console.error('leaderboard error:',e);return[]}
+}
+
+// ══════════════════════════════════════════
+//  AUTH FLOW
+// ══════════════════════════════════════════
+async function onSignedIn(){
+  // Save user to localStorage for session persistence
+  localStorage.setItem('chessensei_user',JSON.stringify(currentUser));
+  // Check if student exists in Sheet
+  const student=await getStudent(currentUser.email);
+  if(student.found){
+    studentProfile=student;
+    userPoints=parseInt(student.points)||0;
+    localStorage.setItem('chessensei_profile',JSON.stringify(student));
+    localStorage.setItem('chessensei_points',userPoints);
+    showApp();
+  } else {
+    // New student — show profile setup
+    $('profile-name').value=currentUser.name||'';
+    showEl('profile-screen',true);
+    hideEl('loading-screen');
+    hideEl('app');
   }
 }
 
@@ -454,113 +483,84 @@ async function saveProfile(){
   const school=$('profile-school').value.trim();
   if(!name||!city||!school){notif('Please fill in all fields','error');return}
   btn.disabled=true;btn.textContent='Saving…';
-  const meta=currentUser.user_metadata||{};
-  const{error}=await sb.from('students').insert({
-    id:currentUser.id,name,email:currentUser.email,
-    avatar_url:meta.avatar_url||meta.picture||null,
-    city,school,points:0,streak:0,last_played:null
-  });
-  if(error){notif('Error: '+error.message,'error');btn.disabled=false;btn.textContent='Save & Start Playing →';return}
-  studentProfile={id:currentUser.id,name,city,school,points:0,streak:0};
-  userPoints=0;showApp();
+  const profile={
+    email:currentUser.email,name,city,school,
+    points:0,streak:1,
+    last_played:new Date().toISOString().slice(0,10),
+    avatar_url:currentUser.picture||''
+  };
+  const res=await saveStudentProfile(profile);
+  if(res.error){notif('Error: '+res.error,'error');btn.disabled=false;btn.textContent='Save & Start Playing →';return}
+  studentProfile=profile;userPoints=0;
+  localStorage.setItem('chessensei_profile',JSON.stringify(profile));
+  localStorage.setItem('chessensei_points','0');
+  showApp();
 }
 
 // ══════════════════════════════════════════
 //  SCREENS
 // ══════════════════════════════════════════
-function showLogin(){hideEl('loading-screen');showEl('login-screen',true)}
-function showProfileSetup(){hideEl('loading-screen');hideEl('login-screen');hideEl('app');showEl('profile-screen',true)}
-
 function showGuest(){
-  // Guest: show app immediately, no login required
   hideEl('loading-screen');showEl('app');
   $('signin-header-btn').style.display='flex';
   $('guest-banner').style.display='flex';
+  $('user-pill').style.display='none';
+  $('tier-pill').style.display='none';
+  $('header-pts').style.display='none';
   updateUI();loadLeaderboard();
-  // Load first puzzle for preview
   if(!puzzleReady){puzzleReady=true;loadNextPuzzle()}
 }
 
 function showApp(){
-  hideEl('loading-screen');hideEl('login-screen');hideEl('profile-screen');showEl('app');
+  hideEl('loading-screen');hideEl('profile-screen');showEl('app');
   $('signin-header-btn').style.display='none';
   $('guest-banner').style.display='none';
+  $('user-pill').style.display='flex';
   $('tier-pill').style.display='flex';
   $('header-pts').style.display='flex';
-  $('user-pill').style.display='flex';
-  const p=studentProfile;
-  $('user-display-name').textContent=p.name.split(' ')[0];
-  $('user-avatar-ph').textContent=p.name[0].toUpperCase();
-  // Load points from Supabase profile (already set in onSignedIn)
-  userPoints=studentProfile.points||0;
+  $('user-display-name').textContent=(studentProfile.name||currentUser.name).split(' ')[0];
+  const av=$('user-avatar-ph');
+  if(currentUser.picture){
+    av.innerHTML=`<img src="${currentUser.picture}" class="user-avatar-img">`;
+  } else {
+    av.textContent=(studentProfile.name||'?')[0].toUpperCase();
+  }
   $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';
   $('your-pts-display').textContent=userPoints.toLocaleString();
-  updateUI();loadLeaderboard();updateStreak();
+  updateUI();loadLeaderboard();
   if(!puzzleReady){puzzleReady=true;loadNextPuzzle()}
-}
-
-function showLoginModal(){
-  $('login-modal').classList.add('show');
-}
-function closeLoginModal(){
-  $('login-modal').classList.remove('show');
-}
-// Close modal on backdrop click
-$('login-modal').addEventListener('click',e=>{if(e.target===$('login-modal'))closeLoginModal()});
-
-// ══════════════════════════════════════════
-//  STREAK
-// ══════════════════════════════════════════
-async function updateStreak(){
-  if(!studentProfile)return;
-  const today=new Date().toISOString().slice(0,10);
-  if(studentProfile.last_played===today)return;
-  const yesterday=new Date(Date.now()-86400000).toISOString().slice(0,10);
-  const newStreak=studentProfile.last_played===yesterday?(studentProfile.streak||0)+1:1;
-  await sb.from('students').update({last_played:today,streak:newStreak}).eq('id',currentUser.id);
-  studentProfile.last_played=today;studentProfile.streak=newStreak;
 }
 
 // ══════════════════════════════════════════
 //  LEADERBOARD
 // ══════════════════════════════════════════
 async function loadLeaderboard(){
-  const tbody=$('lb-tbody');
-  if(tbody) tbody.innerHTML='<tr><td colspan="5" class="lb-empty">Loading…</td></tr>';
-  try{
-    const{data,error}=await sb.from('students')
-      .select('id,name,city,school,points,streak,avatar_url')
-      .order('points',{ascending:false})
-      .limit(50);
-    console.log('Leaderboard data:', JSON.stringify(data));
-    console.log('Leaderboard error:', JSON.stringify(error));
-    if(error) throw error;
-    if(!data||!data.length){
-      if(tbody) tbody.innerHTML='<tr><td colspan="5" class="lb-empty">No students yet — be the first!</td></tr>';
-      $('podium').innerHTML='<div class="lb-empty">No students yet 🏆</div>';
-      return;
-    }
-    lbData=data.map(d=>{
-      // Show live points for current logged-in user
-      if(currentUser&&d.id===currentUser.id) return {...d, points:userPoints};
-      return d;
-    }).sort((a,b)=>b.points-a.points);
-    const cities=[...new Set(data.map(d=>d.city).filter(Boolean))].sort();
-    const cf=$('city-filters');
-    cities.forEach(city=>{
-      if(knownCities.has(city))return;
-      knownCities.add(city);
-      const b=document.createElement('button');
-      b.className='filter-btn';b.textContent=city;
-      b.onclick=()=>filterLB(city,b);cf.appendChild(b);
-    });
-    const n=data.length;
-    $('lb-subtitle').textContent=n+' student'+(n!==1?'s':'')+' ranked • just now';
-    renderLB(lbFilter==='all'?lbData:lbData.filter(d=>d.city===lbFilter));
-  } catch(e){
-    console.error('Leaderboard error full:', JSON.stringify(e), e.message, e.code);
-    if(tbody) tbody.innerHTML=`<tr><td colspan="5" class="lb-empty">Error: ${e.message||e.code||JSON.stringify(e)}</td></tr>`;
+  $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">Loading…</td></tr>';
+  $('podium').innerHTML='<div class="lb-empty">Loading…</div>';
+  const data=await getLeaderboardFromSheet();
+  if(!data.length){
+    $('podium').innerHTML='<div class="lb-empty">No students yet 🏆</div>';
+    $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">No students yet — be the first!</td></tr>';
+    return;
   }
+  // Show live points for current user
+  lbData=data.map(d=>{
+    if(currentUser&&d.email===currentUser.email)return{...d,points:userPoints};
+    return d;
+  }).sort((a,b)=>(parseInt(b.points)||0)-(parseInt(a.points)||0));
+
+  // Dynamic city filters
+  const cities=[...new Set(lbData.map(d=>d.city).filter(Boolean))].sort();
+  const cf=$('city-filters');
+  cities.forEach(city=>{
+    if(knownCities.has(city))return;
+    knownCities.add(city);
+    const b=document.createElement('button');
+    b.className='filter-btn';b.textContent=city;
+    b.onclick=()=>filterLB(city,b);cf.appendChild(b);
+  });
+  $('lb-subtitle').textContent=lbData.length+' student'+(lbData.length!==1?'s':'')+' ranked • just now';
+  renderLB(lbFilter==='all'?lbData:lbData.filter(d=>d.city===lbFilter));
 }
 
 function filterLB(filter,btn){
@@ -570,16 +570,16 @@ function filterLB(filter,btn){
 }
 
 const AV_COLORS=['#4af0b0','#f0c040','#f08040','#c040f0','#40b0f0','#f04070','#70f040','#40d0f0'];
-function avColor(name){let h=0;for(const c of name)h=(h*31+c.charCodeAt(0))%AV_COLORS.length;return AV_COLORS[h]}
+function avColor(name){let h=0;for(const c of (name||'?'))h=(h*31+c.charCodeAt(0))%AV_COLORS.length;return AV_COLORS[h]}
 function avHTML(d,size=30){
-  if(d.avatar_url)return`<img src="${d.avatar_url}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover">`;
-  const c=avColor(d.name||'?');
+  if(d.avatar_url)return`<img src="${d.avatar_url}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover" onerror="this.style.display='none'">`;
+  const c=avColor(d.name);
   return`<div style="width:${size}px;height:${size}px;border-radius:50%;background:linear-gradient(135deg,${c},${c}99);display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*.4)}px;font-weight:700;color:#000">${(d.name||'?')[0].toUpperCase()}</div>`;
 }
 
 function renderLB(data){
   if(!data.length){
-    $('podium').innerHTML='<div class="lb-empty">No students yet — be the first! 🏆</div>';
+    $('podium').innerHTML='<div class="lb-empty">No students in this city yet.</div>';
     $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">No students found.</td></tr>';return;
   }
   // Podium
@@ -590,25 +590,26 @@ function renderLB(data){
     if(!data[i])return;
     const d=data[i],card=document.createElement('div');
     card.className='podium-card '+cls[pos];
-    card.innerHTML=`<div class="podium-rank">${medals[pos]}</div><div class="podium-avatar">${avHTML(d,48)}</div><div class="podium-name">${d.name}</div><div class="podium-school">${d.school||'—'}</div><div class="podium-pts">${(d.points||0).toLocaleString()}</div>`;
+    card.innerHTML=`<div class="podium-rank">${medals[pos]}</div><div class="podium-avatar">${avHTML(d,48)}</div><div class="podium-name">${d.name}</div><div class="podium-school">${d.school||'—'}</div><div class="podium-pts">${(parseInt(d.points)||0).toLocaleString()}</div>`;
     podium.appendChild(card);
   });
   // Table
   const tbody=$('lb-tbody');tbody.innerHTML='';
   data.forEach((d,i)=>{
-    const isMe=currentUser&&d.id===currentUser.id;
-    const tr=document.createElement('tr');
-    if(isMe)tr.className='my-row';
-    tr.innerHTML=`<td class="rank-cell ${i<3?'top':''}">${i+1}</td><td><div class="student-cell"><div class="st-avatar">${avHTML(d,30)}</div><div><div class="st-name">${d.name}${isMe?' <span style="font-size:10px;color:var(--accent)">(you)</span>':''}</div><div class="st-city">${d.city||'—'}</div></div></div></td><td class="school-cell">${d.school||'—'}</td><td class="pts-cell">${(d.points||0).toLocaleString()}</td><td class="streak-cell"><span class="streak-badge">🔥 ${d.streak||0}d</span></td>`;
+    const isMe=currentUser&&d.email===currentUser.email;
+    const tr=document.createElement('tr');if(isMe)tr.className='my-row';
+    tr.innerHTML=`<td class="rank-cell ${i<3?'top':''}">${i+1}</td><td><div class="student-cell"><div class="st-avatar">${avHTML(d,30)}</div><div><div class="st-name">${d.name}${isMe?' <span style="font-size:10px;color:var(--accent)">(you)</span>':''}</div><div class="st-city">${d.city||'—'}</div></div></div></td><td class="school-cell">${d.school||'—'}</td><td class="pts-cell">${(parseInt(d.points)||0).toLocaleString()}</td><td class="streak-cell"><span class="streak-badge">🔥 ${d.streak||0}d</span></td>`;
     tbody.appendChild(tr);
   });
 }
 
 // ══════════════════════════════════════════
-//  PUZZLES FROM SUPABASE
+//  PUZZLES FROM SUPABASE (read only)
 // ══════════════════════════════════════════
 async function fetchPuzzlesForTier(tier){
-  const{data,error}=await sb.from('puzzles').select('id,fen,moves,rating,themes,game_url').gte('rating',tier.minR).lt('rating',tier.maxR).order('popularity',{ascending:false}).limit(30);
+  const{data,error}=await sb.from('puzzles').select('id,fen,moves,rating,themes,game_url')
+    .gte('rating',tier.minR).lt('rating',tier.maxR)
+    .order('popularity',{ascending:false}).limit(30);
   if(error||!data?.length)return[];
   return data;
 }
@@ -624,21 +625,29 @@ async function pickPuzzle(){
 async function loadNextPuzzle(){
   resetStatus();$('puzzle-id-label').textContent='Loading…';
   const pz=await pickPuzzle();
-  if(!pz){notif('No puzzles found in Supabase','error');return}
+  if(!pz){notif('No puzzles found','error');return}
   loadPuzzle(pz);
 }
 
 // ══════════════════════════════════════════
-//  PIECES — Lichess cburnett SVG set
+//  POINTS → GOOGLE SHEETS
 // ══════════════════════════════════════════
-const PIECE_URL = (piece) => {
-  const color = piece === piece.toUpperCase() ? 'w' : 'b';
-  const type = piece.toLowerCase();
-  const map = {k:'K',q:'Q',r:'R',b:'B',n:'N',p:'P'};
-  return `https://lichess1.org/assets/piece/cburnett/${color}${map[type]}.svg`;
-};
+function savePoints(){
+  if(!currentUser||!studentProfile)return;
+  if(userPoints<=0)return;
+  localStorage.setItem('chessensei_points',userPoints);
+  // Save to Google Sheet
+  updatePointsInSheet(currentUser.email,userPoints)
+    .then(res=>{
+      if(res.success) console.log('✅ Points saved to Sheet:',userPoints);
+      else console.error('Sheet save failed:',res);
+    });
+}
 
-
+// ══════════════════════════════════════════
+//  CHESS ENGINE
+// ══════════════════════════════════════════
+const PIECE_URL=piece=>{const c=piece===piece.toUpperCase()?'w':'b';const map={k:'K',q:'Q',r:'R',b:'B',n:'N',p:'P'};return`https://lichess1.org/assets/piece/cburnett/${c}${map[piece.toLowerCase()]}.svg`};
 function fenTo(fen){const b=Array(64).fill(null);let i=0;for(const ch of fen.split(' ')[0]){if(ch==='/')continue;if(isNaN(ch))b[i++]=ch;else i+=+ch}return b}
 function sn(i){return'abcdefgh'[i%8]+(8-Math.floor(i/8))}
 function si(n){return(8-+n[1])*8+n.charCodeAt(0)-97}
@@ -670,35 +679,29 @@ function legal(pieces,from,toMove){
 // ══════════════════════════════════════════
 function renderBoard(pieces,sel=null,hints=[],lastMv=null,wrong=[]){
   const board=$('board');board.innerHTML='';
-  const lastSqs = lastMv ? [si(lastMv.slice(0,2)), si(lastMv.slice(2,4))] : [];
+  const lastSqs=lastMv?[si(lastMv.slice(0,2)),si(lastMv.slice(2,4))]:[];
   for(let i=0;i<64;i++){
-    const r=Math.floor(i/8),f=i%8;
-    const isLight=(r+f)%2===0;
+    const r=Math.floor(i/8),f=i%8,isLight=(r+f)%2===0;
     const sq=document.createElement('div');
     sq.className='sq '+(isLight?'light':'dark');
-    if(sel===i) sq.classList.add('selected');
-    else if(hints.includes(i)) sq.classList.add('hint');
-    else if(lastSqs.includes(i)) sq.style.background = isLight ? 'rgba(100,160,255,.45)' : 'rgba(60,120,220,.55)';
-    if(wrong.includes(i)) sq.classList.add('wrong');
-    // Coordinates
+    if(sel===i)sq.classList.add('selected');
+    else if(hints.includes(i))sq.classList.add('hint');
+    else if(lastSqs.includes(i))sq.style.background=isLight?'rgba(100,160,255,.45)':'rgba(60,120,220,.55)';
+    if(wrong.includes(i))sq.classList.add('wrong');
     if(f===7){const rc=document.createElement('span');rc.className='coord coord-rank';rc.textContent=8-r;sq.appendChild(rc)}
     if(r===7){const fc=document.createElement('span');fc.className='coord coord-file';fc.textContent='abcdefgh'[f];sq.appendChild(fc)}
-    // Piece as Lichess SVG image
     if(pieces[i]){
       const img=document.createElement('img');
       img.src=PIECE_URL(pieces[i]);
       img.style.cssText='width:88%;height:88%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))';
-      img.draggable=false;
-      sq.appendChild(img);
+      img.draggable=false;sq.appendChild(img);
     }
-    // Hint dot for empty squares
     if(hints.includes(i)&&!pieces[i]){
       const dot=document.createElement('div');
       dot.style.cssText='width:30%;height:30%;border-radius:50%;background:rgba(100,180,255,.6);pointer-events:none';
       sq.appendChild(dot);
     }
-    sq.addEventListener('click',()=>onSq(i));
-    board.appendChild(sq);
+    sq.addEventListener('click',()=>onSq(i));board.appendChild(sq);
   }
 }
 
@@ -706,8 +709,7 @@ function renderBoard(pieces,sel=null,hints=[],lastMv=null,wrong=[]){
 //  PUZZLE LOGIC
 // ══════════════════════════════════════════
 function loadPuzzle(pz){
-  const tm=pz.fen.split(' ')[1];
-  usedIds.add(pz.id);
+  const tm=pz.fen.split(' ')[1];usedIds.add(pz.id);
   const moves=Array.isArray(pz.moves)?pz.moves:pz.moves.split(' ');
   gameState={pz,pieces:fenTo(pz.fen),moves,idx:0,sel:null,toMove:tm,solved:false,lastMv:null,wrongAttempts:0,ptsPenalised:false};
   $('puzzle-id-label').textContent='ID: '+pz.id;
@@ -727,8 +729,7 @@ function setToMove(tm){
 
 function onSq(idx){
   if(!gameState||gameState.solved)return;
-  // Guest gate — show login modal on first click
-  if(!currentUser){showLoginModal();return;}
+  if(!currentUser){showLoginModal();return}
   if(gameState.sel===null){
     const pc=gameState.pieces[idx];if(!pc)return;
     if((gameState.toMove==='w')!==(pc===pc.toUpperCase()))return;
@@ -761,71 +762,45 @@ function doMove(from,to){
       },550);
     }
   } else {
-    // Wrong move
     gameState.wrongAttempts++;
-    // Deduct -2 pts only on the FIRST wrong attempt per puzzle
-    if(!gameState.ptsPenalised){
-      addPts(-2);
-      gameState.ptsPenalised=true;
-    }
+    if(!gameState.ptsPenalised){addPts(-2);gameState.ptsPenalised=true}
     const board=$('board');board.classList.add('shake');
     renderBoard(gameState.pieces,null,[],gameState.lastMv,[from,to]);
     setTimeout(()=>{board.classList.remove('shake');renderBoard(gameState.pieces,null,[],gameState.lastMv)},400);
-    // After 2 wrong attempts, show "Show Answer" button
-    if(gameState.wrongAttempts>=2){
-      showAnswerButton();
-      notif('❌ Wrong again. You can now reveal the answer.','error');
-    } else {
-      notif('❌ Not the best move — try again!','error');
-    }
+    if(gameState.wrongAttempts>=2){showAnswerButton();notif('❌ Wrong again. You can reveal the answer.','error')}
+    else notif('❌ Not the best move — try again!','error');
   }
 }
 
 function showAnswerButton(){
-  // Only inject once
-  if($('show-answer-btn')) return;
-  const card=$('puzzle-status-card');
+  if($('show-answer-btn'))return;
   const btn=document.createElement('button');
-  btn.id='show-answer-btn';
-  btn.onclick=showAnswer;
+  btn.id='show-answer-btn';btn.onclick=showAnswer;
   btn.style.cssText='margin-top:10px;padding:9px 20px;border-radius:10px;border:1px solid var(--danger);background:rgba(240,80,80,.1);color:var(--danger);font-size:13px;font-weight:600;cursor:pointer;font-family:"DM Sans",sans-serif;width:100%';
   btn.textContent='👁 Show Answer';
-  card.appendChild(btn);
+  $('puzzle-status-card').appendChild(btn);
 }
 
 async function showAnswer(){
   if(!gameState||gameState.solved)return;
-  gameState.solved=true; // lock board
-  // Remove the show answer button
+  gameState.solved=true;
   const btn=$('show-answer-btn');if(btn)btn.remove();
-  // Play all remaining correct moves one by one with delay
-  const playNext=(idx)=>{
+  const playNext=idx=>{
     if(idx>=gameState.moves.length){
-      // Done — show failed status
-      $('puzzle-status-card').innerHTML=`
-        <div class="puzzle-status">
-          <div class="status-icon">💡</div>
-          <div class="status-title">Answer Revealed</div>
-          <div class="status-msg">Study the moves and try the next one!</div>
-          <button class="btn btn-gold" onclick="nextPuzzle()" style="margin-top:6px;width:auto;padding:10px 26px">Next Puzzle ▶</button>
-        </div>`;
-      notif('💡 Answer shown — 0 pts awarded','error');
-      return;
+      $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">💡</div><div class="status-title">Answer Revealed</div><div class="status-msg">Study the moves and try the next one!</div><button class="btn btn-gold" onclick="nextPuzzle()" style="margin-top:6px;width:auto;padding:10px 26px">Next Puzzle ▶</button></div>`;
+      notif('💡 Answer shown — 0 pts','error');return;
     }
     const mv=gameState.moves[idx];
-    gameState.pieces=applyMv(gameState.pieces,mv);
-    gameState.lastMv=mv;
+    gameState.pieces=applyMv(gameState.pieces,mv);gameState.lastMv=mv;
     gameState.toMove=gameState.toMove==='w'?'b':'w';
-    setToMove(gameState.toMove);
-    renderBoard(gameState.pieces,null,[],gameState.lastMv);
-    setTimeout(()=>playNext(idx+1), 800);
+    setToMove(gameState.toMove);renderBoard(gameState.pieces,null,[],gameState.lastMv);
+    setTimeout(()=>playNext(idx+1),800);
   };
   playNext(gameState.idx);
 }
 
-
 function addPts(delta){
-  if(!currentUser)return; // guest — no points
+  if(!currentUser)return;
   const oldTier=getTier(userPoints);
   userPoints=Math.max(0,userPoints+delta);
   const newTier=getTier(userPoints);
@@ -834,62 +809,18 @@ function addPts(delta){
   if(delta>0)ptsPopup('+'+delta);
   updateUI();
   if(newTier.id>oldTier.id)tierUp(newTier);
-  // Only trigger save on positive points gain
-  if(delta>0){
-    clearTimeout(savePtsTimeout);
-    savePtsTimeout=setTimeout(savePoints,1500);
-  }
+  if(delta>0){clearTimeout(savePtsTimeout);savePtsTimeout=setTimeout(savePoints,1500)}
 }
 
-async function savePoints(){
-  if(!currentUser||!studentProfile)return;
-  if(userPoints<=0)return;
-  setSaving(true);
-  console.log('Saving points:', userPoints, 'user:', currentUser.id);
-  try{
-    const rpcPromise=sb.rpc('update_my_points',{
-      user_id: currentUser.id,
-      new_points: userPoints
-    });
-    const timeout=new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),8000));
-    const{error}=await Promise.race([rpcPromise,timeout]);
-    if(error){
-      console.error('RPC error:',JSON.stringify(error));
-      setSaving(false);
-      return;
-    }
-    studentProfile.points=userPoints;
-    console.log('Saved OK:', userPoints);
-    setSaving(false);
-  }catch(e){
-    console.error('Save error:',e.message);
-    setSaving(false);
-  }
-}
-
-function setSaving(on){
-  const el=$('saving-indicator');
-  el.textContent=on?'💾 Saving…':'✓ Saved to your account';
-  if(!on)setTimeout(()=>el.textContent='',2500);
-}
-
-// ══════════════════════════════════════════
-//  UI HELPERS
-// ══════════════════════════════════════════
 function ptsPopup(val){const p=$('pts-popup');$('pts-popup-val').textContent=val;p.className='pts-popup show';setTimeout(()=>p.className='pts-popup',1300)}
-function tierUp(tier){
-  const b=$('upgrade-banner');
-  b.textContent='🎉 Tier Up! You\'re now '+tier.emoji+' '+tier.name+' — harder puzzles unlocked!';
-  b.className='upgrade-banner show';setTimeout(()=>b.className='upgrade-banner',3500);
-  puzzlePool=[];usedIds.clear();
-}
+function tierUp(tier){const b=$('upgrade-banner');b.textContent='🎉 Tier Up! '+tier.emoji+' '+tier.name+' — harder puzzles unlocked!';b.className='upgrade-banner show';setTimeout(()=>b.className='upgrade-banner',3500);puzzlePool=[];usedIds.clear()}
 function notif(msg,type='success'){const el=$('notif');el.textContent=msg;el.className='notif '+type+' show';setTimeout(()=>el.className='notif',2500)}
 function showSolved(){
   $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">✅</div><div class="status-title">Puzzle Solved!</div><div class="status-msg">+10 points saved to your account.</div><button class="btn btn-gold" onclick="nextPuzzle()" style="margin-top:6px;width:auto;padding:10px 26px">Next Puzzle ▶</button></div>`;
   notif('🎉 Correct! +10 points','success');
 }
 function resetStatus(){
-  $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">🧩</div><div class="status-title">Find the best move</div><div class="status-msg">Click a piece, then click its destination.</div><div class="pts-hint">Correct → <strong>+10 pts</strong> &nbsp;|&nbsp; Wrong → <span class="neg">−2 pts</span></div></div>`;
+  $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">🧩</div><div class="status-title">Find the best move</div><div class="status-msg">Click a piece, then click its destination.</div><div class="pts-hint">Correct → <strong>+10 pts</strong> &nbsp;|&nbsp; Wrong → <span class="neg">−2 pts (once)</span></div></div>`;
   $('your-pts-display').textContent=userPoints.toLocaleString();
 }
 function nextPuzzle(){loadNextPuzzle()}
@@ -900,13 +831,14 @@ function updateUI(){
   $('tier-pill').className='tier-pill '+tier.cls;
   $('xp-tier-name').textContent=tier.name;
   $('xp-fill').style.background=tier.color;
-  const xf=$('xp-fill'),xn=$('xp-next-label');
-  if(tier.maxPts===Infinity){xf.style.width='100%';xn.textContent='Max tier 👑'}
-  else{xf.style.width=Math.min(100,((userPoints-tier.minPts)/(tier.maxPts-tier.minPts))*100)+'%';xn.textContent=(tier.maxPts-userPoints)+' pts to next tier'}
+  const xn=$('xp-next-label');
+  if(tier.maxPts===Infinity){$('xp-fill').style.width='100%';xn.textContent='Max tier 👑'}
+  else{$('xp-fill').style.width=Math.min(100,((userPoints-tier.minPts)/(tier.maxPts-tier.minPts))*100)+'%';xn.textContent=(tier.maxPts-userPoints)+' pts to next tier'}
   const ladder=$('ladder-rows');ladder.innerHTML='';
   TIERS.forEach(t=>{
-    const row=document.createElement('div');row.className='ladder-row'+(t.id===getTier(userPoints).id?' active':'');
-    const pct=t.id<getTier(userPoints).id?100:t.id===getTier(userPoints).id&&t.maxPts!==Infinity?Math.max(0,((userPoints-t.minPts)/(t.maxPts-t.minPts))*100):0;
+    const cur=getTier(userPoints);
+    const row=document.createElement('div');row.className='ladder-row'+(t.id===cur.id?' active':'');
+    const pct=t.id<cur.id?100:t.id===cur.id&&t.maxPts!==Infinity?Math.max(0,((userPoints-t.minPts)/(t.maxPts-t.minPts))*100):0;
     row.innerHTML=`<div class="ladder-dot" style="background:${t.color}"></div><div class="ladder-label">${t.emoji} ${t.name}</div><div class="ladder-bar"><div class="ladder-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="ladder-pts">${t.minPts}–${t.maxPts===Infinity?'∞':t.maxPts}</div>`;
     ladder.appendChild(row);
   });
@@ -921,9 +853,39 @@ function switchTab(tab,el){
 }
 
 // ══════════════════════════════════════════
-//  BOOT
+//  BOOT — check localStorage for session
 // ══════════════════════════════════════════
-initAuth();
+async function init(){
+  // Check if user was previously logged in
+  const savedUser=localStorage.getItem('chessensei_user');
+  const savedProfile=localStorage.getItem('chessensei_profile');
+  const savedPoints=localStorage.getItem('chessensei_points');
+  if(savedUser&&savedProfile){
+    currentUser=JSON.parse(savedUser);
+    studentProfile=JSON.parse(savedProfile);
+    userPoints=parseInt(savedPoints)||0;
+    // Refresh points from Sheet in background
+    getStudent(currentUser.email).then(s=>{
+      if(s.found){
+        userPoints=Math.max(userPoints,parseInt(s.points)||0);
+        studentProfile=s;
+        $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';
+        $('your-pts-display').textContent=userPoints.toLocaleString();
+        updateUI();
+      }
+    });
+    showApp();
+  } else {
+    showGuest();
+  }
+  // Init Google Identity
+  window.addEventListener('load',()=>{
+    if(window.google){initGoogleLogin()}
+    else{document.querySelector('script[src*="gsi"]').addEventListener('load',initGoogleLogin)}
+  });
+}
+
+init();
 </script>
 </body>
 </html>
