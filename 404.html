@@ -1,1 +1,134 @@
-<!DOCTYPE html> <html> <head> <title>Page Not Found</title> <meta http-equiv="refresh" content="3; url=https://www.chessensei.com/" /> <style> body { font-family: Arial; text-align: center; padding-top: 100px; } </style> </head> <body> <h1>Page Not Found</h1> <p>Redirecting to Chessensei homepage...</p> </body> </html>
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Wrong Move | Chessensei</title>
+
+  <meta http-equiv="refresh" content="8; url=https://www.chessensei.com/" />
+
+  <style>
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 700px;
+      padding: 20px;
+    }
+
+    .chess-piece {
+      font-size: 90px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-12px); }
+      100% { transform: translateY(0px); }
+    }
+
+    h1 {
+      font-size: 70px;
+      margin: 10px 0;
+      color: #facc15;
+    }
+
+    h2 {
+      font-size: 32px;
+      margin-bottom: 15px;
+    }
+
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      color: #cbd5e1;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 30px;
+      padding: 14px 28px;
+      background: #facc15;
+      color: #111827;
+      text-decoration: none;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: 0.3s ease;
+    }
+
+    .btn:hover {
+      background: white;
+      transform: scale(1.05);
+    }
+
+    .small-text {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #94a3b8;
+    }
+
+    @media(max-width: 600px){
+
+      h1{
+        font-size: 50px;
+      }
+
+      h2{
+        font-size: 24px;
+      }
+
+      .chess-piece{
+        font-size: 70px;
+      }
+
+      p{
+        font-size: 16px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <div class="chess-piece">♞</div>
+
+    <h1>404</h1>
+
+    <h2>Oops... Wrong Move!</h2>
+
+    <p>
+      Looks like this page made an illegal move and disappeared from the board.
+      Don't worry — every great chess player recovers from mistakes.
+    </p>
+
+    <a class="btn" href="https://www.chessensei.com/">
+      Return to Homepage
+    </a>
+
+    <div class="small-text">
+      Redirecting automatically in a few seconds...
+    </div>
+
+  </div>
+
+</body>
+</html>
+```
