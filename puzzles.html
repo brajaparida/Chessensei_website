@@ -874,17 +874,33 @@ function onSq(idx){
     const pc=gameState.pieces[idx];if(!pc)return;
     if((gameState.toMove==='w')!==(pc===pc.toUpperCase()))return;
     gameState.sel=idx;
+    gameState.legalDests=legal(gameState.pieces,idx,gameState.toMove);
     clearArrow();
-    renderBoard(gameState.pieces,idx,legal(gameState.pieces,idx,gameState.toMove),gameState.lastMv);
+    renderBoard(gameState.pieces,idx,gameState.legalDests,gameState.lastMv);
   } else {
     const from=gameState.sel;
-    if(from===idx){gameState.sel=null;renderBoard(gameState.pieces,null,[],gameState.lastMv);drawSetupArrow();return}
+    // Clicked same square → deselect
+    if(from===idx){
+      gameState.sel=null;gameState.legalDests=[];
+      renderBoard(gameState.pieces,null,[],gameState.lastMv);
+      drawSetupArrow();return;
+    }
+    // Clicked another own piece → reselect
     const pc=gameState.pieces[idx];
     if(pc&&(gameState.toMove==='w')===(pc===pc.toUpperCase())){
       gameState.sel=idx;
-      renderBoard(gameState.pieces,idx,legal(gameState.pieces,idx,gameState.toMove),gameState.lastMv);return;
+      gameState.legalDests=legal(gameState.pieces,idx,gameState.toMove);
+      renderBoard(gameState.pieces,idx,gameState.legalDests,gameState.lastMv);return;
     }
-    gameState.sel=null;doMove(from,idx);
+    // Clicked a NON-legal square → just deselect, no penalty
+    if(!gameState.legalDests||!gameState.legalDests.includes(idx)){
+      gameState.sel=null;gameState.legalDests=[];
+      renderBoard(gameState.pieces,null,[],gameState.lastMv);
+      drawSetupArrow();return;
+    }
+    // Clicked a legal destination → attempt the move
+    gameState.sel=null;gameState.legalDests=[];
+    doMove(from,idx);
   }
 }
 
