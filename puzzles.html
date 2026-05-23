@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ChessSensei — Puzzle Master</title>
+<title>Chessensei — Puzzle Master</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -51,7 +51,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .btn-save:hover{opacity:.85}.btn-save:disabled{opacity:.5;cursor:not-allowed}
 
 /* HEADER */
-header{display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#14141e,transparent);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
+header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#14141e,transparent);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
 .logo{display:flex;align-items:center;gap:10px}
 .logo-icon{width:32px;height:32px;background:var(--gold);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);display:flex;align-items:center;justify-content:center;font-size:15px;color:#000;font-weight:900}
 .logo-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
@@ -72,10 +72,10 @@ header{display:flex;align-items:center;justify-content:space-between;padding:14p
 .btn-signin-header{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:20px;padding:6px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif}
 
 /* TABS */
-.nav-tabs{display:flex;gap:4px;padding:10px 28px 0;border-bottom:1px solid var(--border)}
+.nav-tabs{display:flex;gap:4px;padding:8px 20px 0;border-bottom:1px solid var(--border)}
 .tab{padding:10px 20px;border:none;background:none;color:var(--muted);font-size:13px;font-weight:500;cursor:pointer;border-radius:8px 8px 0 0;transition:all .2s;border-bottom:2px solid transparent;font-family:'DM Sans',sans-serif}
 .tab:hover{color:var(--text)}.tab.active{color:var(--gold);border-bottom-color:var(--gold);background:rgba(240,192,64,.06)}
-main{max-width:1300px;margin:0 auto;padding:24px 18px}
+main{max-width:1100px;margin:0 auto;padding:12px 14px}
 .page{display:none}.page.active{display:block}
 
 /* LEADERBOARD */
@@ -122,15 +122,15 @@ tbody td{padding:12px 18px;font-size:14px}
 .guest-banner{background:linear-gradient(135deg,rgba(74,240,176,.1),rgba(240,192,64,.08));border:1px solid rgba(74,240,176,.2);border-radius:12px;padding:12px 18px;display:none;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
 .guest-banner-text{font-size:13px;color:var(--silver)}.guest-banner-text strong{color:var(--accent)}
 .btn-signin-small{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
-.puzzle-layout{display:grid;grid-template-columns:290px 1fr;gap:24px;align-items:start}
-.puzzle-info-panel{order:1;display:flex;flex-direction:column;gap:13px}
+.puzzle-layout{display:grid;grid-template-columns:260px 1fr;gap:16px;align-items:start}
+.puzzle-info-panel{order:1;display:flex;flex-direction:column;gap:9px}
 .puzzle-panel{order:2;background:var(--surface);border:1px solid var(--border);border-radius:16px;overflow:visible;box-shadow:0 4px 24px rgba(0,0,0,.3)}
 .puzzle-panel-header{padding:13px 17px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;border-radius:16px 16px 0 0}
 .puzzle-panel-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
 .puzzle-id{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
 
 /* BOARD with external coordinates */
-.board-outer{padding:13px;user-select:none;background:#1a2a3a;border-radius:0 0 16px 16px}
+.board-outer{padding:8px;user-select:none;background:#1a2a3a;border-radius:0 0 16px 16px}
 .board-with-coords{display:flex;align-items:stretch}
 .rank-labels{display:flex;flex-direction:column;padding-right:5px;flex-shrink:0;width:20px}
 .rank-label{font-size:11px;font-weight:700;font-family:'DM Mono',monospace;color:rgba(180,200,220,.7);flex:1;display:flex;align-items:center;justify-content:flex-end}
@@ -158,7 +158,7 @@ tbody td{padding:12px 18px;font-size:14px}
 .to-move-dot.white{background:#f8f8f0}.to-move-dot.black{background:#202020}
 
 /* INFO CARDS */
-.info-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 18px}
+.info-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px 14px}
 .info-card h3{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:11px}
 .xp-section{margin-bottom:13px}
 .xp-label{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
@@ -268,8 +268,8 @@ tbody td{padding:12px 18px;font-size:14px}
 <div id="app" style="display:none">
   <header>
     <div class="logo">
-      <div class="logo-icon">♟</div>
-      <div><div class="logo-text">ChessSensei</div><div class="logo-sub">Puzzle Master</div></div>
+      <img src="https://www.chessensei.com/chessensei_logo.png" alt="Chessensei" class="logo-img">
+      <div class="logo-sub">Puzzle Master</div>
     </div>
     <div class="header-right">
       <div class="tier-pill tier-1" id="tier-pill">⚡ Beginner</div>
