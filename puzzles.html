@@ -720,7 +720,7 @@ function drawArrow(fromIdx, toIdx, color='rgba(100,200,255,0.7)'){
   const size=board.offsetWidth;
   if(!size)return;
   const sqSize=size/8;
-  const flipped=gameState&&gameState.toMove==='b';
+  const flipped=gameState&&gameState.studentColor==='b';
 
   function sqCenter(idx){
     const r=Math.floor(idx/8),f=idx%8;
@@ -769,7 +769,7 @@ function renderBoard(pieces,sel=null,hints=[],lastMv=null,wrong=[]){
   if(arrowSvg)board.appendChild(arrowSvg);
 
   const lastSqs=lastMv?[si(lastMv.slice(0,2)),si(lastMv.slice(2,4))]:[];
-  const flipped=gameState&&gameState.toMove==='b';
+  const flipped=gameState&&gameState.studentColor==='b';
 
   // Rank labels (left)
   const rl=$('rank-labels');
