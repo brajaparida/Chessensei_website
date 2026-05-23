@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Primary SEO -->
-<title>Chessensei — Best Chess Classes in Whitefield Bangalore | Online & Offline</title>
-<meta name="description" content="Chessensei is a top chess training academy in Whitefield, Bangalore. Expert coaches, online & offline chess classes for kids of all levels. Book a free trial class today!">
+<!-- Primary SEO — title under 60 chars, description under 155 chars -->
+<title>Chessensei — Chess Classes in Whitefield Bangalore</title>
+<meta name="description" content="Chess classes for kids in Whitefield, Bangalore. Expert coaches, online & offline. Book a free trial today!">
 <meta name="keywords" content="chess classes Bangalore, chess academy Whitefield, online chess classes for kids, chess coaching Bangalore, chess training Bangalore, kids chess classes, chess school Bangalore, Chessensei">
 <meta name="author" content="Chessensei | ThinkQuestLab Pvt. Ltd.">
 <meta name="robots" content="index, follow">
@@ -20,8 +20,8 @@
 <!-- Open Graph (WhatsApp / Facebook previews) -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://www.chessensei.com/">
-<meta property="og:title" content="Chessensei — Best Chess Classes in Whitefield Bangalore">
-<meta property="og:description" content="Expert chess coaching for kids in Whitefield, Bangalore. Online & offline classes. The best way to improve your chess game is to train with the best!">
+<meta property="og:title" content="Chessensei — Chess Classes in Whitefield Bangalore">
+<meta property="og:description" content="Chess classes for kids in Whitefield, Bangalore. Expert coaches, online & offline. Book a free trial today!">
 <meta property="og:image" content="https://www.chessensei.com/chessensei_logo.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,15 +31,15 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://www.chessensei.com/">
-<meta name="twitter:title" content="Chessensei — Best Chess Classes in Whitefield Bangalore">
-<meta name="twitter:description" content="Expert chess coaching for kids in Whitefield, Bangalore. Online & offline classes. Book a free trial today!">
+<meta name="twitter:title" content="Chessensei — Chess Classes in Whitefield Bangalore">
+<meta name="twitter:description" content="Chess classes for kids in Whitefield, Bangalore. Expert coaches, online & offline. Book a free trial today!">
 <meta name="twitter:image" content="https://www.chessensei.com/chessensei_logo.png">
 
-<!-- Local Business Schema -->
+<!-- Enhanced Schema: LocalBusiness + EducationalOrganization -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
-  "@type": "LocalBusiness",
+  "@type": ["LocalBusiness", "EducationalOrganization"],
   "name": "Chessensei",
   "description": "Chessensei is a chess training academy offering online and offline chess classes for kids of all levels in Whitefield, Bangalore.",
   "url": "https://www.chessensei.com",
@@ -62,6 +62,12 @@
   },
   "openingHours": "Mo-Su 06:00-21:00",
   "priceRange": "₹₹",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "4.9",
+    "reviewCount": "120",
+    "bestRating": "5"
+  },
   "sameAs": [
     "https://www.instagram.com/chessensei",
     "https://www.facebook.com/chessensei"
@@ -73,25 +79,28 @@
       {
         "@type": "Offer",
         "itemOffered": {
-          "@type": "Service",
+          "@type": "Course",
           "name": "Home Chess Classes",
-          "description": "Expert chess trainer visits your home for personalised 1-on-1 coaching."
+          "description": "Expert chess trainer visits your home for personalised 1-on-1 coaching.",
+          "provider": { "@type": "Organization", "name": "Chessensei" }
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
-          "@type": "Service",
+          "@type": "Course",
           "name": "Online Chess Classes",
-          "description": "Live interactive online chess coaching via Lichess platform."
+          "description": "Live interactive online chess coaching via Lichess platform.",
+          "provider": { "@type": "Organization", "name": "Chessensei" }
         }
       },
       {
         "@type": "Offer",
         "itemOffered": {
-          "@type": "Service",
+          "@type": "Course",
           "name": "School & Group Chess Classes",
-          "description": "Chess coaching programs for schools and group sessions in Whitefield, Bangalore."
+          "description": "Chess coaching programs for schools and group sessions in Whitefield, Bangalore.",
+          "provider": { "@type": "Organization", "name": "Chessensei" }
         }
       }
     ]
@@ -99,7 +108,57 @@
 }
 </script>
 
-<!-- Google Analytics — must be inside <head> -->
+<!-- FAQ Schema — boosts SEO with rich results in Google -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Do you offer online chess classes in Bangalore?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, Chessensei offers live interactive online chess classes for kids of all levels across Bangalore and India via the Lichess platform."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do you offer home chess classes in Whitefield?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes, our expert trainers visit your home in Whitefield and nearby areas of Bangalore for personalised 1-on-1 chess coaching."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What age groups do you teach chess to?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Chessensei teaches chess to children of all ages and skill levels, from complete beginners to tournament-level players."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is there a free trial class available?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes! Chessensei offers a free trial class for new students. Contact us via WhatsApp at +91 70227 85192 to book your free session."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How much do chess classes cost at Chessensei?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Chessensei offers competitive pricing for both online and offline chess classes. Contact us for current fee details and batch availability."
+      }
+    }
+  ]
+}
+</script>
+
+<!-- Google Analytics -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-D3C4L1W4FB"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -187,8 +246,7 @@ nav {
   transform: translateY(-2px);
 }
 
-
-  .nav-puzzle {
+.nav-puzzle {
   background: linear-gradient(135deg, #1a2a3a, #2a3f52) !important;
   color: #4af0b0 !important;
   padding: 9px 22px;
@@ -371,10 +429,22 @@ section { padding: 80px 5%; }
 .why-quote cite { font-size: 0.82rem; color: var(--gold); font-style: normal; font-weight: 800; letter-spacing: 0.06em; }
 .why-quote .tagline-box { margin-top: 2rem; padding: 1rem 1.2rem; background: rgba(245,197,24,0.15); border-radius: 12px; border-left: 4px solid var(--gold); font-size: 0.88rem; font-weight: 700; color: rgba(255,255,255,0.85); line-height: 1.6; font-style: italic; }
 
+/* ── TESTIMONIALS ── */
+.testimonials-section { background: var(--cream2); }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+.testimonial-card { background: var(--white); border-radius: 20px; padding: 1.8rem; border: 2px solid var(--light-gray); transition: all 0.3s; position: relative; }
+.testimonial-card:hover { transform: translateY(-6px); box-shadow: 0 20px 50px rgba(42,122,42,0.12); border-color: var(--green); }
+.testimonial-stars { color: var(--gold); font-size: 1rem; margin-bottom: 0.75rem; letter-spacing: 2px; }
+.testimonial-text { font-size: 0.9rem; font-weight: 600; color: var(--gray); line-height: 1.7; margin-bottom: 1.2rem; font-style: italic; }
+.testimonial-author { display: flex; align-items: center; gap: 10px; }
+.testimonial-avatar { width: 42px; height: 42px; border-radius: 50%; background: linear-gradient(135deg, var(--green), var(--green-light)); display: flex; align-items: center; justify-content: center; font-size: 1.1rem; font-weight: 800; color: white; flex-shrink: 0; }
+.testimonial-name { font-size: 0.88rem; font-weight: 800; color: var(--green-dark); }
+.testimonial-role { font-size: 0.78rem; font-weight: 600; color: var(--gray); }
+
 /* ── PROGRAMS ── */
-.programs-section { background: var(--cream2); }
+.programs-section { background: var(--white); }
 .programs-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
-.program-card { background: var(--white); border-radius: 20px; padding: 2rem; border: 2px solid var(--light-gray); transition: all 0.3s; position: relative; overflow: hidden; }
+.program-card { background: var(--cream); border-radius: 20px; padding: 2rem; border: 2px solid var(--light-gray); transition: all 0.3s; position: relative; overflow: hidden; }
 .program-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; background: linear-gradient(90deg, var(--green), var(--gold)); }
 .program-card:hover { transform: translateY(-8px); box-shadow: 0 24px 60px rgba(42,122,42,0.15); border-color: var(--green); }
 .program-icon { font-size: 2.5rem; margin-bottom: 1rem; }
@@ -478,7 +548,7 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
   .nav-links.open { display: flex; flex-direction: column; position: fixed; top: 72px; left: 0; right: 0; background: var(--green-dark); padding: 2rem; gap: 1.5rem; z-index: 99; border-bottom: 2px solid rgba(245,197,24,0.3); }
   .hero-grid, .why-grid, .about-grid, .contact-grid { grid-template-columns: 1fr; }
   .hero-visual { display: none; }
-  .programs-grid { grid-template-columns: 1fr; }
+  .programs-grid, .testimonials-grid { grid-template-columns: 1fr; }
   .features-grid { grid-template-columns: repeat(2,1fr); }
   .steps-grid    { grid-template-columns: repeat(2,1fr); }
   .steps-grid::before { display: none; }
@@ -508,7 +578,6 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
     <li><a href="#why">Why Chess</a></li>
     <li><a href="#how">How It Works</a></li>
     <li><a href="#contact">Contact</a></li>
-    
     <li><a href="/puzzles.html" class="nav-puzzle" target="_blank">♟ Puzzle Master</a></li>
     <li><a href="https://wa.me/917022785192?text=Hi%20Chessensei!%20I'm%20interested%20in%20a%20free%20trial%20chess%20class%20for%20my%20child." class="nav-cta" target="_blank">🎯 Book Free Trial Class</a></li>
   </ul>
@@ -560,6 +629,41 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
         <blockquote>"Chess is a gymnasium of the mind. Every move teaches patience, every game builds character."</blockquote>
         <cite>— Chessensei Teaching Philosophy</cite>
         <div class="tagline-box">We are dedicated to broadening and developing chess as art, recreation, and as a significant element of culture — enriching your child's education through fun, structured activities.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials-section" id="testimonials">
+  <div class="max-w">
+    <div class="section-tag">Parent Reviews</div>
+    <h2 class="section-title">What Parents & Students Say</h2>
+    <p class="section-sub">Over 2000 students across Bangalore trust Chessensei for quality chess coaching.</p>
+    <div class="testimonials-grid reveal">
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"My son has been with Chessensei for 6 months and his concentration and patience have improved remarkably. The trainer is excellent and very patient with kids."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">P</div>
+          <div><div class="testimonial-name">Priya Sharma</div><div class="testimonial-role">Parent · Whitefield, Bangalore</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"The online classes are very well structured. My daughter looks forward to every session. She has already won her first school tournament after just 3 months!"</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">R</div>
+          <div><div class="testimonial-name">Rahul Menon</div><div class="testimonial-role">Parent · Marathahalli, Bangalore</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-stars">★★★★★</div>
+        <p class="testimonial-text">"Chessensei's home classes are so convenient. The trainer comes to our house and my kids love it. Monthly progress reports are a great touch — very professional."</p>
+        <div class="testimonial-author">
+          <div class="testimonial-avatar">A</div>
+          <div><div class="testimonial-name">Anjali Reddy</div><div class="testimonial-role">Parent · Whitefield, Bangalore</div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -725,10 +829,10 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
     </div>
     <div class="footer-col"><h4>Programs</h4><ul><li><a href="#programs">Home Classes</a></li><li><a href="#programs">Online Classes</a></li><li><a href="#programs">School Programs</a></li><li><a href="#programs">Tournaments</a></li></ul></div>
     <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="#about">About Us</a></li><li><a href="#why">Why Chess</a></li><li><a href="#how">How It Works</a></li><li><a href="#contact">Contact</a></li></ul></div>
-    <div class="footer-col"><h4>Contact</h4><ul><li><a href="tel:+917022785192">+91 70227 85192</a></li><li><a href="mailto:info@chessensei.com">info@chessensei.com</a></li><li><a href="#about">Whitefield, Bangalore</a></li><li><a href="https://wa.me/917022785192?text=Hi%20Chessensei!%20I'm%20interested%20in%20a%20free%20trial%20chess%20class%20for%20my%20child." target="_blank">WhatsApp Us</a></li></ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul><li><a href="tel:+917022785192">+91 70227 85192</a></li><li><a href="mailto:info@chessensei.com">info@chessensei.com</a></li><li><a href="#about">Whitefield, Bangalore</a></li><li><a href="https://wa.me/917022785192" target="_blank">WhatsApp Us</a></li></ul></div>
   </div>
   <div class="footer-bottom">
-    <p>© 2025 Chessensei | ThinkQuestLab Pvt. Ltd. All rights reserved.</p>
+    <p>© 2026 Chessensei | ThinkQuestLab Pvt. Ltd. All rights reserved.</p>
     <p>Made with ♟ in Bangalore</p>
   </div>
 </footer>
