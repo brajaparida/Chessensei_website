@@ -158,25 +158,18 @@
 }
 </script>
 
-<!-- Google Analytics — loaded after page renders -->
+<!-- Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D3C4L1W4FB"></script>
 <script>
-  window.addEventListener('load', function() {
-    var s = document.createElement('script');
-    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-D3C4L1W4FB';
-    s.async = true;
-    document.head.appendChild(s);
-  });
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-D3C4L1W4FB');
 </script>
 
-<!-- Fonts: preconnect first, then load async to eliminate render-blocking -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" onload="this.onload=null;this.rel='stylesheet'">
-<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap"></noscript>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
 <style>
 :root {
   --green:       #2A7A2A;
@@ -191,13 +184,6 @@
   --dark:        #1a2e1a;
   --gray:        #3d5040;
   --light-gray:  #e8ede8;
-}
-
-/* Font fallbacks while Google Fonts loads asynchronously */
-body { font-family: 'Nunito', system-ui, -apple-system, sans-serif; }
-.hero h1, .section-title, .footer-brand h3, .nav-logo-text,
-.contact-form-wrap h3, .profile-card h2 {
-  font-family: 'Fredoka One', system-ui, cursive;
 }
 
 body {
