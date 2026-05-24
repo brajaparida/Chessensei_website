@@ -181,7 +181,7 @@
   --cream2:      #F2EFE4;
   --white:       #ffffff;
   --dark:        #1a2e1a;
-  --gray:        #5a6b5a;
+  --gray:        #3d5040;
   --light-gray:  #e8ede8;
 }
 
@@ -328,7 +328,7 @@ nav {
 
 .hero-sub {
   font-size: 1rem; font-weight: 600;
-  color: rgba(255,255,255,0.75);
+  color: rgba(255,255,255,0.9);
   line-height: 1.7; margin-bottom: 2rem;
   max-width: 500px;
   animation: fadeUp 0.6s 0.15s ease both;
@@ -337,7 +337,7 @@ nav {
 
 .hero p {
   font-size: 0.98rem;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255,255,255,0.9);
   line-height: 1.7; margin-bottom: 2rem;
   max-width: 480px;
   animation: fadeUp 0.6s 0.2s ease both;
@@ -374,7 +374,7 @@ nav {
 .hero-stats { display: flex; gap: 2.5rem; margin-top: 3rem; animation: fadeUp 0.6s 0.4s ease both; }
 .stat-item { text-align: left; }
 .stat-num { font-family: 'Fredoka One', cursive; font-size: 2.2rem; color: var(--gold); line-height: 1; }
-.stat-label { font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px; }
+.stat-label { font-size: 0.75rem; font-weight: 700; color: rgba(255,255,255,0.85); letter-spacing: 0.05em; text-transform: uppercase; margin-top: 4px; }
 
 .hero-visual { display: flex; justify-content: center; align-items: center; animation: fadeUp 0.6s 0.2s ease both; }
 
@@ -460,13 +460,13 @@ section { padding: 80px 5%; }
 .features-section::before { content: ''; position: absolute; inset: 0; background-image: repeating-conic-gradient(rgba(255,255,255,0.02) 0% 25%, transparent 0% 50%); background-size: 40px 40px; }
 .features-section .section-tag { background: rgba(245,197,24,0.15); color: var(--gold); border-color: rgba(245,197,24,0.3); }
 .features-section .section-title { color: white; }
-.features-section .section-sub   { color: rgba(255,255,255,0.65); }
+.features-section .section-sub   { color: rgba(255,255,255,0.85); }
 .features-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3rem; position: relative; z-index: 1; }
 .feature-box { background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 18px; padding: 2rem 1.5rem; text-align: center; transition: all 0.25s; }
 .feature-box:hover { background: rgba(255,255,255,0.12); transform: translateY(-5px); border-color: rgba(245,197,24,0.4); box-shadow: 0 12px 40px rgba(0,0,0,0.2); }
 .feature-emoji { font-size: 2.2rem; margin-bottom: 1rem; }
 .feature-box h4 { font-size: 0.95rem; font-weight: 800; color: white; margin-bottom: 0.6rem; }
-.feature-box p  { font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.65); line-height: 1.6; }
+.feature-box p  { font-size: 0.82rem; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1.6; }
 
 /* ── HOW IT WORKS ── */
 .how-section { background: var(--white); }
@@ -490,6 +490,7 @@ section { padding: 80px 5%; }
 .highlight-box { background: var(--white); border-radius: 14px; padding: 1.2rem; border: 2px solid var(--light-gray); border-left: 4px solid var(--green); transition: all 0.2s; }
 .highlight-box:hover { border-color: var(--green); box-shadow: 0 4px 16px rgba(42,122,42,0.1); }
 .highlight-box h5 { font-size: 0.82rem; font-weight: 800; color: var(--green-dark); margin-bottom: 5px; }
+.highlight-title { font-size: 0.82rem; font-weight: 800; color: var(--green-dark); margin-bottom: 5px; }
 .highlight-box p  { font-size: 0.8rem; font-weight: 600; color: var(--gray); line-height: 1.45; }
 
 /* ── CONTACT ── */
@@ -500,6 +501,7 @@ section { padding: 80px 5%; }
 .contact-item:hover { border-color: var(--green); }
 .contact-icon { width: 44px; height: 44px; background: linear-gradient(135deg, var(--green), var(--green-light)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; box-shadow: 0 4px 12px rgba(42,122,42,0.25); }
 .contact-text h5 { font-size: 0.75rem; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.contact-label { font-size: 0.75rem; font-weight: 800; color: var(--green); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
 .contact-text p, .contact-text a { font-size: 0.9rem; font-weight: 600; color: var(--gray); text-decoration: none; }
 .contact-text a:hover { color: var(--green); }
 .contact-form-wrap { background: var(--cream); border-radius: 20px; padding: 2rem; border: 2px solid var(--light-gray); }
@@ -526,6 +528,7 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
 .social-link { width: 38px; height: 38px; background: rgba(255,255,255,0.08); border: 1.5px solid rgba(255,255,255,0.15); border-radius: 10px; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; transition: all 0.2s; }
 .social-link:hover { background: var(--gold); border-color: var(--gold); transform: translateY(-2px); }
 .footer-col h4 { font-size: 0.78rem; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
+.footer-col-title { font-size: 0.78rem; font-weight: 800; color: var(--gold); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 1rem; }
 .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 .footer-col a { color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: color 0.2s; }
 .footer-col a:hover { color: var(--gold); }
@@ -620,10 +623,10 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
     <h2 class="section-title">Chess is More Than Just a Game</h2>
     <div class="why-grid reveal">
       <ul class="why-list">
-        <li class="why-item"><div class="why-icon">🧠</div><div class="why-text"><h4>Boosts Cognitive Abilities</h4><p>Chess develops critical thinking, memory, and problem-solving skills that benefit every area of your child's life.</p></div></li>
-        <li class="why-item"><div class="why-icon">🎯</div><div class="why-text"><h4>Builds Concentration</h4><p>Regular chess practice dramatically improves a child's ability to focus, plan ahead, and think strategically.</p></div></li>
-        <li class="why-item"><div class="why-icon">🏆</div><div class="why-text"><h4>Builds Confidence</h4><p>Competing in tournaments and improving gives children a genuine sense of achievement and self-belief.</p></div></li>
-        <li class="why-item"><div class="why-icon">🤝</div><div class="why-text"><h4>Develops Leadership</h4><p>Students enhance not only cognitive abilities but also leadership, collaboration, and decision-making skills.</p></div></li>
+        <li class="why-item"><div class="why-icon">🧠</div><div class="why-text"><h3>Boosts Cognitive Abilities</h3><p>Chess develops critical thinking, memory, and problem-solving skills that benefit every area of your child's life.</p></div></li>
+        <li class="why-item"><div class="why-icon">🎯</div><div class="why-text"><h3>Builds Concentration</h3><p>Regular chess practice dramatically improves a child's ability to focus, plan ahead, and think strategically.</p></div></li>
+        <li class="why-item"><div class="why-icon">🏆</div><div class="why-text"><h3>Builds Confidence</h3><p>Competing in tournaments and improving gives children a genuine sense of achievement and self-belief.</p></div></li>
+        <li class="why-item"><div class="why-icon">🤝</div><div class="why-text"><h3>Develops Leadership</h3><p>Students enhance not only cognitive abilities but also leadership, collaboration, and decision-making skills.</p></div></li>
       </ul>
       <div class="why-quote">
         <blockquote>"Chess is a gymnasium of the mind. Every move teaches patience, every game builds character."</blockquote>
@@ -726,10 +729,10 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
     <h2 class="section-title">Why Choose Chessensei?</h2>
     <p class="section-sub">We go beyond teaching moves — we build thinkers, leaders, and champions.</p>
     <div class="features-grid reveal">
-      <div class="feature-box"><div class="feature-emoji">👑</div><h4>Expert Trainers</h4><p>Our coaches are passionate, experienced chess educators dedicated to helping every student reach their potential.</p></div>
-      <div class="feature-box"><div class="feature-emoji">📊</div><h4>Monthly Progress Reports</h4><p>Parents receive comprehensive feedback and reports on their child's development and improvement every month.</p></div>
-      <div class="feature-box"><div class="feature-emoji">🎯</div><h4>Weekly Tournaments</h4><p>Online tournaments every Saturday & Sunday at 3 PM to keep students competitive, engaged, and motivated.</p></div>
-      <div class="feature-box"><div class="feature-emoji">📚</div><h4>Structured Curriculum</h4><p>Level-wise learning with practice books, puzzles, and homework to ensure steady and measurable progress.</p></div>
+      <div class="feature-box"><div class="feature-emoji">👑</div><h3>Expert Trainers</h3><p>Our coaches are passionate, experienced chess educators dedicated to helping every student reach their potential.</p></div>
+      <div class="feature-box"><div class="feature-emoji">📊</div><h3>Monthly Progress Reports</h3><p>Parents receive comprehensive feedback and reports on their child's development and improvement every month.</p></div>
+      <div class="feature-box"><div class="feature-emoji">🎯</div><h3>Weekly Tournaments</h3><p>Online tournaments every Saturday & Sunday at 3 PM to keep students competitive, engaged, and motivated.</p></div>
+      <div class="feature-box"><div class="feature-emoji">📚</div><h3>Structured Curriculum</h3><p>Level-wise learning with practice books, puzzles, and homework to ensure steady and measurable progress.</p></div>
     </div>
   </div>
 </section>
@@ -741,10 +744,10 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
     <h2 class="section-title">How to Get Started</h2>
     <p class="section-sub">Joining Chessensei is easy. Your child can start their chess journey in just a few simple steps.</p>
     <div class="steps-grid reveal">
-      <div class="step-card"><div class="step-num">1</div><h4>Book a Free Class</h4><p>Contact us via WhatsApp or the form below to schedule a free trial class for your child.</p></div>
-      <div class="step-card"><div class="step-num">2</div><h4>Assessment</h4><p>We assess your child's current level and recommend the most suitable program and trainer.</p></div>
-      <div class="step-card"><div class="step-num">3</div><h4>Start Learning</h4><p>Classes begin! Your child learns through fun, structured sessions with a dedicated expert trainer.</p></div>
-      <div class="step-card"><div class="step-num">4</div><h4>Track & Compete</h4><p>Monthly reports track progress. Students participate in weekly online tournaments and events.</p></div>
+      <div class="step-card"><div class="step-num">1</div><h3>Book a Free Class</h3><p>Contact us via WhatsApp or the form below to schedule a free trial class for your child.</p></div>
+      <div class="step-card"><div class="step-num">2</div><h3>Assessment</h3><p>We assess your child's current level and recommend the most suitable program and trainer.</p></div>
+      <div class="step-card"><div class="step-num">3</div><h3>Start Learning</h3><p>Classes begin! Your child learns through fun, structured sessions with a dedicated expert trainer.</p></div>
+      <div class="step-card"><div class="step-num">4</div><h3>Track & Compete</h3><p>Monthly reports track progress. Students participate in weekly online tournaments and events.</p></div>
     </div>
   </div>
 </section>
@@ -769,10 +772,10 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
         <p>Our team of skilled chess trainers is dedicated to helping players of all levels reach their goals. With a wealth of experience and a proven track record, we provide a supportive and motivating learning environment.</p>
         <p>We are dedicated to broadening and developing chess as art, recreation, and as a significant element of culture — delivering workshops, tournaments, and structured programs that shape young minds.</p>
         <div class="about-highlights">
-          <div class="highlight-box"><h5>📍 Our Location</h5><p>4th Floor, Balaraj's Arcade, Whitefield Main Rd, Bangalore 560066</p></div>
-          <div class="highlight-box"><h5>📞 Contact</h5><p>+91 70227 85192<br>info@chessensei.com</p></div>
-          <div class="highlight-box"><h5>🕐 Class Timings</h5><p>Online & offline. Flexible schedules for all age groups.</p></div>
-          <div class="highlight-box"><h5>🏆 Tournaments</h5><p>Weekly online tournaments every Saturday & Sunday at 3 PM.</p></div>
+          <div class="highlight-box"><h3 class="highlight-title">📍 Our Location</h3><p>4th Floor, Balaraj's Arcade, Whitefield Main Rd, Bangalore 560066</p></div>
+          <div class="highlight-box"><h3 class="highlight-title">📞 Contact</h3><p>+91 70227 85192<br>info@chessensei.com</p></div>
+          <div class="highlight-box"><h3 class="highlight-title">🕐 Class Timings</h3><p>Online & offline. Flexible schedules for all age groups.</p></div>
+          <div class="highlight-box"><h3 class="highlight-title">🏆 Tournaments</h3><p>Weekly online tournaments every Saturday & Sunday at 3 PM.</p></div>
         </div>
       </div>
     </div>
@@ -787,10 +790,10 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
     <p class="section-sub">Ready to start your child's chess journey? Reach out and we'll get back to you within 24 hours.</p>
     <div class="contact-grid reveal">
       <div class="contact-info">
-        <div class="contact-item"><div class="contact-icon">📍</div><div class="contact-text"><h5>Address</h5><p>ThinkQuestLab Pvt. Ltd., 4th Floor, Balaraj's Arcade, Whitefield Main Rd, opposite BRIGADE COSMOPOLIS, Bengaluru 560066</p></div></div>
-        <div class="contact-item"><div class="contact-icon">📞</div><div class="contact-text"><h5>Phone / WhatsApp</h5><a href="tel:+917022785192">+91 70227 85192</a></div></div>
-        <div class="contact-item"><div class="contact-icon">✉️</div><div class="contact-text"><h5>Email</h5><a href="mailto:info@chessensei.com">info@chessensei.com</a></div></div>
-        <div class="contact-item"><div class="contact-icon">📱</div><div class="contact-text"><h5>Follow Us</h5><a href="https://instagram.com/chessensei" target="_blank">@chessensei on Instagram</a></div></div>
+        <div class="contact-item"><div class="contact-icon">📍</div><div class="contact-text"><h3 class="contact-label">Address</h3><p>ThinkQuestLab Pvt. Ltd., 4th Floor, Balaraj's Arcade, Whitefield Main Rd, opposite BRIGADE COSMOPOLIS, Bengaluru 560066</p></div></div>
+        <div class="contact-item"><div class="contact-icon">📞</div><div class="contact-text"><h3 class="contact-label">Phone / WhatsApp</h3><a href="tel:+917022785192">+91 70227 85192</a></div></div>
+        <div class="contact-item"><div class="contact-icon">✉️</div><div class="contact-text"><h3 class="contact-label">Email</h3><a href="mailto:info@chessensei.com">info@chessensei.com</a></div></div>
+        <div class="contact-item"><div class="contact-icon">📱</div><div class="contact-text"><h3 class="contact-label">Follow Us</h3><a href="https://instagram.com/chessensei" target="_blank">@chessensei on Instagram</a></div></div>
         <a href="https://wa.me/917022785192?text=Hi%20Chessensei!%20I'm%20interested%20in%20a%20free%20trial%20chess%20class%20for%20my%20child." target="_blank" class="btn-primary" style="justify-content:center; margin-top:0.5rem;">💬 Chat on WhatsApp</a>
       </div>
       <div class="contact-form-wrap">
@@ -798,15 +801,15 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
         <p>We'll get back to you within 24 hours.</p>
         <div class="contact-form">
           <div class="form-row">
-            <div class="form-group"><label>Parent Name</label><input type="text" placeholder="Your name"></div>
-            <div class="form-group"><label>Child's Name</label><input type="text" placeholder="Child's name"></div>
+            <div class="form-group"><label for="parent-name">Parent Name</label><input id="parent-name" type="text" placeholder="Your name"></div>
+            <div class="form-group"><label for="child-name">Child's Name</label><input id="child-name" type="text" placeholder="Child's name"></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><label>Phone Number</label><input type="tel" placeholder="+91 XXXXX XXXXX"></div>
-            <div class="form-group"><label>Child's Age</label><input type="number" placeholder="Age" min="4" max="18"></div>
+            <div class="form-group"><label for="phone">Phone Number</label><input id="phone" type="tel" placeholder="+91 XXXXX XXXXX"></div>
+            <div class="form-group"><label for="child-age">Child's Age</label><input id="child-age" type="number" placeholder="Age" min="4" max="18"></div>
           </div>
-          <div class="form-group"><label>Preferred Program</label><select><option>Home Chess Classes</option><option>Online Chess Classes</option><option>School / Group Classes</option><option>Not sure yet</option></select></div>
-          <div class="form-group"><label>Message (Optional)</label><textarea placeholder="Any questions or requirements..."></textarea></div>
+          <div class="form-group"><label for="program">Preferred Program</label><select id="program"><option>Home Chess Classes</option><option>Online Chess Classes</option><option>School / Group Classes</option><option>Not sure yet</option></select></div>
+          <div class="form-group"><label for="message">Message (Optional)</label><textarea id="message" placeholder="Any questions or requirements..."></textarea></div>
           <button class="btn-submit" onclick="handleSubmit()">Send Message →</button>
         </div>
       </div>
@@ -827,9 +830,9 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
         <a href="https://wa.me/917022785192?text=Hi%20Chessensei!%20I'm%20interested%20in%20a%20free%20trial%20chess%20class%20for%20my%20child." target="_blank" class="social-link">💬</a>
       </div>
     </div>
-    <div class="footer-col"><h4>Programs</h4><ul><li><a href="#programs">Home Classes</a></li><li><a href="#programs">Online Classes</a></li><li><a href="#programs">School Programs</a></li><li><a href="#programs">Tournaments</a></li></ul></div>
-    <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="#about">About Us</a></li><li><a href="#why">Why Chess</a></li><li><a href="#how">How It Works</a></li><li><a href="#contact">Contact</a></li></ul></div>
-    <div class="footer-col"><h4>Contact</h4><ul><li><a href="tel:+917022785192">+91 70227 85192</a></li><li><a href="mailto:info@chessensei.com">info@chessensei.com</a></li><li><a href="#about">Whitefield, Bangalore</a></li><li><a href="https://wa.me/917022785192" target="_blank">WhatsApp Us</a></li></ul></div>
+    <div class="footer-col"><h3 class="footer-col-title">Programs</h3><ul><li><a href="#programs">Home Classes</a></li><li><a href="#programs">Online Classes</a></li><li><a href="#programs">School Programs</a></li><li><a href="#programs">Tournaments</a></li></ul></div>
+    <div class="footer-col"><h3 class="footer-col-title">Quick Links</h3><ul><li><a href="#about">About Us</a></li><li><a href="#why">Why Chess</a></li><li><a href="#how">How It Works</a></li><li><a href="#contact">Contact</a></li></ul></div>
+    <div class="footer-col"><h3 class="footer-col-title">Contact</h3><ul><li><a href="tel:+917022785192">+91 70227 85192</a></li><li><a href="mailto:info@chessensei.com">info@chessensei.com</a></li><li><a href="#about">Whitefield, Bangalore</a></li><li><a href="https://wa.me/917022785192" target="_blank">WhatsApp Us</a></li></ul></div>
   </div>
   <div class="footer-bottom">
     <p>© 2026 Chessensei | ThinkQuestLab Pvt. Ltd. All rights reserved.</p>
