@@ -158,17 +158,25 @@
 }
 </script>
 
-<!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-D3C4L1W4FB"></script>
+<!-- Google Analytics — loaded after page renders -->
 <script>
+  window.addEventListener('load', function() {
+    var s = document.createElement('script');
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=G-D3C4L1W4FB';
+    s.async = true;
+    document.head.appendChild(s);
+  });
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-D3C4L1W4FB');
 </script>
 
+<!-- Fonts: preconnect first, then load async to eliminate render-blocking -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap"></noscript>
 <style>
 :root {
   --green:       #2A7A2A;
@@ -185,8 +193,12 @@
   --light-gray:  #e8ede8;
 }
 
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+/* Font fallbacks while Google Fonts loads asynchronously */
+body { font-family: 'Nunito', system-ui, -apple-system, sans-serif; }
+.hero h1, .section-title, .footer-brand h3, .nav-logo-text,
+.contact-form-wrap h3, .profile-card h2 {
+  font-family: 'Fredoka One', system-ui, cursive;
+}
 
 body {
   font-family: 'Nunito', sans-serif;
@@ -535,9 +547,10 @@ footer { background: var(--green-dark); color: rgba(255,255,255,0.75); padding: 
 .footer-bottom { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 600; max-width: 1200px; margin: 0 auto; color: rgba(255,255,255,0.45); }
 
 /* ── WHATSAPP FLOAT ── */
-.wa-float { position: fixed; bottom: 24px; right: 24px; z-index: 999; width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.8rem; box-shadow: 0 4px 20px rgba(37,211,102,0.5); transition: transform 0.2s; animation: waPulse 2s infinite; }
+/* WhatsApp float — uses transform+opacity only (GPU composited, no box-shadow animation) */
+.wa-float { position: fixed; bottom: 24px; right: 24px; z-index: 999; width: 60px; height: 60px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.8rem; box-shadow: 0 4px 20px rgba(37,211,102,0.5); transition: transform 0.2s; animation: waPulse 2s infinite; will-change: transform; }
 .wa-float:hover { transform: scale(1.12); }
-@keyframes waPulse { 0%,100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); } 50% { box-shadow: 0 4px 36px rgba(37,211,102,0.7); } }
+@keyframes waPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 
 /* ── ANIMATIONS ── */
 @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
