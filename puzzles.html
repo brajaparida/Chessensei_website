@@ -50,12 +50,22 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .btn-save{width:100%;padding:13px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;margin-top:8px;transition:opacity .2s}
 .btn-save:hover{opacity:.85}.btn-save:disabled{opacity:.5;cursor:not-allowed}
 
-/* HEADER */
+/* ── HEADER ── */
 header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-bottom:1px solid var(--border);background:linear-gradient(180deg,#14141e,transparent);position:sticky;top:0;z-index:100;backdrop-filter:blur(12px)}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-icon{width:32px;height:32px;background:var(--gold);clip-path:polygon(50% 0%,100% 38%,82% 100%,18% 100%,0% 38%);display:flex;align-items:center;justify-content:center;font-size:15px;color:#000;font-weight:900}
-.logo-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.logo-sub{font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+
+/* FIX 1: Logo image sized properly */
+.logo-img{
+  height:36px;
+  width:auto;
+  object-fit:contain;
+  display:block;
+}
+
+.logo-wordmark{display:flex;flex-direction:column;line-height:1.1}
+.logo-text{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;background:linear-gradient(135deg,var(--gold),var(--gold2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+
 .header-right{display:flex;align-items:center;gap:10px}
 .pts-badge{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#000;border-radius:20px;padding:5px 13px;font-size:12px;font-weight:700;font-family:'DM Mono',monospace;display:none}
 .tier-pill{display:none;align-items:center;gap:5px;border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;letter-spacing:.5px;border:1px solid;transition:all .4s}
@@ -118,7 +128,7 @@ tbody td{padding:12px 18px;font-size:14px}
 .streak-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(240,192,64,.12);color:var(--gold);border-radius:12px;padding:3px 10px;font-size:12px;font-family:'DM Mono',monospace}
 .lb-empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
 
-/* PUZZLE LAYOUT — info LEFT, board RIGHT */
+/* PUZZLE LAYOUT */
 .guest-banner{background:linear-gradient(135deg,rgba(74,240,176,.1),rgba(240,192,64,.08));border:1px solid rgba(74,240,176,.2);border-radius:12px;padding:12px 18px;display:none;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
 .guest-banner-text{font-size:13px;color:var(--silver)}.guest-banner-text strong{color:var(--accent)}
 .btn-signin-small{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#000;border:none;border-radius:8px;padding:7px 16px;font-size:12px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
@@ -129,7 +139,7 @@ tbody td{padding:12px 18px;font-size:14px}
 .puzzle-panel-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
 .puzzle-id{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
 
-/* BOARD with external coordinates */
+/* BOARD */
 .board-outer{padding:8px;user-select:none;background:#1a2a3a;border-radius:0 0 16px 16px}
 .board-with-coords{display:flex;align-items:stretch}
 .rank-labels{display:flex;flex-direction:column;padding-right:5px;flex-shrink:0;width:20px}
@@ -148,11 +158,8 @@ tbody td{padding:12px 18px;font-size:14px}
 .sq.dark.lastmove-from{background:rgba(60,120,220,.6)!important}
 .sq.light.lastmove-to{background:rgba(100,160,255,.5)!important}
 .sq.dark.lastmove-to{background:rgba(60,120,220,.6)!important}
-
-/* Arrow overlay on board */
 #board-arrow{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:10}
 
-/* To-move indicator */
 .to-move{display:flex;align-items:center;gap:8px;margin-bottom:9px;padding:7px 11px;background:var(--surface2);border-radius:8px;font-size:13px;color:var(--silver)}
 .to-move-dot{width:12px;height:12px;border-radius:50%;border:2px solid var(--border);flex-shrink:0}
 .to-move-dot.white{background:#f8f8f0}.to-move-dot.black{background:#202020}
@@ -186,8 +193,28 @@ tbody td{padding:12px 18px;font-size:14px}
 .meta-value{font-size:14px;font-weight:500}
 .rating-bar{height:4px;border-radius:2px;background:var(--border);margin-top:5px;overflow:hidden}
 .rating-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--gold));border-radius:2px;transition:width .5s}
-.theme-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
-.theme-tag{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:3px 9px;font-size:11px;color:var(--muted)}
+
+/* FIX 2: Theme tags — colorful and highlighted */
+.theme-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.theme-tag{
+  border-radius:20px;
+  padding:4px 10px;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:0.03em;
+  border:1px solid;
+  transition:transform .15s;
+  cursor:default;
+}
+.theme-tag:hover{transform:scale(1.06)}
+
+/* Theme color palette — cycles through accent colors */
+.theme-tag:nth-child(6n+1){background:rgba(74,240,176,.15);border-color:rgba(74,240,176,.5);color:#4af0b0}
+.theme-tag:nth-child(6n+2){background:rgba(240,192,64,.15);border-color:rgba(240,192,64,.5);color:#f0c040}
+.theme-tag:nth-child(6n+3){background:rgba(100,160,255,.15);border-color:rgba(100,160,255,.5);color:#64a0ff}
+.theme-tag:nth-child(6n+4){background:rgba(240,160,48,.15);border-color:rgba(240,160,48,.5);color:#f0a030}
+.theme-tag:nth-child(6n+5){background:rgba(200,80,240,.15);border-color:rgba(200,80,240,.5);color:#c850f0}
+.theme-tag:nth-child(6n+6){background:rgba(240,80,80,.15);border-color:rgba(240,80,80,.5);color:#f05050}
 
 /* MOVE NAVIGATOR */
 .move-nav{display:flex;align-items:center;gap:6px;margin-top:10px}
@@ -267,10 +294,15 @@ tbody td{padding:12px 18px;font-size:14px}
 <!-- MAIN APP -->
 <div id="app" style="display:none">
   <header>
-    <div class="logo">
-      <img src="https://www.chessensei.com/chessensei_logo.png" alt="Chessensei" class="logo-img">
-      <div class="logo-sub">Puzzle Master</div>
-    </div>
+    <!-- FIX 1: Logo with proper sizing and wordmark -->
+    <a href="https://www.chessensei.com" class="logo">
+      <img src="chessensei_logo.png" alt="Chessensei" class="logo-img"
+           onerror="this.style.display='none'">
+      <div class="logo-wordmark">
+        <span class="logo-text">Chessensei</span>
+        <span class="logo-sub">Puzzle Master</span>
+      </div>
+    </a>
     <div class="header-right">
       <div class="tier-pill tier-1" id="tier-pill">⚡ Beginner</div>
       <div class="pts-badge" id="header-pts">⭐ 0 pts</div>
@@ -319,19 +351,14 @@ tbody td{padding:12px 18px;font-size:14px}
       </div>
 
       <div class="puzzle-layout">
-
         <!-- LEFT: Info Panel -->
         <div class="puzzle-info-panel">
-
-          <!-- Status -->
           <div class="info-card" id="puzzle-status-card">
             <div class="puzzle-status">
               <div class="status-icon">⏳</div>
               <div class="status-title">Loading puzzle…</div>
             </div>
           </div>
-
-          <!-- Progress -->
           <div class="info-card">
             <h3>Your Progress</h3>
             <div class="xp-section">
@@ -340,8 +367,6 @@ tbody td{padding:12px 18px;font-size:14px}
             </div>
             <div id="ladder-rows"></div>
           </div>
-
-          <!-- Puzzle Info -->
           <div class="info-card">
             <h3>Puzzle Info</h3>
             <div class="meta-row">
@@ -355,14 +380,14 @@ tbody td{padding:12px 18px;font-size:14px}
                 <div class="meta-value" id="your-pts-display" style="color:var(--accent);font-family:'DM Mono',monospace;font-size:20px">0</div>
               </div>
             </div>
-            <div><div class="meta-label" style="margin-bottom:6px">Themes</div><div class="theme-tags" id="theme-tags"></div></div>
+            <div>
+              <div class="meta-label" style="margin-bottom:6px">Themes</div>
+              <div class="theme-tags" id="theme-tags"></div>
+            </div>
           </div>
-
-          <!-- Actions -->
           <div class="info-card">
             <button class="btn btn-gold" onclick="nextPuzzle()">▶ Next Puzzle</button>
           </div>
-
         </div>
 
         <!-- RIGHT: Board -->
@@ -385,7 +410,6 @@ tbody td{padding:12px 18px;font-size:14px}
                 <div class="file-labels" id="file-labels"></div>
               </div>
             </div>
-            <!-- Move navigator (shown after solve) -->
             <div class="move-nav" id="move-nav" style="display:none">
               <button class="move-nav-btn" id="nav-prev" onclick="navMove(-1)" title="Previous move">‹</button>
               <div class="move-counter" id="move-counter">0 / 0</div>
@@ -393,7 +417,6 @@ tbody td{padding:12px 18px;font-size:14px}
             </div>
           </div>
         </div>
-
       </div>
     </div>
   </main>
@@ -404,18 +427,12 @@ tbody td{padding:12px 18px;font-size:14px}
 <div class="upgrade-banner" id="upgrade-banner"></div>
 
 <script>
-// ══════════════════════════════════════════
-//  CONFIG
-// ══════════════════════════════════════════
 const GOOGLE_CLIENT_ID = '657780843906-44t088cc4q9soqs6cl7qi2g40i0al52c.apps.googleusercontent.com';
 const APPS_SCRIPT_URL  = 'https://script.google.com/macros/s/AKfycbzH2GHmPEbtDesuZ8dKisQ-XSYrX6wK1wgf5UOeh5rbY4yvzhCaJky59qhgu8PhyrYMrQ/exec';
 const SUPABASE_URL     = 'https://zyhqrdtebcreoleyvwza.supabase.co';
 const SUPABASE_KEY     = 'sb_publishable_BXtAiKjIqua-Yvu5oGIVDw_oiQMMORX';
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// ══════════════════════════════════════════
-//  TIERS
-// ══════════════════════════════════════════
 const TIERS=[
   {id:1,name:'Beginner',    emoji:'⚡',minPts:0,  maxPts:100,  color:'var(--accent)',cls:'tier-1',minR:0,   maxR:800},
   {id:2,name:'Intermediate',emoji:'🔥',minPts:100,maxPts:300,  color:'var(--gold)',  cls:'tier-2',minR:800, maxR:1400},
@@ -424,9 +441,6 @@ const TIERS=[
 ];
 function getTier(pts){for(let i=TIERS.length-1;i>=0;i--)if(pts>=TIERS[i].minPts)return TIERS[i];return TIERS[0]}
 
-// ══════════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════════
 let currentUser=null,userPoints=0,studentProfile=null;
 let gameState=null,puzzlePool=[],usedIds=new Set(),puzzleReady=false;
 let lbData=[],lbFilter='all',knownCities=new Set();
@@ -436,166 +450,87 @@ const $=id=>document.getElementById(id);
 function hideEl(id){$(id).style.display='none'}
 function showEl(id,flex=false){$(id).style.display=flex?'flex':'block'}
 
-// ══════════════════════════════════════════
-//  GOOGLE IDENTITY LOGIN
-// ══════════════════════════════════════════
 function initGoogleLogin(){
-  google.accounts.id.initialize({
-    client_id:GOOGLE_CLIENT_ID,
-    callback:handleGoogleResponse,
-    auto_select:false,
-    cancel_on_tap_outside:false,
-  });
-  google.accounts.id.renderButton($('google-signin-btn'),{
-    theme:'filled_black',size:'large',text:'continue_with',shape:'rectangular',width:280
-  });
+  google.accounts.id.initialize({client_id:GOOGLE_CLIENT_ID,callback:handleGoogleResponse,auto_select:false,cancel_on_tap_outside:false});
+  google.accounts.id.renderButton($('google-signin-btn'),{theme:'filled_black',size:'large',text:'continue_with',shape:'rectangular',width:280});
   google.accounts.id.prompt();
 }
-
 function handleGoogleResponse(response){
   const payload=JSON.parse(atob(response.credential.split('.')[1]));
   currentUser={email:payload.email,name:payload.name,picture:payload.picture,sub:payload.sub};
   closeLoginModal();hideEl('profile-screen');onSignedIn();
 }
-
 function showLoginModal(){$('login-modal').classList.add('show')}
 function closeLoginModal(){$('login-modal').classList.remove('show')}
 $('login-modal').addEventListener('click',e=>{if(e.target===$('login-modal'))closeLoginModal()});
-
 function signOut(){
   google.accounts.id.disableAutoSelect();
-  localStorage.removeItem('chessensei_user');
-  localStorage.removeItem('chessensei_profile');
-  localStorage.removeItem('chessensei_points');
-  currentUser=null;studentProfile=null;userPoints=0;
-  location.reload();
+  localStorage.removeItem('chessensei_user');localStorage.removeItem('chessensei_profile');localStorage.removeItem('chessensei_points');
+  currentUser=null;studentProfile=null;userPoints=0;location.reload();
 }
 
-// ══════════════════════════════════════════
-//  GOOGLE SHEETS API
-// ══════════════════════════════════════════
-async function sheetsCall(params){
-  const url=APPS_SCRIPT_URL+'?'+new URLSearchParams(params);
-  const res=await fetch(url);
-  return res.json();
-}
-async function getStudent(email){
-  try{return await sheetsCall({action:'getStudent',email})}
-  catch(e){return{found:false}}
-}
-async function saveStudentProfile(profile){
-  try{return await sheetsCall({action:'saveStudent',...profile})}
-  catch(e){return{error:e.message}}
-}
-async function updatePointsInSheet(email,points){
-  try{
-    const data=await sheetsCall({action:'updatePoints',email,points});
-    console.log('Sheet save:',data);return data;
-  }catch(e){return{error:e.message}}
-}
-async function getLeaderboardFromSheet(){
-  try{const d=await sheetsCall({action:'getLeaderboard'});return Array.isArray(d)?d:[];}
-  catch(e){return[]}
-}
+async function sheetsCall(params){const url=APPS_SCRIPT_URL+'?'+new URLSearchParams(params);const res=await fetch(url);return res.json()}
+async function getStudent(email){try{return await sheetsCall({action:'getStudent',email})}catch(e){return{found:false}}}
+async function saveStudentProfile(profile){try{return await sheetsCall({action:'saveStudent',...profile})}catch(e){return{error:e.message}}}
+async function updatePointsInSheet(email,points){try{const data=await sheetsCall({action:'updatePoints',email,points});return data}catch(e){return{error:e.message}}}
+async function getLeaderboardFromSheet(){try{const d=await sheetsCall({action:'getLeaderboard'});return Array.isArray(d)?d:[]}catch(e){return[]}}
 
-// ══════════════════════════════════════════
-//  AUTH FLOW
-// ══════════════════════════════════════════
 async function onSignedIn(){
   localStorage.setItem('chessensei_user',JSON.stringify(currentUser));
   const student=await getStudent(currentUser.email);
   if(student.found){
     studentProfile=student;userPoints=parseInt(student.points)||0;
     localStorage.setItem('chessensei_profile',JSON.stringify(student));
-    localStorage.setItem('chessensei_points',userPoints);
-    showApp();
+    localStorage.setItem('chessensei_points',userPoints);showApp();
   } else {
     $('profile-name').value=currentUser.name||'';
     showEl('profile-screen',true);hideEl('loading-screen');hideEl('app');
   }
 }
-
 async function saveProfile(){
   const btn=$('save-profile-btn');
-  const name=$('profile-name').value.trim();
-  const city=$('profile-city').value.trim();
-  const school=$('profile-school').value.trim();
+  const name=$('profile-name').value.trim(),city=$('profile-city').value.trim(),school=$('profile-school').value.trim();
   if(!name||!city||!school){notif('Please fill in all fields','error');return}
   btn.disabled=true;btn.textContent='Saving…';
-  const profile={email:currentUser.email,name,city,school,points:0,streak:1,
-    last_played:new Date().toISOString().slice(0,10),avatar_url:currentUser.picture||''};
+  const profile={email:currentUser.email,name,city,school,points:0,streak:1,last_played:new Date().toISOString().slice(0,10),avatar_url:currentUser.picture||''};
   const res=await saveStudentProfile(profile);
   if(res.error){notif('Error: '+res.error,'error');btn.disabled=false;btn.textContent='Save & Start Playing →';return}
   studentProfile=profile;userPoints=0;
-  localStorage.setItem('chessensei_profile',JSON.stringify(profile));
-  localStorage.setItem('chessensei_points','0');
-  showApp();
+  localStorage.setItem('chessensei_profile',JSON.stringify(profile));localStorage.setItem('chessensei_points','0');showApp();
 }
 
-// ══════════════════════════════════════════
-//  SCREENS
-// ══════════════════════════════════════════
 function showGuest(){
   hideEl('loading-screen');showEl('app');
-  $('signin-header-btn').style.display='flex';
-  $('guest-banner').style.display='flex';
-  $('user-pill').style.display='none';
-  $('tier-pill').style.display='none';
-  $('header-pts').style.display='none';
-  updateUI();loadLeaderboard();
-  if(!puzzleReady){puzzleReady=true;loadNextPuzzle()}
+  $('signin-header-btn').style.display='flex';$('guest-banner').style.display='flex';
+  $('user-pill').style.display='none';$('tier-pill').style.display='none';$('header-pts').style.display='none';
+  updateUI();loadLeaderboard();if(!puzzleReady){puzzleReady=true;loadNextPuzzle()}
 }
-
 function showApp(){
   hideEl('loading-screen');hideEl('profile-screen');showEl('app');
-  $('signin-header-btn').style.display='none';
-  $('guest-banner').style.display='none';
-  $('user-pill').style.display='flex';
-  $('tier-pill').style.display='flex';
-  $('header-pts').style.display='flex';
+  $('signin-header-btn').style.display='none';$('guest-banner').style.display='none';
+  $('user-pill').style.display='flex';$('tier-pill').style.display='flex';$('header-pts').style.display='flex';
   $('user-display-name').textContent=(studentProfile.name||currentUser.name).split(' ')[0];
   const av=$('user-avatar-ph');
   if(currentUser.picture){av.innerHTML=`<img src="${currentUser.picture}" class="user-avatar-img">`}
   else{av.textContent=(studentProfile.name||'?')[0].toUpperCase()}
   $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';
   $('your-pts-display').textContent=userPoints.toLocaleString();
-  updateUI();loadLeaderboard();
-  if(!puzzleReady){puzzleReady=true;loadNextPuzzle()}
+  updateUI();loadLeaderboard();if(!puzzleReady){puzzleReady=true;loadNextPuzzle()}
 }
 
-// ══════════════════════════════════════════
-//  LEADERBOARD
-// ══════════════════════════════════════════
 async function loadLeaderboard(){
   $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">Loading…</td></tr>';
   $('podium').innerHTML='<div class="lb-empty">Loading…</div>';
   const data=await getLeaderboardFromSheet();
-  if(!data.length){
-    $('podium').innerHTML='<div class="lb-empty">No students yet 🏆</div>';
-    $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">No students yet — be the first!</td></tr>';
-    return;
-  }
-  lbData=data.map(d=>{
-    if(currentUser&&d.email===currentUser.email)return{...d,points:userPoints};
-    return d;
-  }).sort((a,b)=>(parseInt(b.points)||0)-(parseInt(a.points)||0));
+  if(!data.length){$('podium').innerHTML='<div class="lb-empty">No students yet 🏆</div>';$('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">No students yet — be the first!</td></tr>';return}
+  lbData=data.map(d=>{if(currentUser&&d.email===currentUser.email)return{...d,points:userPoints};return d}).sort((a,b)=>(parseInt(b.points)||0)-(parseInt(a.points)||0));
   const cities=[...new Set(lbData.map(d=>d.city).filter(Boolean))].sort();
   const cf=$('city-filters');
-  cities.forEach(city=>{
-    if(knownCities.has(city))return;knownCities.add(city);
-    const b=document.createElement('button');b.className='filter-btn';b.textContent=city;
-    b.onclick=()=>filterLB(city,b);cf.appendChild(b);
-  });
+  cities.forEach(city=>{if(knownCities.has(city))return;knownCities.add(city);const b=document.createElement('button');b.className='filter-btn';b.textContent=city;b.onclick=()=>filterLB(city,b);cf.appendChild(b)});
   $('lb-subtitle').textContent=lbData.length+' student'+(lbData.length!==1?'s':'')+' ranked • just now';
   renderLB(lbFilter==='all'?lbData:lbData.filter(d=>d.city===lbFilter));
 }
-
-function filterLB(filter,btn){
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');lbFilter=filter;
-  renderLB(filter==='all'?lbData:lbData.filter(d=>d.city===filter));
-}
-
+function filterLB(filter,btn){document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');lbFilter=filter;renderLB(filter==='all'?lbData:lbData.filter(d=>d.city===filter))}
 const AV_COLORS=['#4af0b0','#f0c040','#f08040','#c040f0','#40b0f0','#f04070','#70f040','#40d0f0'];
 function avColor(name){let h=0;for(const c of(name||'?'))h=(h*31+c.charCodeAt(0))%AV_COLORS.length;return AV_COLORS[h]}
 function avHTML(d,size=30){
@@ -603,81 +538,35 @@ function avHTML(d,size=30){
   const c=avColor(d.name);
   return`<div style="width:${size}px;height:${size}px;border-radius:50%;background:linear-gradient(135deg,${c},${c}99);display:flex;align-items:center;justify-content:center;font-size:${Math.round(size*.4)}px;font-weight:700;color:#000">${(d.name||'?')[0].toUpperCase()}</div>`;
 }
-
 function renderLB(data){
-  if(!data.length){
-    $('podium').innerHTML='<div class="lb-empty">No students in this city yet.</div>';
-    $('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">No students found.</td></tr>';return;
-  }
-  const podium=$('podium');
-  const order=[1,0,2],cls=['silver','gold','bronze'],medals=['🥈','🥇','🥉'];
-  podium.innerHTML='';
-  order.forEach((i,pos)=>{
-    if(!data[i])return;
-    const d=data[i],card=document.createElement('div');
-    card.className='podium-card '+cls[pos];
-    card.innerHTML=`<div class="podium-rank">${medals[pos]}</div><div class="podium-avatar">${avHTML(d,48)}</div><div class="podium-name">${d.name}</div><div class="podium-school">${d.school||'—'}</div><div class="podium-pts">${(parseInt(d.points)||0).toLocaleString()}</div>`;
-    podium.appendChild(card);
-  });
+  if(!data.length){$('podium').innerHTML='<div class="lb-empty">No students in this city yet.</div>';$('lb-tbody').innerHTML='<tr><td colspan="5" class="lb-empty">No students found.</td></tr>';return}
+  const podium=$('podium');const order=[1,0,2],cls=['silver','gold','bronze'],medals=['🥈','🥇','🥉'];podium.innerHTML='';
+  order.forEach((i,pos)=>{if(!data[i])return;const d=data[i],card=document.createElement('div');card.className='podium-card '+cls[pos];card.innerHTML=`<div class="podium-rank">${medals[pos]}</div><div class="podium-avatar">${avHTML(d,48)}</div><div class="podium-name">${d.name}</div><div class="podium-school">${d.school||'—'}</div><div class="podium-pts">${(parseInt(d.points)||0).toLocaleString()}</div>`;podium.appendChild(card)});
   const tbody=$('lb-tbody');tbody.innerHTML='';
-  data.forEach((d,i)=>{
-    const isMe=currentUser&&d.email===currentUser.email;
-    const tr=document.createElement('tr');if(isMe)tr.className='my-row';
-    tr.innerHTML=`<td class="rank-cell ${i<3?'top':''}">${i+1}</td><td><div class="student-cell"><div class="st-avatar">${avHTML(d,30)}</div><div><div class="st-name">${d.name}${isMe?' <span style="font-size:10px;color:var(--accent)">(you)</span>':''}</div><div class="st-city">${d.city||'—'}</div></div></div></td><td class="school-cell">${d.school||'—'}</td><td class="pts-cell">${(parseInt(d.points)||0).toLocaleString()}</td><td class="streak-cell"><span class="streak-badge">🔥 ${d.streak||0}d</span></td>`;
-    tbody.appendChild(tr);
-  });
+  data.forEach((d,i)=>{const isMe=currentUser&&d.email===currentUser.email;const tr=document.createElement('tr');if(isMe)tr.className='my-row';tr.innerHTML=`<td class="rank-cell ${i<3?'top':''}">${i+1}</td><td><div class="student-cell"><div class="st-avatar">${avHTML(d,30)}</div><div><div class="st-name">${d.name}${isMe?' <span style="font-size:10px;color:var(--accent)">(you)</span>':''}</div><div class="st-city">${d.city||'—'}</div></div></div></td><td class="school-cell">${d.school||'—'}</td><td class="pts-cell">${(parseInt(d.points)||0).toLocaleString()}</td><td class="streak-cell"><span class="streak-badge">🔥 ${d.streak||0}d</span></td>`;tbody.appendChild(tr)});
 }
 
-// ══════════════════════════════════════════
-//  PUZZLES FROM SUPABASE
-// ══════════════════════════════════════════
 async function fetchPuzzlesForTier(tier){
-  const{data,error}=await sb.from('puzzles').select('id,fen,moves,rating,themes,game_url')
-    .gte('rating',tier.minR).lt('rating',tier.maxR)
-    .order('popularity',{ascending:false}).limit(30);
+  const{data,error}=await sb.from('puzzles').select('id,fen,moves,rating,themes,game_url').gte('rating',tier.minR).lt('rating',tier.maxR).order('popularity',{ascending:false}).limit(30);
   if(error||!data?.length)return[];return data;
 }
 async function pickPuzzle(){
-  const tier=getTier(userPoints);
-  let pool=puzzlePool.filter(p=>!usedIds.has(p.id));
+  const tier=getTier(userPoints);let pool=puzzlePool.filter(p=>!usedIds.has(p.id));
   if(!pool.length){puzzlePool=await fetchPuzzlesForTier(tier);usedIds.clear();pool=puzzlePool}
-  if(!pool.length)return null;
-  return pool[Math.floor(Math.random()*pool.length)];
+  if(!pool.length)return null;return pool[Math.floor(Math.random()*pool.length)];
 }
 async function loadNextPuzzle(){
-  resetStatus();$('puzzle-id-label').textContent='Loading…';
-  $('move-nav').style.display='none';
-  const pz=await pickPuzzle();
-  if(!pz){notif('No puzzles found','error');return}
-  loadPuzzle(pz);
+  resetStatus();$('puzzle-id-label').textContent='Loading…';$('move-nav').style.display='none';
+  const pz=await pickPuzzle();if(!pz){notif('No puzzles found','error');return}loadPuzzle(pz);
 }
-
-// ══════════════════════════════════════════
-//  POINTS → GOOGLE SHEETS
-// ══════════════════════════════════════════
 function savePoints(){
-  if(!currentUser||!studentProfile)return;
-  if(userPoints<=0)return;
+  if(!currentUser||!studentProfile||userPoints<=0)return;
   localStorage.setItem('chessensei_points',userPoints);
-  updatePointsInSheet(currentUser.email,userPoints).then(res=>{
-    if(res.success)console.log('✅ Points saved:',userPoints);
-    else console.error('Sheet save failed:',res);
-  });
+  updatePointsInSheet(currentUser.email,userPoints).then(res=>{if(res.success)console.log('✅ Points saved:',userPoints)});
 }
 
-// ══════════════════════════════════════════
-//  CHESS ENGINE
-// ══════════════════════════════════════════
-const PIECE_URL=piece=>{
-  const c=piece===piece.toUpperCase()?'w':'b';
-  const map={k:'K',q:'Q',r:'R',b:'B',n:'N',p:'P'};
-  return`https://lichess1.org/assets/piece/cburnett/${c}${map[piece.toLowerCase()]}.svg`;
-};
-function fenTo(fen){
-  const b=Array(64).fill(null);let i=0;
-  for(const ch of fen.split(' ')[0]){if(ch==='/')continue;if(isNaN(ch))b[i++]=ch;else i+=+ch}
-  return b;
-}
+const PIECE_URL=piece=>{const c=piece===piece.toUpperCase()?'w':'b';const map={k:'K',q:'Q',r:'R',b:'B',n:'N',p:'P'};return`https://lichess1.org/assets/piece/cburnett/${c}${map[piece.toLowerCase()]}.svg`};
+function fenTo(fen){const b=Array(64).fill(null);let i=0;for(const ch of fen.split(' ')[0]){if(ch==='/')continue;if(isNaN(ch))b[i++]=ch;else i+=+ch}return b}
 function sn(i){return'abcdefgh'[i%8]+(8-Math.floor(i/8))}
 function si(n){return(8-+n[1])*8+n.charCodeAt(0)-97}
 function applyMv(pieces,mv){
@@ -695,177 +584,71 @@ function legal(pieces,from,toMove){
   const isW=pc===pc.toUpperCase();if((toMove==='w')!==isW)return[];
   const dests=[],f=from%8,r=Math.floor(from/8),p=pc.toLowerCase();
   const tryAdd=idx=>{if(idx<0||idx>63)return;const t=pieces[idx];if(t&&(t===t.toUpperCase())===isW)return;dests.push(idx)};
-  if(p==='p'){
-    const dir=isW?-1:1,st=isW?6:1,fwd=from+dir*8;
-    if(!pieces[fwd]){dests.push(fwd);if(r===st&&!pieces[from+dir*16])dests.push(from+dir*16)}
-    [-1,1].forEach(df=>{const cap=from+dir*8+df;if(f+df>=0&&f+df<8&&pieces[cap]&&(pieces[cap]===pieces[cap].toUpperCase())!==isW)dests.push(cap)});
-    return dests;
-  }
-  const dirs={r:[[0,1],[0,-1],[1,0],[-1,0]],b:[[1,1],[1,-1],[-1,1],[-1,-1]],
-    q:[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]],
-    n:[[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]],
-    k:[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]};
+  if(p==='p'){const dir=isW?-1:1,st=isW?6:1,fwd=from+dir*8;if(!pieces[fwd]){dests.push(fwd);if(r===st&&!pieces[from+dir*16])dests.push(from+dir*16)}[-1,1].forEach(df=>{const cap=from+dir*8+df;if(f+df>=0&&f+df<8&&pieces[cap]&&(pieces[cap]===pieces[cap].toUpperCase())!==isW)dests.push(cap)});return dests}
+  const dirs={r:[[0,1],[0,-1],[1,0],[-1,0]],b:[[1,1],[1,-1],[-1,1],[-1,-1]],q:[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]],n:[[2,1],[2,-1],[-2,1],[-2,-1],[1,2],[1,-2],[-1,2],[-1,-2]],k:[[0,1],[0,-1],[1,0],[-1,0],[1,1],[1,-1],[-1,1],[-1,-1]]};
   if(p==='n'||p==='k'){for(const[dr,df]of dirs[p]){const nr=r+dr,nf=f+df;if(nr>=0&&nr<8&&nf>=0&&nf<8)tryAdd(nr*8+nf)}return dests}
   for(const[dr,df]of dirs[p]){let nr=r+dr,nf=f+df;while(nr>=0&&nr<8&&nf>=0&&nf<8){const idx=nr*8+nf,t=pieces[idx];if(t){if((t===t.toUpperCase())!==isW)dests.push(idx);break}dests.push(idx);nr+=dr;nf+=df}}
   return dests;
 }
 
-// ══════════════════════════════════════════
-//  ARROW DRAWING
-// ══════════════════════════════════════════
-function drawArrow(fromIdx, toIdx, color='rgba(100,200,255,0.7)'){
-  const svg=$('board-arrow');
-  svg.innerHTML='';
-  const board=$('board');
-  const size=board.offsetWidth;
-  if(!size)return;
-  const sqSize=size/8;
-  const flipped=gameState&&gameState.studentColor==='b';
-
-  function sqCenter(idx){
-    const r=Math.floor(idx/8),f=idx%8;
-    const vr=flipped?(7-r):r;
-    const vf=flipped?(7-f):f;
-    return{x:(vf+0.5)*sqSize,y:(vr+0.5)*sqSize};
-  }
-
-  const from=sqCenter(fromIdx);
-  const to=sqCenter(toIdx);
-  const dx=to.x-from.x,dy=to.y-from.y;
-  const len=Math.sqrt(dx*dx+dy*dy);
-  const ux=dx/len,uy=dy/len;
-  const arrowW=sqSize*0.15;
-  const headLen=sqSize*0.35;
+function drawArrow(fromIdx,toIdx,color='rgba(100,200,255,0.7)'){
+  const svg=$('board-arrow');svg.innerHTML='';
+  const board=$('board');const size=board.offsetWidth;if(!size)return;
+  const sqSize=size/8;const flipped=gameState&&gameState.studentColor==='b';
+  function sqCenter(idx){const r=Math.floor(idx/8),f=idx%8;const vr=flipped?(7-r):r;const vf=flipped?(7-f):f;return{x:(vf+0.5)*sqSize,y:(vr+0.5)*sqSize}}
+  const from=sqCenter(fromIdx),to=sqCenter(toIdx);
+  const dx=to.x-from.x,dy=to.y-from.y,len=Math.sqrt(dx*dx+dy*dy);
+  const ux=dx/len,uy=dy/len,arrowW=sqSize*0.15,headLen=sqSize*0.35;
   const shaftEnd={x:to.x-ux*headLen,y:to.y-uy*headLen};
-
-  // shaft
   const shaft=document.createElementNS('http://www.w3.org/2000/svg','line');
-  shaft.setAttribute('x1',from.x);shaft.setAttribute('y1',from.y);
-  shaft.setAttribute('x2',shaftEnd.x);shaft.setAttribute('y2',shaftEnd.y);
-  shaft.setAttribute('stroke',color);shaft.setAttribute('stroke-width',arrowW);
-  shaft.setAttribute('stroke-linecap','round');shaft.setAttribute('opacity','0.85');
-  svg.appendChild(shaft);
-
-  // arrowhead
+  shaft.setAttribute('x1',from.x);shaft.setAttribute('y1',from.y);shaft.setAttribute('x2',shaftEnd.x);shaft.setAttribute('y2',shaftEnd.y);
+  shaft.setAttribute('stroke',color);shaft.setAttribute('stroke-width',arrowW);shaft.setAttribute('stroke-linecap','round');shaft.setAttribute('opacity','0.85');svg.appendChild(shaft);
   const px=-uy*arrowW*1.5,py=ux*arrowW*1.5;
   const pts=`${to.x},${to.y} ${shaftEnd.x+px},${shaftEnd.y+py} ${shaftEnd.x-px},${shaftEnd.y-py}`;
   const head=document.createElementNS('http://www.w3.org/2000/svg','polygon');
-  head.setAttribute('points',pts);head.setAttribute('fill',color);head.setAttribute('opacity','0.85');
-  svg.appendChild(head);
+  head.setAttribute('points',pts);head.setAttribute('fill',color);head.setAttribute('opacity','0.85');svg.appendChild(head);
 }
+function clearArrow(){const svg=$('board-arrow');if(svg)svg.innerHTML=''}
 
-function clearArrow(){
-  const svg=$('board-arrow');if(svg)svg.innerHTML='';
-}
-
-// ══════════════════════════════════════════
-//  BOARD RENDER
-// ══════════════════════════════════════════
 function renderBoard(pieces,sel=null,hints=[],lastMv=null,wrong=[]){
-  const board=$('board');
-  // Keep the SVG arrow overlay
-  const arrowSvg=$('board-arrow');
-  board.innerHTML='';
-  if(arrowSvg)board.appendChild(arrowSvg);
-
+  const board=$('board');const arrowSvg=$('board-arrow');board.innerHTML='';if(arrowSvg)board.appendChild(arrowSvg);
   const lastSqs=lastMv?[si(lastMv.slice(0,2)),si(lastMv.slice(2,4))]:[];
   const flipped=gameState&&gameState.studentColor==='b';
-
-  // Rank labels (left)
-  const rl=$('rank-labels');
-  if(rl){rl.innerHTML='';for(let r=0;r<8;r++){const el=document.createElement('div');el.className='rank-label';el.textContent=flipped?r+1:8-r;rl.appendChild(el);}}
-  // File labels (bottom)
-  const fl=$('file-labels');
-  if(fl){fl.innerHTML='';const files=flipped?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];files.forEach(f=>{const el=document.createElement('div');el.className='file-label';el.textContent=f;fl.appendChild(el);});}
-
+  const rl=$('rank-labels');if(rl){rl.innerHTML='';for(let r=0;r<8;r++){const el=document.createElement('div');el.className='rank-label';el.textContent=flipped?r+1:8-r;rl.appendChild(el)}}
+  const fl=$('file-labels');if(fl){fl.innerHTML='';const files=flipped?['h','g','f','e','d','c','b','a']:['a','b','c','d','e','f','g','h'];files.forEach(f=>{const el=document.createElement('div');el.className='file-label';el.textContent=f;fl.appendChild(el)})}
   for(let vi=0;vi<64;vi++){
-    const i=flipped?(63-vi):vi;
-    const r=Math.floor(i/8),f=i%8,isLight=(r+f)%2===0;
-    const sq=document.createElement('div');
-    sq.className='sq '+(isLight?'light':'dark');
+    const i=flipped?(63-vi):vi;const r=Math.floor(i/8),f=i%8,isLight=(r+f)%2===0;
+    const sq=document.createElement('div');sq.className='sq '+(isLight?'light':'dark');
     if(sel===i)sq.classList.add('selected');
     else if(hints.includes(i))sq.classList.add('hint');
     else if(lastSqs[0]===i)sq.classList.add('lastmove-from');
     else if(lastSqs[1]===i)sq.classList.add('lastmove-to');
     if(wrong.includes(i))sq.classList.add('wrong');
-    if(pieces[i]){
-      const img=document.createElement('img');
-      img.src=PIECE_URL(pieces[i]);
-      img.style.cssText='width:88%;height:88%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))';
-      img.draggable=false;sq.appendChild(img);
-    }
-    if(hints.includes(i)&&!pieces[i]){
-      const dot=document.createElement('div');
-      dot.style.cssText='width:30%;height:30%;border-radius:50%;background:rgba(100,180,255,.6);pointer-events:none';
-      sq.appendChild(dot);
-    }
-    sq.addEventListener('click',()=>onSq(i));
-    board.appendChild(sq);
+    if(pieces[i]){const img=document.createElement('img');img.src=PIECE_URL(pieces[i]);img.style.cssText='width:88%;height:88%;object-fit:contain;pointer-events:none;filter:drop-shadow(0 2px 3px rgba(0,0,0,.4))';img.draggable=false;sq.appendChild(img)}
+    if(hints.includes(i)&&!pieces[i]){const dot=document.createElement('div');dot.style.cssText='width:30%;height:30%;border-radius:50%;background:rgba(100,180,255,.6);pointer-events:none';sq.appendChild(dot)}
+    sq.addEventListener('click',()=>onSq(i));board.appendChild(sq);
   }
 }
 
-// ══════════════════════════════════════════
-//  PUZZLE LOGIC — CORRECTED LICHESS FORMAT
-//
-//  Lichess puzzle moves array:
-//  [move0, move1, move2, move3, ...]
-//   move0 = opponent's setup move (auto-played)
-//   move1 = student finds this ✅
-//   move2 = opponent responds (auto-played)
-//   move3 = student finds this ✅
-//   ... and so on
-// ══════════════════════════════════════════
 function loadPuzzle(pz){
   usedIds.add(pz.id);
   const moves=Array.isArray(pz.moves)?pz.moves:pz.moves.split(' ');
-  const fenToMove=pz.fen.split(' ')[1]; // whose turn in the original FEN
-
-  // After move0 is played, it becomes the student's turn
+  const fenToMove=pz.fen.split(' ')[1];
   const studentColor=fenToMove==='w'?'b':'w';
-
-  // Apply move0 to get starting position
   const initialPieces=fenTo(pz.fen);
   const piecesAfterSetup=applyMv(initialPieces,moves[0]);
-
-  gameState={
-    pz,
-    // Full move history for navigator: positions[0]=original FEN, positions[1]=after setup, ...
-    positions:[initialPieces,piecesAfterSetup],
-    pieces:piecesAfterSetup,       // current board
-    moves,                          // all moves including setup
-    idx:1,                          // next move student needs to find (moves[1])
-    sel:null,
-    toMove:studentColor,            // student's color (always plays from idx=1,3,5...)
-    studentColor,
-    solved:false,
-    lastMv:moves[0],                // setup move shown as last move
-    wrongAttempts:0,
-    ptsPenalised:false,
-    // Navigator state (used after solve)
-    navIdx:1,                       // which position we're viewing
-  };
-
+  gameState={pz,positions:[initialPieces,piecesAfterSetup],pieces:piecesAfterSetup,moves,idx:1,sel:null,toMove:studentColor,studentColor,solved:false,lastMv:moves[0],wrongAttempts:0,ptsPenalised:false,navIdx:1};
   $('puzzle-id-label').textContent='ID: '+pz.id;
   const pct=Math.min(100,Math.max(5,((pz.rating-300)/1700)*100));
-  $('rating-fill').style.width=pct+'%';
-  $('puzzle-rating-label').textContent=pz.rating+' Elo';
+  $('rating-fill').style.width=pct+'%';$('puzzle-rating-label').textContent=pz.rating+' Elo';
   const tags=$('theme-tags');tags.innerHTML='';
-  (pz.themes||'').split(' ').filter(Boolean).forEach(t=>{
-    const el=document.createElement('span');el.className='theme-tag';el.textContent=t;tags.appendChild(el);
-  });
-
-  setToMove(studentColor);
-  renderBoard(gameState.pieces,null,[],moves[0]);
-  // Draw arrow showing the setup move that was just played
+  (pz.themes||'').split(' ').filter(Boolean).forEach(t=>{const el=document.createElement('span');el.className='theme-tag';el.textContent=t;tags.appendChild(el)});
+  setToMove(studentColor);renderBoard(gameState.pieces,null,[],moves[0]);
   setTimeout(()=>drawArrow(si(moves[0].slice(0,2)),si(moves[0].slice(2,4)),'rgba(100,200,255,0.7)'),50);
-  resetStatus();
-  updateUI();
+  resetStatus();updateUI();
 }
 
-function setToMove(tm){
-  $('to-move-dot').className='to-move-dot '+(tm==='w'?'white':'black');
-  $('to-move-text').textContent=(tm==='w'?'White':'Black')+' to move';
-}
+function setToMove(tm){$('to-move-dot').className='to-move-dot '+(tm==='w'?'white':'black');$('to-move-text').textContent=(tm==='w'?'White':'Black')+' to move'}
 
 function onSq(idx){
   if(!gameState||gameState.solved)return;
@@ -873,219 +656,102 @@ function onSq(idx){
   if(gameState.sel===null){
     const pc=gameState.pieces[idx];if(!pc)return;
     if((gameState.toMove==='w')!==(pc===pc.toUpperCase()))return;
-    gameState.sel=idx;
-    gameState.legalDests=legal(gameState.pieces,idx,gameState.toMove);
-    clearArrow();
-    renderBoard(gameState.pieces,idx,gameState.legalDests,gameState.lastMv);
+    gameState.sel=idx;gameState.legalDests=legal(gameState.pieces,idx,gameState.toMove);
+    clearArrow();renderBoard(gameState.pieces,idx,gameState.legalDests,gameState.lastMv);
   } else {
     const from=gameState.sel;
-    // Clicked same square → deselect
-    if(from===idx){
-      gameState.sel=null;gameState.legalDests=[];
-      renderBoard(gameState.pieces,null,[],gameState.lastMv);
-      drawSetupArrow();return;
-    }
-    // Clicked another own piece → reselect
+    if(from===idx){gameState.sel=null;gameState.legalDests=[];renderBoard(gameState.pieces,null,[],gameState.lastMv);drawSetupArrow();return}
     const pc=gameState.pieces[idx];
-    if(pc&&(gameState.toMove==='w')===(pc===pc.toUpperCase())){
-      gameState.sel=idx;
-      gameState.legalDests=legal(gameState.pieces,idx,gameState.toMove);
-      renderBoard(gameState.pieces,idx,gameState.legalDests,gameState.lastMv);return;
-    }
-    // Clicked a NON-legal square → just deselect, no penalty
-    if(!gameState.legalDests||!gameState.legalDests.includes(idx)){
-      gameState.sel=null;gameState.legalDests=[];
-      renderBoard(gameState.pieces,null,[],gameState.lastMv);
-      drawSetupArrow();return;
-    }
-    // Clicked a legal destination → attempt the move
-    gameState.sel=null;gameState.legalDests=[];
-    doMove(from,idx);
+    if(pc&&(gameState.toMove==='w')===(pc===pc.toUpperCase())){gameState.sel=idx;gameState.legalDests=legal(gameState.pieces,idx,gameState.toMove);renderBoard(gameState.pieces,idx,gameState.legalDests,gameState.lastMv);return}
+    if(!gameState.legalDests||!gameState.legalDests.includes(idx)){gameState.sel=null;gameState.legalDests=[];renderBoard(gameState.pieces,null,[],gameState.lastMv);drawSetupArrow();return}
+    gameState.sel=null;gameState.legalDests=[];doMove(from,idx);
   }
 }
-
-function drawSetupArrow(){
-  if(gameState&&gameState.lastMv)
-    drawArrow(si(gameState.lastMv.slice(0,2)),si(gameState.lastMv.slice(2,4)),'rgba(100,200,255,0.7)');
-}
+function drawSetupArrow(){if(gameState&&gameState.lastMv)drawArrow(si(gameState.lastMv.slice(0,2)),si(gameState.lastMv.slice(2,4)),'rgba(100,200,255,0.7)')}
 
 function doMove(from,to){
-  const expFull=gameState.moves[gameState.idx];
-  const exp=expFull.slice(0,4);
-  const mv=sn(from)+sn(to);
-
+  const expFull=gameState.moves[gameState.idx];const exp=expFull.slice(0,4);const mv=sn(from)+sn(to);
   if(mv===exp){
-    // Correct student move
     const newPieces=applyMv(gameState.pieces,expFull);
-    gameState.pieces=newPieces;
-    gameState.lastMv=expFull;
-    gameState.toMove=gameState.toMove==='w'?'b':'w';
-    gameState.idx++;
-    gameState.positions.push(newPieces);
-
-    clearArrow();
-    renderBoard(gameState.pieces,null,[],gameState.lastMv);
-    drawArrow(from,to,'rgba(74,240,176,0.8)'); // green arrow for student's move
-
-    if(gameState.idx>=gameState.moves.length){
-      // Puzzle complete!
-      gameState.solved=true;
-      gameState.navIdx=gameState.positions.length-1;
-      addPts(10);showSolved();showMoveNav();
-    } else {
-      // Play opponent's response
+    gameState.pieces=newPieces;gameState.lastMv=expFull;gameState.toMove=gameState.toMove==='w'?'b':'w';gameState.idx++;gameState.positions.push(newPieces);
+    clearArrow();renderBoard(gameState.pieces,null,[],gameState.lastMv);drawArrow(from,to,'rgba(74,240,176,0.8)');
+    if(gameState.idx>=gameState.moves.length){gameState.solved=true;gameState.navIdx=gameState.positions.length-1;addPts(10);showSolved();showMoveNav()}
+    else{
       setToMove(gameState.toMove);
       setTimeout(()=>{
         if(!gameState)return;
-        const oppMove=gameState.moves[gameState.idx];
-        const oppPieces=applyMv(gameState.pieces,oppMove);
-        gameState.pieces=oppPieces;
-        gameState.lastMv=oppMove;
-        gameState.toMove=gameState.toMove==='w'?'b':'w';
-        gameState.idx++;
-        gameState.positions.push(oppPieces);
-        setToMove(gameState.toMove);
-        clearArrow();
-        renderBoard(gameState.pieces,null,[],gameState.lastMv);
-        drawArrow(si(oppMove.slice(0,2)),si(oppMove.slice(2,4)),'rgba(100,200,255,0.7)');
-        if(gameState.idx>=gameState.moves.length){
-          gameState.solved=true;
-          gameState.navIdx=gameState.positions.length-1;
-          addPts(10);showSolved();showMoveNav();
-        }
+        const oppMove=gameState.moves[gameState.idx];const oppPieces=applyMv(gameState.pieces,oppMove);
+        gameState.pieces=oppPieces;gameState.lastMv=oppMove;gameState.toMove=gameState.toMove==='w'?'b':'w';gameState.idx++;gameState.positions.push(oppPieces);
+        setToMove(gameState.toMove);clearArrow();renderBoard(gameState.pieces,null,[],gameState.lastMv);drawArrow(si(oppMove.slice(0,2)),si(oppMove.slice(2,4)),'rgba(100,200,255,0.7)');
+        if(gameState.idx>=gameState.moves.length){gameState.solved=true;gameState.navIdx=gameState.positions.length-1;addPts(10);showSolved();showMoveNav()}
       },600);
     }
   } else {
-    // Wrong move
-    gameState.wrongAttempts++;
-    if(!gameState.ptsPenalised){addPts(-2);gameState.ptsPenalised=true}
+    gameState.wrongAttempts++;if(!gameState.ptsPenalised){addPts(-2);gameState.ptsPenalised=true}
     const board=$('board');board.classList.add('shake');
     renderBoard(gameState.pieces,null,[],gameState.lastMv,[from,to]);
-    setTimeout(()=>{
-      board.classList.remove('shake');
-      renderBoard(gameState.pieces,null,[],gameState.lastMv);
-      drawSetupArrow();
-    },400);
+    setTimeout(()=>{board.classList.remove('shake');renderBoard(gameState.pieces,null,[],gameState.lastMv);drawSetupArrow()},400);
     if(gameState.wrongAttempts>=2){showAnswerButton();notif('❌ Wrong again. You can reveal the answer.','error')}
     else notif('❌ Not the best move — try again!','error');
   }
 }
 
-// ══════════════════════════════════════════
-//  SHOW ANSWER — plays all remaining moves
-// ══════════════════════════════════════════
 function showAnswerButton(){
   if($('show-answer-btn'))return;
-  const btn=document.createElement('button');
-  btn.id='show-answer-btn';btn.className='btn btn-danger';btn.onclick=showAnswer;
-  btn.textContent='👁 Show Answer';
+  const btn=document.createElement('button');btn.id='show-answer-btn';btn.className='btn btn-danger';btn.onclick=showAnswer;btn.textContent='👁 Show Answer';
   $('puzzle-status-card').appendChild(btn);
 }
-
 async function showAnswer(){
-  if(!gameState||gameState.solved)return;
-  gameState.solved=true;
-  const btn=$('show-answer-btn');if(btn)btn.remove();
+  if(!gameState||gameState.solved)return;gameState.solved=true;const btn=$('show-answer-btn');if(btn)btn.remove();
   const playNext=idx=>{
     if(idx>=gameState.moves.length){
       $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">💡</div><div class="status-title">Answer Revealed</div><div class="status-msg">Study the moves. Use ‹ › to replay.</div></div>`;
-      notif('💡 Answer shown — 0 pts','error');
-      gameState.navIdx=gameState.positions.length-1;
-      showMoveNav();return;
+      notif('💡 Answer shown — 0 pts','error');gameState.navIdx=gameState.positions.length-1;showMoveNav();return;
     }
-    const mv=gameState.moves[idx];
-    const newPieces=applyMv(gameState.pieces,mv);
-    gameState.pieces=newPieces;
-    gameState.lastMv=mv;
-    gameState.toMove=gameState.toMove==='w'?'b':'w';
-    gameState.positions.push(newPieces);
-    setToMove(gameState.toMove);
-    clearArrow();
-    renderBoard(gameState.pieces,null,[],gameState.lastMv);
-    drawArrow(si(mv.slice(0,2)),si(mv.slice(2,4)),'rgba(240,192,64,0.8)');
+    const mv=gameState.moves[idx];const newPieces=applyMv(gameState.pieces,mv);
+    gameState.pieces=newPieces;gameState.lastMv=mv;gameState.toMove=gameState.toMove==='w'?'b':'w';gameState.positions.push(newPieces);
+    setToMove(gameState.toMove);clearArrow();renderBoard(gameState.pieces,null,[],gameState.lastMv);drawArrow(si(mv.slice(0,2)),si(mv.slice(2,4)),'rgba(240,192,64,0.8)');
     setTimeout(()=>playNext(idx+1),900);
   };
   playNext(gameState.idx);
 }
 
-// ══════════════════════════════════════════
-//  MOVE NAVIGATOR (prev/next after solve)
-// ══════════════════════════════════════════
-function showMoveNav(){
-  $('move-nav').style.display='flex';
-  updateNavButtons();
-}
-
+function showMoveNav(){$('move-nav').style.display='flex';updateNavButtons()}
 function navMove(dir){
-  if(!gameState||!gameState.positions)return;
-  const newIdx=gameState.navIdx+dir;
-  if(newIdx<0||newIdx>=gameState.positions.length)return;
-  gameState.navIdx=newIdx;
-  const pieces=gameState.positions[newIdx];
-  const lastMv=newIdx>0?gameState.moves[newIdx-1]:null;
-  clearArrow();
-  renderBoard(pieces,null,[],lastMv);
-  if(lastMv)drawArrow(si(lastMv.slice(0,2)),si(lastMv.slice(2,4)),'rgba(240,192,64,0.8)');
-  updateNavButtons();
+  if(!gameState||!gameState.positions)return;const newIdx=gameState.navIdx+dir;
+  if(newIdx<0||newIdx>=gameState.positions.length)return;gameState.navIdx=newIdx;
+  const pieces=gameState.positions[newIdx];const lastMv=newIdx>0?gameState.moves[newIdx-1]:null;
+  clearArrow();renderBoard(pieces,null,[],lastMv);if(lastMv)drawArrow(si(lastMv.slice(0,2)),si(lastMv.slice(2,4)),'rgba(240,192,64,0.8)');updateNavButtons();
 }
-
 function updateNavButtons(){
-  if(!gameState)return;
-  const total=gameState.positions.length;
-  $('nav-prev').disabled=gameState.navIdx<=0;
-  $('nav-next').disabled=gameState.navIdx>=total-1;
+  if(!gameState)return;const total=gameState.positions.length;
+  $('nav-prev').disabled=gameState.navIdx<=0;$('nav-next').disabled=gameState.navIdx>=total-1;
   $('move-counter').textContent=`${gameState.navIdx} / ${total-1}`;
 }
 
-// ══════════════════════════════════════════
-//  POINTS
-// ══════════════════════════════════════════
 function addPts(delta){
-  if(!currentUser)return;
-  const oldTier=getTier(userPoints);
-  userPoints=Math.max(0,userPoints+delta);
-  const newTier=getTier(userPoints);
-  $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';
-  $('your-pts-display').textContent=userPoints.toLocaleString();
-  if(delta>0)ptsPopup('+'+delta);
-  updateUI();
-  if(newTier.id>oldTier.id)tierUp(newTier);
+  if(!currentUser)return;const oldTier=getTier(userPoints);userPoints=Math.max(0,userPoints+delta);const newTier=getTier(userPoints);
+  $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';$('your-pts-display').textContent=userPoints.toLocaleString();
+  if(delta>0)ptsPopup('+'+delta);updateUI();if(newTier.id>oldTier.id)tierUp(newTier);
   if(delta>0){clearTimeout(savePtsTimeout);savePtsTimeout=setTimeout(savePoints,1500)}
 }
-
 function ptsPopup(val){const p=$('pts-popup');$('pts-popup-val').textContent=val;p.className='pts-popup show';setTimeout(()=>p.className='pts-popup',1300)}
 function tierUp(tier){const b=$('upgrade-banner');b.textContent='🎉 Tier Up! '+tier.emoji+' '+tier.name+' — harder puzzles unlocked!';b.className='upgrade-banner show';setTimeout(()=>b.className='upgrade-banner',3500);puzzlePool=[];usedIds.clear()}
 function notif(msg,type='success'){const el=$('notif');el.textContent=msg;el.className='notif '+type+' show';setTimeout(()=>el.className='notif',2500)}
-
-function showSolved(){
-  $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">✅</div><div class="status-title">Puzzle Solved!</div><div class="status-msg">+10 pts saved. Use ‹ › below to replay moves.</div></div>`;
-  notif('🎉 Correct! +10 points','success');
-}
-
-function resetStatus(){
-  $('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">🧩</div><div class="status-title">Find the best move</div><div class="status-msg">The first move was played automatically. Now it's your turn!</div><div class="pts-hint">Correct → <strong>+10 pts</strong> &nbsp;|&nbsp; Wrong → <span class="neg">−2 pts (once)</span></div></div>`;
-  $('your-pts-display').textContent=userPoints.toLocaleString();
-}
-
+function showSolved(){$('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">✅</div><div class="status-title">Puzzle Solved!</div><div class="status-msg">+10 pts saved. Use ‹ › below to replay moves.</div></div>`;notif('🎉 Correct! +10 points','success')}
+function resetStatus(){$('puzzle-status-card').innerHTML=`<div class="puzzle-status"><div class="status-icon">🧩</div><div class="status-title">Find the best move</div><div class="status-msg">The first move was played automatically. Now it's your turn!</div><div class="pts-hint">Correct → <strong>+10 pts</strong> &nbsp;|&nbsp; Wrong → <span class="neg">−2 pts (once)</span></div></div>`;$('your-pts-display').textContent=userPoints.toLocaleString()}
 function nextPuzzle(){loadNextPuzzle()}
 
-// ══════════════════════════════════════════
-//  UI UPDATE
-// ══════════════════════════════════════════
 function updateUI(){
   const tier=getTier(userPoints);
-  $('tier-pill').textContent=tier.emoji+' '+tier.name;
-  $('tier-pill').className='tier-pill '+tier.cls;
-  $('xp-tier-name').textContent=tier.name;
-  $('xp-fill').style.background=tier.color;
+  $('tier-pill').textContent=tier.emoji+' '+tier.name;$('tier-pill').className='tier-pill '+tier.cls;
+  $('xp-tier-name').textContent=tier.name;$('xp-fill').style.background=tier.color;
   const xn=$('xp-next-label');
   if(tier.maxPts===Infinity){$('xp-fill').style.width='100%';xn.textContent='Max tier 👑'}
   else{$('xp-fill').style.width=Math.min(100,((userPoints-tier.minPts)/(tier.maxPts-tier.minPts))*100)+'%';xn.textContent=(tier.maxPts-userPoints)+' pts to next tier'}
   const ladder=$('ladder-rows');ladder.innerHTML='';
   TIERS.forEach(t=>{
-    const cur=getTier(userPoints);
-    const row=document.createElement('div');
-    row.className='ladder-row'+(t.id===cur.id?' active':'');
+    const cur=getTier(userPoints);const row=document.createElement('div');row.className='ladder-row'+(t.id===cur.id?' active':'');
     const pct=t.id<cur.id?100:t.id===cur.id&&t.maxPts!==Infinity?Math.max(0,((userPoints-t.minPts)/(t.maxPts-t.minPts))*100):0;
     row.innerHTML=`<div class="ladder-dot" style="background:${t.color}"></div><div class="ladder-label">${t.emoji} ${t.name}</div><div class="ladder-bar"><div class="ladder-fill" style="width:${pct}%;background:${t.color}"></div></div><div class="ladder-pts">${t.minPts}–${t.maxPts===Infinity?'∞':t.maxPts}</div>`;
     ladder.appendChild(row);
@@ -1093,43 +759,20 @@ function updateUI(){
 }
 
 function switchTab(tab,el){
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   el.classList.add('active');$('page-'+tab).classList.add('active');
-  if(tab==='puzzles'&&!puzzleReady){puzzleReady=true;loadNextPuzzle()}
-  if(tab==='leaderboard')loadLeaderboard();
+  if(tab==='puzzles'&&!puzzleReady){puzzleReady=true;loadNextPuzzle()}if(tab==='leaderboard')loadLeaderboard();
 }
 
-// ══════════════════════════════════════════
-//  BOOT
-// ══════════════════════════════════════════
 async function init(){
-  const savedUser=localStorage.getItem('chessensei_user');
-  const savedProfile=localStorage.getItem('chessensei_profile');
-  const savedPoints=localStorage.getItem('chessensei_points');
+  const savedUser=localStorage.getItem('chessensei_user');const savedProfile=localStorage.getItem('chessensei_profile');const savedPoints=localStorage.getItem('chessensei_points');
   if(savedUser&&savedProfile){
-    currentUser=JSON.parse(savedUser);
-    studentProfile=JSON.parse(savedProfile);
-    userPoints=parseInt(savedPoints)||0;
-    getStudent(currentUser.email).then(s=>{
-      if(s.found){
-        userPoints=Math.max(userPoints,parseInt(s.points)||0);
-        studentProfile=s;
-        $('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';
-        $('your-pts-display').textContent=userPoints.toLocaleString();
-        updateUI();
-      }
-    });
+    currentUser=JSON.parse(savedUser);studentProfile=JSON.parse(savedProfile);userPoints=parseInt(savedPoints)||0;
+    getStudent(currentUser.email).then(s=>{if(s.found){userPoints=Math.max(userPoints,parseInt(s.points)||0);studentProfile=s;$('header-pts').textContent='⭐ '+userPoints.toLocaleString()+' pts';$('your-pts-display').textContent=userPoints.toLocaleString();updateUI()}});
     showApp();
-  } else {
-    showGuest();
-  }
-  window.addEventListener('load',()=>{
-    if(window.google)initGoogleLogin();
-    else document.querySelector('script[src*="gsi"]').addEventListener('load',initGoogleLogin);
-  });
+  } else {showGuest()}
+  window.addEventListener('load',()=>{if(window.google)initGoogleLogin();else document.querySelector('script[src*="gsi"]').addEventListener('load',initGoogleLogin)});
 }
-
 init();
 </script>
 </body>
