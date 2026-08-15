@@ -290,18 +290,36 @@ footer { background:var(--green-dark); color:rgba(255,255,255,0.75); padding:3.5
    iso must be correct (YYYY-MM-DD) — it drives "Next Up" & "completed".
    ========================================================================= */
 const TOURNAMENTS = [
-  { date:"20th Jun 2026", day:"Saturday", month:"June", iso:"2026-06-20", name:"SWISS TOURNAMENT 20JUN2026", link:"https://lichess.org/swiss/sX2iEjHh" },
-  { date:"21st Jun 2026", day:"Sunday",   month:"June", iso:"2026-06-21", name:"SWISS TOURNAMENT 21JUN2026", link:"https://lichess.org/swiss/1VtVvcJs" },
-  { date:"27th Jun 2026", day:"Saturday", month:"June", iso:"2026-06-27", name:"SWISS TOURNAMENT 27JUN2026", link:"https://lichess.org/swiss/5eVELYBE" },
-  { date:"28th Jun 2026", day:"Sunday",   month:"June", iso:"2026-06-28", name:"SWISS TOURNAMENT 28JUN2026", link:"https://lichess.org/swiss/Nmg6P9jB" },
-  { date:"4th Jul 2026",  day:"Saturday", month:"July",  iso:"2026-07-04", name:"SWISS TOURNAMENT 04JUL2026", link:"https://lichess.org/swiss/IeIsImuu" },
-  { date:"5th Jul 2026",  day:"Sunday",   month:"July",  iso:"2026-07-05", name:"SWISS TOURNAMENT 05JUL2026", link:"https://lichess.org/swiss/cZgTu4rU" },
-  { date:"11th Jul 2026", day:"Saturday", month:"July",  iso:"2026-07-11", name:"SWISS TOURNAMENT 11JUL2026", link:"https://lichess.org/swiss/h0AAbdIQ" },
-  { date:"12th Jul 2026", day:"Sunday",   month:"July",  iso:"2026-07-12", name:"SWISS TOURNAMENT 12JUL2026", link:"https://lichess.org/swiss/tarFuFgK" },
-  { date:"18th Jul 2026", day:"Saturday", month:"July",  iso:"2026-07-18", name:"SWISS TOURNAMENT 18JUL2026", link:"https://lichess.org/swiss/MF7UcI99" },
-  { date:"19th Jul 2026", day:"Sunday",   month:"July",  iso:"2026-07-19", name:"SWISS TOURNAMENT 19JUL2026", link:"https://lichess.org/swiss/1lH5Qcw3" },
-  { date:"25th Jul 2026", day:"Saturday", month:"July",  iso:"2026-07-25", name:"SWISS TOURNAMENT 25JUL2026", link:"https://lichess.org/swiss/47i03K7n" },
-  { date:"26th Jul 2026", day:"Sunday",   month:"July",  iso:"2026-07-26", name:"SWISS TOURNAMENT 26JUL2026", link:"https://lichess.org/swiss/ttz0z8d8" }
+  { date:"20th Jun 2026", day:"Saturday", month:"June",      iso:"2026-06-20", name:"SWISS TOURNAMENT 20JUN2026",   link:"https://lichess.org/swiss/sX2iEjHh" },
+  { date:"21st Jun 2026", day:"Sunday",   month:"June",      iso:"2026-06-21", name:"SWISS TOURNAMENT 21JUN2026",   link:"https://lichess.org/swiss/1VtVvcJs" },
+  { date:"27th Jun 2026", day:"Saturday", month:"June",      iso:"2026-06-27", name:"SWISS TOURNAMENT 27JUN2026",   link:"https://lichess.org/swiss/5eVELYBE" },
+  { date:"28th Jun 2026", day:"Sunday",   month:"June",      iso:"2026-06-28", name:"SWISS TOURNAMENT 28JUN2026",   link:"https://lichess.org/swiss/Nmg6P9jB" },
+  { date:"4th Jul 2026",  day:"Saturday", month:"July",      iso:"2026-07-04", name:"SWISS TOURNAMENT 04JUL2026",   link:"https://lichess.org/swiss/IeIsImuu" },
+  { date:"5th Jul 2026",  day:"Sunday",   month:"July",      iso:"2026-07-05", name:"SWISS TOURNAMENT 05JUL2026",   link:"https://lichess.org/swiss/cZgTu4rU" },
+  { date:"11th Jul 2026", day:"Saturday", month:"July",      iso:"2026-07-11", name:"SWISS TOURNAMENT 11JUL2026",   link:"https://lichess.org/swiss/h0AAbdIQ" },
+  { date:"12th Jul 2026", day:"Sunday",   month:"July",      iso:"2026-07-12", name:"SWISS TOURNAMENT 12JUL2026",   link:"https://lichess.org/swiss/tarFuFgK" },
+  { date:"18th Jul 2026", day:"Saturday", month:"July",      iso:"2026-07-18", name:"SWISS TOURNAMENT 18JUL2026",   link:"https://lichess.org/swiss/MF7UcI99" },
+  { date:"19th Jul 2026", day:"Sunday",   month:"July",      iso:"2026-07-19", name:"SWISS TOURNAMENT 19JUL2026",   link:"https://lichess.org/swiss/1lH5Qcw3" },
+  { date:"25th Jul 2026", day:"Saturday", month:"July",      iso:"2026-07-25", name:"SWISS TOURNAMENT 25JUL2026",   link:"https://lichess.org/swiss/47i03K7n" },
+  { date:"26th Jul 2026", day:"Sunday",   month:"July",      iso:"2026-07-26", name:"SWISS TOURNAMENT 26JUL2026",   link:"https://lichess.org/swiss/ttz0z8d8" },
+  { date:"1st Aug 2026",  day:"Saturday", month:"August",    iso:"2026-08-01", name:"SWISS TOURNAMENT 1Aug2026",    link:"https://lichess.org/swiss/PcGZNlDD" },
+  { date:"2nd Aug 2026",  day:"Sunday",   month:"August",    iso:"2026-08-02", name:"SWISS TOURNAMENT 02Aug2026",   link:"https://lichess.org/swiss/2dsLUc6U" },
+  { date:"8th Aug 2026",  day:"Saturday", month:"August",    iso:"2026-08-08", name:"SWISS TOURNAMENT 08Aug2026",   link:"https://lichess.org/swiss/4xqUl1y2" },
+  { date:"9th Aug 2026",  day:"Sunday",   month:"August",    iso:"2026-08-09", name:"SWISS TOURNAMENT 09Aug2026",   link:"https://lichess.org/swiss/EiWl2onu" },
+  { date:"15th Aug 2026", day:"Saturday", month:"August",    iso:"2026-08-15", name:"SWISS TOURNAMENT 15Aug2026",   link:"https://lichess.org/swiss/OoFv9Kxq" },
+  { date:"16th Aug 2026", day:"Sunday",   month:"August",    iso:"2026-08-16", name:"SWISS TOURNAMENT 16Aug2026",   link:"https://lichess.org/swiss/4SaFmdbS" },
+  { date:"22nd Aug 2026", day:"Saturday", month:"August",    iso:"2026-08-22", name:"SWISS TOURNAMENT 22Aug2026",   link:"https://lichess.org/swiss/MbLvNGfe" },
+  { date:"23rd Aug 2026", day:"Sunday",   month:"August",    iso:"2026-08-23", name:"SWISS TOURNAMENT 23Aug2026",   link:"https://lichess.org/swiss/Dulnb68s" },
+  { date:"29th Aug 2026", day:"Saturday", month:"August",    iso:"2026-08-29", name:"SWISS TOURNAMENT 29Aug2026",   link:"https://lichess.org/swiss/VzzfttSM" },
+  { date:"30th Aug 2026", day:"Sunday",   month:"August",    iso:"2026-08-30", name:"SWISS TOURNAMENT 30Aug2026",   link:"https://lichess.org/swiss/U2nV4m2n" },
+  { date:"5th Sept 2026", day:"Saturday", month:"September", iso:"2026-09-05", name:"SWISS TOURNAMENT 05Sept2026",  link:"https://lichess.org/swiss/vNvDtzvZ" },
+  { date:"6th Sept 2026", day:"Sunday",   month:"September", iso:"2026-09-06", name:"SWISS TOURNAMENT 06Sept2026",  link:"https://lichess.org/swiss/6YNUQ77d" },
+  { date:"12th Sept 2026",day:"Saturday", month:"September", iso:"2026-09-12", name:"SWISS TOURNAMENT 12Sept2026",  link:"https://lichess.org/swiss/nSAiNXT0" },
+  { date:"13th Sept 2026",day:"Sunday",   month:"September", iso:"2026-09-13", name:"SWISS TOURNAMENT 13Sept2026",  link:"https://lichess.org/swiss/q3zj56Yb" },
+  { date:"19th Sept 2026",day:"Saturday", month:"September", iso:"2026-09-19", name:"SWISS TOURNAMENT 19Sept2026",  link:"https://lichess.org/swiss/IYhldYi4" },
+  { date:"20th Sept 2026",day:"Sunday",   month:"September", iso:"2026-09-20", name:"SWISS TOURNAMENT 20Sept2026",  link:"https://lichess.org/swiss/fA10YSAv" },
+  { date:"26th Sept 2026",day:"Saturday", month:"September", iso:"2026-09-26", name:"SWISS TOURNAMENT 26Sept2026",  link:"https://lichess.org/swiss/vzDBWazQ" },
+  { date:"27th Sept 2026",day:"Sunday",   month:"September", iso:"2026-09-27", name:"SWISS TOURNAMENT 27Sept2026",  link:"https://lichess.org/swiss/aEJQBGkU" }
 ];
 
 function todayISO(){ const d=new Date(); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
