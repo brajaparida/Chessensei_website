@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chess Club — Chessensei</title>
+<meta name="description" content="Chessensei Chess Club — Every Sunday, 9 AM to 11 AM. Free entry, open for all age groups. Whitefield, Bangalore.">
+<link rel="canonical" href="https://www.chessensei.com/chess-club.html">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.chessensei.com/chess-club.html">
+<meta property="og:title" content="Chessensei Chess Club — Every Sunday, Free Entry">
+<meta property="og:description" content="Join the Chessensei Chess Club every Sunday, 9 AM–11 AM. Open for all ages. Free entry. Whitefield, Bangalore.">
+<meta property="og:image" content="https://www.chessensei.com/og-home.png">
+<meta property="og:site_name" content="Chessensei">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Chessensei Chess Club — Every Sunday, Free Entry">
+<meta name="twitter:description" content="Join every Sunday, 9 AM–11 AM. Free entry. All ages welcome. Whitefield, Bangalore.">
+<meta name="twitter:image" content="https://www.chessensei.com/og-home.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#2A7A2A; --green-dark:#1e5c1e; --green-light:#3a9a3a;
+  --green-pale:#e8f5e8; --gold:#F5C518; --gold-dark:#d4a80a;
+  --cream:#FAF8F0; --cream2:#F2EFE4; --white:#ffffff;
+  --dark:#1a2e1a; --gray:#3d5040; --light-gray:#e8ede8;
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:'Nunito',sans-serif;background:var(--cream);color:var(--dark);overflow-x:hidden;}
+a{text-decoration:none;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(30,92,30,0.97);backdrop-filter:blur(12px);display:flex;align-items:center;justify-content:space-between;padding:0 5%;height:72px;border-bottom:2px solid rgba(245,197,24,0.3);}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo-text{font-family:'Fredoka One',cursive;font-size:1.6rem;color:var(--white);letter-spacing:0.02em;}
+.nav-logo-text span{color:var(--gold);}
+.nav-links{display:flex;gap:1.3rem;list-style:none;align-items:center;flex-wrap:nowrap;}
+.nav-links a{color:rgba(255,255,255,0.85);text-decoration:none;font-size:0.92rem;font-weight:700;transition:color 0.2s;white-space:nowrap;}
+.nav-links a:hover{color:var(--gold);}
+.nav-links a.active{color:var(--gold);border-bottom:2px solid var(--gold);padding-bottom:4px;}
+.nav-cta{background:var(--gold)!important;color:var(--green-dark)!important;padding:9px 22px;border-radius:50px;font-weight:800!important;transition:all 0.2s!important;box-shadow:0 3px 12px rgba(245,197,24,0.3);}
+.nav-cta:hover{background:#fff!important;color:var(--green-dark)!important;transform:translateY(-2px);}
+.nav-club{background:rgba(245,197,24,0.15)!important;color:var(--gold)!important;padding:9px 22px;border-radius:50px;font-weight:800!important;border:1.5px solid rgba(245,197,24,0.5);transition:all 0.2s!important;}
+.nav-club:hover{background:var(--gold)!important;color:var(--green-dark)!important;transform:translateY(-2px);}
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;}
+.hamburger span{width:26px;height:2.5px;background:white;border-radius:3px;transition:0.3s;}
+@media(max-width:1180px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:72px;left:0;right:0;background:var(--green-dark);padding:2rem;gap:1.5rem;z-index:99;border-bottom:2px solid rgba(245,197,24,0.3);}
+}
+
+/* HERO */
+.hero{min-height:92vh;background:linear-gradient(160deg,var(--green-dark) 0%,var(--green) 50%,#3d8b3d 100%);display:flex;align-items:center;padding:120px 5% 60px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background-image:repeating-conic-gradient(rgba(255,255,255,0.03) 0% 25%,transparent 0% 50%);background-size:60px 60px;pointer-events:none;}
+.hero::after{content:'♟';position:absolute;font-size:40vw;opacity:.05;right:-8%;bottom:-14%;line-height:1;pointer-events:none;}
+.hero-grid{display:grid;grid-template-columns:1.1fr 0.9fr;gap:4rem;align-items:center;max-width:1200px;margin:0 auto;width:100%;position:relative;z-index:1;}
+.hero-tagline{display:inline-flex;align-items:center;gap:8px;background:rgba(245,197,24,0.15);border:1.5px solid rgba(245,197,24,0.5);color:var(--gold);font-size:0.78rem;font-weight:800;padding:6px 16px;border-radius:50px;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:1.5rem;}
+.hero h1{font-family:'Fredoka One',cursive;font-size:clamp(2.2rem,4.8vw,3.6rem);color:var(--white);line-height:1.15;margin-bottom:1.2rem;}
+.hero h1 em{font-style:normal;color:var(--gold);}
+.hero-sub{font-size:1rem;font-weight:600;color:rgba(255,255,255,0.9);line-height:1.7;margin-bottom:1.5rem;max-width:500px;font-style:italic;}
+.hero p{font-size:0.98rem;color:rgba(255,255,255,0.9);line-height:1.7;margin-bottom:2rem;max-width:480px;}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;margin-bottom:2.5rem;}
+.btn-primary{background:var(--gold);color:var(--green-dark);padding:14px 32px;border-radius:50px;font-weight:800;font-size:0.95rem;text-decoration:none;transition:all 0.2s;box-shadow:0 4px 20px rgba(245,197,24,0.35);display:inline-flex;align-items:center;gap:8px;}
+.btn-primary:hover{background:#fff;transform:translateY(-3px);}
+.btn-secondary{background:transparent;color:white;padding:14px 32px;border-radius:50px;font-weight:700;font-size:0.95rem;text-decoration:none;border:2px solid rgba(255,255,255,0.4);transition:all 0.2s;}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold);background:rgba(245,197,24,0.08);}
+.hero-stats{display:flex;gap:2.5rem;flex-wrap:wrap;}
+.stat-item{text-align:left;}
+.stat-num{font-family:'Fredoka One',cursive;font-size:1.9rem;color:var(--gold);line-height:1;}
+.stat-label{font-size:0.75rem;font-weight:700;color:rgba(255,255,255,0.85);letter-spacing:0.05em;text-transform:uppercase;margin-top:4px;}
+
+/* HERO CARD */
+.hero-visual{display:flex;justify-content:center;}
+.hero-card{background:rgba(255,255,255,0.1);border:2px solid rgba(245,197,24,0.35);border-radius:24px;padding:1.8rem;backdrop-filter:blur(16px);width:100%;max-width:380px;}
+.hero-card-label{font-size:0.72rem;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:8px;}
+.hero-card-label::after{content:'';flex:1;height:1px;background:rgba(245,197,24,0.3);}
+.info-row{display:flex;align-items:center;gap:12px;padding:10px 14px;background:rgba(255,255,255,0.08);border-radius:12px;margin-bottom:10px;}
+.info-icon{font-size:1.2rem;flex-shrink:0;}
+.info-text{font-size:0.85rem;font-weight:700;color:rgba(255,255,255,0.9);line-height:1.4;}
+.info-text span{display:block;font-size:0.7rem;font-weight:600;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:2px;}
+.hero-card-foot{margin-top:1.2rem;text-align:center;font-size:.82rem;font-weight:600;color:rgba(255,255,255,0.8);}
+
+@media(max-width:960px){.hero-grid{grid-template-columns:1fr;}.hero{min-height:auto;padding:110px 6% 50px;}.hero-visual{display:none;}}
+
+/* SECTIONS */
+section.page-section{padding:80px 5%;}
+.max-w{max-width:1200px;margin:0 auto;}
+.section-tag{display:inline-block;background:var(--green-pale);color:var(--green);font-size:0.72rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:1rem;border:1px solid rgba(42,122,42,0.2);}
+.section-title{font-family:'Fredoka One',cursive;font-size:clamp(1.7rem,3.2vw,2.5rem);color:var(--green-dark);line-height:1.2;margin-bottom:1rem;}
+.section-sub{font-size:1rem;font-weight:600;color:var(--gray);line-height:1.7;max-width:560px;}
+
+/* UPCOMING TABLE */
+.upcoming-section{background:var(--white);}
+.club-table{width:100%;border-collapse:collapse;margin-top:2.5rem;}
+.club-table th{text-align:left;padding:10px 16px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--green-dark);border-bottom:2px solid var(--light-gray);background:var(--green-pale);}
+.club-table td{padding:14px 16px;border-bottom:1px solid var(--light-gray);font-size:0.9rem;font-weight:600;color:var(--dark);vertical-align:middle;}
+.club-table tr:last-child td{border-bottom:none;}
+.club-table tr:hover td{background:var(--green-pale);}
+.club-table tr.is-past td{opacity:0.45;}
+.date-cell .dn{font-family:'Fredoka One',cursive;font-size:1.1rem;color:var(--green-dark);line-height:1;}
+.date-cell .dd{font-size:0.68rem;font-weight:800;text-transform:uppercase;color:var(--gray);letter-spacing:0.04em;}
+.status-badge{display:inline-block;font-size:0.65rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;padding:3px 10px;border-radius:20px;}
+.status-open{background:var(--green-pale);color:var(--green);}
+.status-today{background:var(--gold);color:var(--green-dark);}
+.status-closed{background:var(--light-gray);color:var(--gray);}
+.status-full{background:#FFE5E5;color:#b91c1c;}
+.count-pill{display:inline-flex;align-items:center;gap:5px;font-size:0.82rem;font-weight:700;color:var(--green-dark);}
+.count-loading{color:var(--gray);font-size:0.8rem;font-style:italic;}
+.register-btn{display:inline-block;font-size:0.82rem;font-weight:800;color:white;background:linear-gradient(135deg,var(--green),var(--green-light));padding:8px 18px;border-radius:50px;box-shadow:0 3px 10px rgba(42,122,42,0.25);transition:all 0.2s;}
+.register-btn:hover{background:linear-gradient(135deg,var(--gold),var(--gold-dark));color:var(--green-dark);transform:translateY(-2px);}
+.register-btn.disabled{background:var(--light-gray);color:var(--gray);box-shadow:none;cursor:default;pointer-events:none;}
+@media(max-width:680px){
+  .club-table th:nth-child(3),.club-table td:nth-child(3){display:none;}
+}
+
+/* PAST EVENTS */
+.past-section{background:var(--cream2);}
+.past-table{width:100%;border-collapse:collapse;margin-top:2.5rem;}
+.past-table th{text-align:left;padding:10px 16px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--green-dark);border-bottom:2px solid var(--light-gray);background:var(--green-pale);}
+.past-table td{padding:14px 16px;border-bottom:1px solid var(--light-gray);font-size:0.9rem;font-weight:600;color:var(--dark);vertical-align:middle;}
+.past-table tr:last-child td{border-bottom:none;}
+.past-table tr:hover td{background:var(--cream);}
+.winner-badge{display:inline-flex;align-items:center;gap:6px;background:#FFFDE7;color:#7B5E00;font-size:0.82rem;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid #F9E000;}
+.remarks-tag{display:inline-block;margin-left:6px;font-size:0.68rem;font-weight:700;color:var(--green);background:var(--green-pale);padding:2px 8px;border-radius:20px;}
+.no-past{text-align:center;padding:40px;color:var(--gray);font-size:0.9rem;font-weight:600;font-style:italic;}
+.loading-state{text-align:center;padding:40px;color:var(--gray);font-size:0.9rem;}
+
+/* CTA SECTION */
+.cta-section{background:var(--cream);}
+.cta-card{max-width:900px;margin:0 auto;background:linear-gradient(135deg,var(--green-dark),var(--green));border-radius:24px;padding:3rem 2.5rem;color:white;text-align:center;position:relative;overflow:hidden;box-shadow:0 20px 60px rgba(42,122,42,0.3);}
+.cta-card::before{content:'♟';position:absolute;top:-20px;left:10px;font-size:9rem;opacity:.07;line-height:1;pointer-events:none;}
+.cta-card h2{font-family:'Fredoka One',cursive;font-size:1.6rem;margin-bottom:.6rem;position:relative;}
+.cta-card p{font-size:0.95rem;font-weight:600;color:rgba(255,255,255,0.9);margin-bottom:1.6rem;max-width:480px;margin-left:auto;margin-right:auto;position:relative;}
+
+/* FOOTER */
+footer{background:var(--green-dark);color:rgba(255,255,255,0.75);padding:3.5rem 5% 2rem;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem;max-width:1200px;margin-left:auto;margin-right:auto;padding-bottom:2.5rem;border-bottom:1px solid rgba(255,255,255,0.12);}
+.footer-brand h3{font-family:'Fredoka One',cursive;font-size:1.6rem;color:white;margin-bottom:0.5rem;}
+.footer-brand h3 span{color:var(--gold);}
+.footer-brand .tagline{font-size:0.78rem;font-weight:700;color:rgba(255,255,255,0.6);font-style:italic;margin-bottom:1rem;line-height:1.5;}
+.footer-brand p{font-size:0.85rem;font-weight:600;line-height:1.65;max-width:260px;margin-bottom:1.2rem;}
+.social-links{display:flex;gap:10px;}
+.social-link{width:38px;height:38px;background:rgba(255,255,255,0.08);border:1.5px solid rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1rem;transition:all 0.2s;}
+.social-link:hover{background:var(--gold);border-color:var(--gold);transform:translateY(-2px);}
+.footer-col-title{font-size:0.78rem;font-weight:800;color:var(--gold);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:1rem;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:8px;padding:0;margin:0;}
+.footer-col a{color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.85rem;font-weight:600;transition:color 0.2s;}
+.footer-col a:hover{color:var(--gold);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;font-size:0.8rem;font-weight:600;max-width:1200px;margin:0 auto;color:rgba(255,255,255,0.45);}
+@media(max-width:960px){.footer-grid{grid-template-columns:1fr 1fr;}}
+@media(max-width:500px){.footer-grid{grid-template-columns:1fr;}.footer-bottom{flex-direction:column;gap:8px;text-align:center;}}
+
+.wa-float{position:fixed;bottom:24px;right:24px;z-index:999;width:60px;height:60px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:1.8rem;box-shadow:0 4px 20px rgba(37,211,102,0.5);transition:transform 0.2s;animation:waPulse 2s infinite;will-change:transform;}
+.wa-float:hover{transform:scale(1.12);}
+@keyframes waPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="https://chessensei.com/" class="nav-logo"><span class="nav-logo-text">Chessensei</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="https://chessensei.com/#about">About</a></li>
+    <li><a href="https://chessensei.com/#programs">Programs</a></li>
+    <li><a href="https://chessensei.com/#why">Why Chess</a></li>
+    <li><a href="https://chessensei.com/#how">How It Works</a></li>
+    <li><a href="https://chessensei.com/#contact">Contact</a></li>
+    <li><a href="/chess-club.html" class="nav-club active">♟️ Chess Club</a></li>
+    <li><a href="/tournaments.html">🏆 Tournaments</a></li>
+    <li><a href="https://wa.me/917022785192?text=Hi%20Chessensei!%20I'm%20interested%20in%20a%20free%20trial%20chess%20class%20for%20my%20child." class="nav-cta" target="_blank">🎯 Book Free Trial Class</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleNav()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid">
+    <div>
+      <div class="hero-tagline">♟️ Chessensei Chess Club · Whitefield, Bangalore</div>
+      <h1>Play Every Sunday,<br>Grow Every <em>Week</em></h1>
+      <p class="hero-sub">"Every Sunday is a new game, a new challenge, a new you."</p>
+      <p>Open for all age groups — come play, compete, and grow with fellow chess enthusiasts. Free entry, Swiss format, medals for winners.</p>
+      <div class="hero-btns">
+        <a href="#upcoming" class="btn-primary">♟️ Register for a Sunday →</a>
+        <a href="#past" class="btn-secondary">Past Results ↓</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-item"><div class="stat-num">9 AM</div><div class="stat-label">Start Time</div></div>
+        <div class="stat-item"><div class="stat-num">11 AM</div><div class="stat-label">End Time</div></div>
+        <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Entry</div></div>
+        <div class="stat-item"><div class="stat-num">All Ages</div><div class="stat-label">Welcome</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="hero-card-label">♟ Club Details</div>
+        <div class="info-row"><div class="info-icon">📍</div><div class="info-text"><span>Venue</span>Chessensei Centre, Whitefield, Bangalore</div></div>
+        <div class="info-row"><div class="info-icon">🕘</div><div class="info-text"><span>Timing</span>Every Sunday · 9:00 AM – 11:00 AM</div></div>
+        <div class="info-row"><div class="info-icon">♟️</div><div class="info-text"><span>Format</span>Swiss System · 8+0 mins (may vary)</div></div>
+        <div class="info-row"><div class="info-icon">🏅</div><div class="info-text"><span>Prize</span>Medals for winners</div></div>
+        <div class="info-row"><div class="info-icon">✅</div><div class="info-text"><span>Entry</span>Free · Open for all age groups</div></div>
+        <div class="hero-card-foot">Register for your Sunday below ↓</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- UPCOMING SUNDAYS -->
+<section class="page-section upcoming-section" id="upcoming">
+  <div class="max-w">
+    <div class="section-tag">📅 Upcoming Sundays</div>
+    <h2 class="section-title">Register for a Sunday</h2>
+    <p class="section-sub">Click Register for your preferred Sunday. The date is captured automatically — no need to type it.</p>
+    <table class="club-table" id="upcomingTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Status</th>
+          <th>Registered</th>
+          <th>Register</th>
+        </tr>
+      </thead>
+      <tbody id="upcomingBody">
+        <tr><td colspan="4" class="loading-state">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- PAST EVENTS & WINNERS -->
+<section class="page-section past-section" id="past">
+  <div class="max-w">
+    <div class="section-tag">🏅 Past Events</div>
+    <h2 class="section-title">Results & Winners</h2>
+    <p class="section-sub">Every Sunday's attendance and winners — updated after each event.</p>
+    <table class="past-table" id="pastTable">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Winner(s)</th>
+          <th>Remarks</th>
+        </tr>
+      </thead>
+      <tbody id="pastBody">
+        <tr><td colspan="3" class="loading-state">Loading results...</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- WHATSAPP CTA -->
+<section class="page-section cta-section">
+  <div class="max-w">
+    <div class="cta-card">
+      <h2>📢 Never miss a Sunday</h2>
+      <p>Join the official Chessensei WhatsApp community for reminders, results, and weekly updates.</p>
+      <a href="https://chat.whatsapp.com/FJyvvbRVJn4KeMoNscUbjY" target="_blank" rel="noopener" class="btn-primary">💬 Join WhatsApp Community →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <h3>Chess<span>ensei</span></h3>
+      <p class="tagline">"The best way to improve your chess game is to train with the best"</p>
+      <p>Making chess learning an enjoyable & engaging experience for your little champ. Based in Whitefield, Bangalore.</p>
+      <div class="social-links">
+        <a href="https://instagram.com/chessensei" target="_blank" class="social-link">📸</a>
+        <a href="https://facebook.com/chessensei" target="_blank" class="social-link">📘</a>
+        <a href="https://wa.me/917022785192?text=Hi%20Chessensei!%20I'm%20interested%20in%20a%20free%20trial%20chess%20class%20for%20my%20child." target="_blank" class="social-link">💬</a>
+      </div>
+    </div>
+    <div class="footer-col"><h3 class="footer-col-title">Programs</h3><ul>
+      <li><a href="https://chessensei.com/#programs">Home Classes</a></li>
+      <li><a href="https://chessensei.com/#programs">Online Classes</a></li>
+      <li><a href="https://chessensei.com/#programs">School Programs</a></li>
+      <li><a href="/chess-club.html">Chess Club</a></li>
+    </ul></div>
+    <div class="footer-col"><h3 class="footer-col-title">Quick Links</h3><ul>
+      <li><a href="https://chessensei.com/#about">About Us</a></li>
+      <li><a href="https://chessensei.com/#why">Why Chess</a></li>
+      <li><a href="https://chessensei.com/#how">How It Works</a></li>
+      <li><a href="/tournaments.html">Tournaments</a></li>
+    </ul></div>
+    <div class="footer-col"><h3 class="footer-col-title">Contact</h3><ul>
+      <li><a href="tel:+917022785192">+91 70227 85192</a></li>
+      <li><a href="mailto:info@chessensei.com">info@chessensei.com</a></li>
+      <li><a href="https://chessensei.com/#about">Whitefield, Bangalore</a></li>
+      <li><a href="https://wa.me/917022785192" target="_blank">WhatsApp Us</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Chessensei | ThinkQuestLab Pvt. Ltd. All rights reserved.</p>
+    <p>Made with ♟ in Bangalore</p>
+  </div>
+</footer>
+
+<a href="https://wa.me/917022785192?text=Hi%20Chessensei!%20I'm%20interested%20in%20a%20free%20trial%20chess%20class%20for%20my%20child." class="wa-float" target="_blank" title="Chat on WhatsApp">💬</a>
+
+<script>
+/* =========================================================================
+   WEEKLY UPDATE: Add new Sundays here.
+   Format: { date:"DDth Mon YYYY", day:"Sunday", month:"MonthName",
+             iso:"YYYY-MM-DD", formDate:"D Mon YYYY" }
+   formDate must EXACTLY match what you want captured in the Google Sheet.
+========================================================================= */
+const CHESS_CLUB = [
+  { date:"5th Oct 2026",  day:"Sunday", month:"October", iso:"2026-10-05", formDate:"5 Oct 2026"  },
+  { date:"12th Oct 2026", day:"Sunday", month:"October", iso:"2026-10-12", formDate:"12 Oct 2026" },
+  { date:"19th Oct 2026", day:"Sunday", month:"October", iso:"2026-10-19", formDate:"19 Oct 2026" },
+  { date:"26th Oct 2026", day:"Sunday", month:"October", iso:"2026-10-26", formDate:"26 Oct 2026" },
+];
+
+const FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLSeSaSRmsGhSVLCdvg_EgRv_RhakGRX1CYzwVOAYz7pWH3RvKQ/viewform?usp=pp_url&entry.1319169203=";
+const SHEET_ID  = "1z5IyePjRZJCKg-d26luYwYrQU0hC9zJlvIzp4YO_yiM";
+
+function todayISO(){
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+const TODAY = todayISO();
+
+function getStatus(iso){
+  if(iso === TODAY) return "today";
+  return iso > TODAY ? "upcoming" : "past";
+}
+
+async function fetchSheet(sheetName){
+  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+  const res  = await fetch(url);
+  const text = await res.text();
+  const json = JSON.parse(text.slice(text.indexOf("(")+1, text.lastIndexOf(")")));
+  return json.table;
+}
+
+async function loadRegistrationCounts(){
+  try{
+    const table = await fetchSheet("Form responses 1");
+    const counts = {};
+    if(!table || !table.rows) return counts;
+    table.rows.forEach(row => {
+      if(row.c && row.c[6] && row.c[6].v){
+        const d = String(row.c[6].v).trim();
+        counts[d] = (counts[d]||0)+1;
+      }
+    });
+    return counts;
+  }catch(e){ return {}; }
+}
+
+async function loadWinners(){
+  try{
+    const table = await fetchSheet("Winners");
+    const winners = {};
+    if(!table || !table.rows) return winners;
+    table.rows.forEach(row => {
+      if(row.c && row.c[0] && row.c[0].v && row.c[1] && row.c[1].v){
+        const date   = String(row.c[0].v).trim();
+        const name   = String(row.c[1].v).trim();
+        const remark = (row.c[2] && row.c[2].v) ? String(row.c[2].v).trim() : "";
+        if(!winners[date]) winners[date] = [];
+        winners[date].push({ name, remark });
+      }
+    });
+    return winners;
+  }catch(e){ return {}; }
+}
+
+async function init(){
+  const tagged    = CHESS_CLUB.map(t => ({...t, status: getStatus(t.iso)}));
+  const upcoming  = tagged.filter(t => t.status !== "past");
+  const past      = tagged.filter(t => t.status === "past");
+
+  const [counts, winners] = await Promise.all([loadRegistrationCounts(), loadWinners()]);
+
+  /* UPCOMING TABLE */
+  const upBody = document.getElementById("upcomingBody");
+  if(upcoming.length === 0){
+    upBody.innerHTML = `<tr><td colspan="4" class="no-past">No upcoming Sundays scheduled yet — check back soon! ♟</td></tr>`;
+  }else{
+    upBody.innerHTML = upcoming.map(t => {
+      const count    = counts[t.formDate] || 0;
+      const isToday  = t.status === "today";
+      const statusHTML = isToday
+        ? `<span class="status-badge status-today">Today</span>`
+        : `<span class="status-badge status-open">Open</span>`;
+      const countHTML = `<span class="count-pill">👥 ${count} registered</span>`;
+      const btnHTML   = `<a href="${FORM_BASE}${encodeURIComponent(t.formDate)}" target="_blank" class="register-btn">Register →</a>`;
+      return `<tr>
+        <td><div class="date-cell"><div class="dn">${t.date}</div><div class="dd">${t.day}</div></div></td>
+        <td>${statusHTML}</td>
+        <td>${countHTML}</td>
+        <td>${btnHTML}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  /* PAST TABLE */
+  const pastBody = document.getElementById("pastBody");
+  if(past.length === 0){
+    pastBody.innerHTML = `<tr><td colspan="3" class="no-past">No past events yet — results will appear here after each Sunday. ♟</td></tr>`;
+  }else{
+    pastBody.innerHTML = past.slice().reverse().map(t => {
+      const w = winners[t.formDate] || [];
+      const winnerHTML = w.length > 0
+        ? w.map(x => `<div style="margin-bottom:4px"><span class="winner-badge">🥇 ${x.name}</span>${x.remark ? `<span class="remarks-tag">${x.remark}</span>` : ""}</div>`).join("")
+        : `<span style="color:var(--gray);font-style:italic;font-size:0.82rem;">—</span>`;
+      const attendCount = counts[t.formDate] || 0;
+      return `<tr>
+        <td><div class="date-cell"><div class="dn">${t.date}</div><div class="dd">${t.day}</div></div></td>
+        <td>${winnerHTML}</td>
+        <td><span class="count-pill">👥 ${attendCount} registered</span></td>
+      </tr>`;
+    }).join("");
+  }
+}
+
+function toggleNav(){ document.getElementById("navLinks").classList.toggle("open"); }
+document.querySelectorAll(".nav-links a").forEach(a => { a.addEventListener("click", () => document.getElementById("navLinks").classList.remove("open")); });
+
+init();
+</script>
+</body>
+</html>
