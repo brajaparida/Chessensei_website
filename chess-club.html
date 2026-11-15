@@ -373,24 +373,19 @@ function normalizeDate(value){
 
   const s = String(value).trim();
 
-  // Google Sheets date value, for example: Date(2026,10,15)
+  // Google Visualization date value, for example: Date(2026,10,15)
   let m = s.match(/^Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})\)$/);
   if(m){
-    const year = m[1];
-    const month = String(Number(m[2]) + 1).padStart(2, "0");
-    const day = String(m[3]).padStart(2, "0");
-    return `${year}-${month}-${day}`;
+    return `${m[1]}-${String(Number(m[2]) + 1).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
   }
 
-  // DD/MM/YYYY or DD-MM-YYYY, for example: 15/11/2026
+  // DD/MM/YYYY or DD-MM-YYYY
   m = s.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
   if(m){
-    const day = String(m[1]).padStart(2, "0");
-    const month = String(m[2]).padStart(2, "0");
-    return `${m[3]}-${month}-${day}`;
+    return `${m[3]}-${String(m[2]).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
   }
 
-  // D Mon YYYY or DD Month YYYY, for example: 15 Nov 2026
+  // D Mon YYYY or DD Month YYYY
   const months = {
     jan:"01", feb:"02", mar:"03", apr:"04",
     may:"05", jun:"06", jul:"07", aug:"08",
@@ -415,17 +410,17 @@ function normalizeDate(value){
 
 async function loadRegistrationCounts(){
   try{
-    const table = await fetchSheet("Form responses 1");
+    // This must exactly match the Google Sheet tab name.
+    const table = await fetchSheet("Form_Responses");
     const counts = {};
 
     if(!table || !table.rows) return counts;
 
     table.rows.forEach(row => {
-      // Column G (index 6) contains the selected Sunday Date.
+      // Column G (index 6) contains "Sunday Date?"
       const cell = row.c && row.c[6];
       if(!cell) return;
 
-      // Prefer the displayed date; fall back to the underlying value.
       const date = normalizeDate(cell.f) || normalizeDate(cell.v);
       if(date){
         counts[date] = (counts[date] || 0) + 1;
