@@ -347,8 +347,9 @@ const CHESS_CLUB = [
   { date:"20th Dec 2026", day:"Sunday", month:"December", iso:"2026-12-20", formDate:"20 Dec 2026" },
   { date:"27th Dec 2026", day:"Sunday", month:"December", iso:"2026-12-27", formDate:"27 Dec 2026" },
 ];
+
 const FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLSeSaSRmsGhSVLCdvg_EgRv_RhakGRX1CYzwVOAYz7pWH3RvKQ/viewform?usp=pp_url&entry.1169032795=";
-const SHEET_ID  = "1z5IyePjRZJCKg-d26luYwYrQU0hC9zJlvIzp4YO_yiM";
+const API_URL   = "https://script.google.com/macros/s/AKfycbzF1duk7KvhXd-cUY6yTWkWWdGflkkll7n8ynIx5zxiD0xuvqlbHFZECn8DRyzTNQY/exec";
 
 function todayISO(){
   const d = new Date();
@@ -361,124 +362,19 @@ function getStatus(iso){
   return iso > TODAY ? "upcoming" : "past";
 }
 
-async function fetchSheet(sheetName){
-  const url  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  const res  = await fetch(url);
-  const text = await res.text();
-  const json = JSON.parse(text.slice(text.indexOf("(")+1, text.lastIndexOf(")")));
-  return json.table;
-}
-
-function normalizeDate(value){
-  if(value === null || value === undefined || value === "") return null;
-
-  const s = String(value).trim();
-
-  // 1. Google Visualization canonical date: Date(2026,10,15) -> months are 0-indexed
-  let m = s.match(/^Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})/);
-  if(m){
-    return `${m[1]}-${String(Number(m[2]) + 1).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
-  }
-
-  // 2. ISO date: YYYY-MM-DD
-  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
-  if(m){
-    return `${m[1]}-${String(m[2]).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
-  }
-
-  const months = {
-    jan:"01", feb:"02", mar:"03", apr:"04",
-    may:"05", jun:"06", jul:"07", aug:"08",
-    sep:"09", oct:"10", nov:"11", dec:"12"
-  };
-
-  // 3. "15 Nov 2026", "15-Nov-2026", or "15th Nov 2026"
-  m = s.match(/^(\d{1,2})(?:st|nd|rd|th)?[\s-]+([A-Za-z]+)[\s,-]+(\d{4})$/i);
-  if(m){
-    const month = months[m[2].slice(0, 3).toLowerCase()];
-    if(month) return `${m[3]}-${month}-${String(m[1]).padStart(2, "0")}`;
-  }
-
-  // 4. "Nov 15, 2026"
-  m = s.match(/^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})$/i);
-  if(m){
-    const month = months[m[1].slice(0, 3).toLowerCase()];
-    if(month) return `${m[3]}-${month}-${String(m[2]).padStart(2, "0")}`;
-  }
-
-  // 5. DD/MM/YYYY or DD-MM-YYYY
-  m = s.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
-  if(m){
-    return `${m[3]}-${String(m[2]).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
-  }
-
-  return null;
-}
-
-async function loadRegistrationCounts(){
+async function loadClubData(){
   try{
-    // Try standard Google Form tab name first, then underscored fallback
-    const tabCandidates = ["Form Responses 1", "Form_Responses"];
-    let table = null;
-    let dateColIndex = -1;
-
-    for(const tabName of tabCandidates){
-      const candidateTable = await fetchSheet(tabName);
-      if(candidateTable && candidateTable.cols){
-        const foundIdx = candidateTable.cols.findIndex(col =>
-          col && col.label && /sunday\s*date/i.test(col.label)
-        );
-        if(foundIdx !== -1){
-          table = candidateTable;
-          dateColIndex = foundIdx;
-          break;
-        }
-        if(!table) table = candidateTable;
-      }
-    }
-
-    if(dateColIndex === -1) dateColIndex = 6; // Fallback to Column G
-
-    const counts = {};
-    if(!table || !table.rows) return counts;
-
-    table.rows.forEach(row => {
-      const cell = row.c && row.c[dateColIndex];
-      if(!cell) return;
-
-      // Check canonical value (cell.v) BEFORE formatted display text (cell.f)
-      const date = normalizeDate(cell.v) || normalizeDate(cell.f);
-      if(date){
-        counts[date] = (counts[date] || 0) + 1;
-      }
-    });
-
-    return counts;
+    const res = await fetch(API_URL);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return {
+      counts: data.counts || {},
+      winners: data.winners || {}
+    };
   }catch(e){
-    console.error("Could not load registration counts (check Sheet sharing & tab name):", e);
-    return {};
+    console.error("Could not load club data:", e);
+    return { counts: {}, winners: {} };
   }
-}
-
-async function loadWinners(){
-  try{
-    const table = await fetchSheet("Winners");
-    const winners = {};
-    if(!table || !table.rows) return winners;
-    table.rows.forEach(row => {
-      if(row.c && row.c[0] && row.c[0].v && row.c[1] && row.c[1].v){
-        const rawDate = String(row.c[0].v).trim();
-        const isoDate = normalizeDate(row.c[0].v) || normalizeDate(row.c[0].f);
-        const name    = String(row.c[1].v).trim();
-        const remark  = (row.c[2] && row.c[2].v) ? String(row.c[2].v).trim() : "";
-
-        const key = isoDate || rawDate;
-        if(!winners[key]) winners[key] = [];
-        winners[key].push({ name, remark });
-      }
-    });
-    return winners;
-  }catch(e){ return {}; }
 }
 
 async function init(){
@@ -486,7 +382,7 @@ async function init(){
   const upcoming = tagged.filter(t => t.status !== "past");
   const past     = tagged.filter(t => t.status === "past");
 
-  const [counts, winners] = await Promise.all([loadRegistrationCounts(), loadWinners()]);
+  const { counts, winners } = await loadClubData();
 
   /* UPCOMING TABLE */
   const upBody = document.getElementById("upcomingBody");
