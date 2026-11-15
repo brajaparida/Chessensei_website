@@ -368,19 +368,75 @@ async function fetchSheet(sheetName){
   return json.table;
 }
 
+function normalizeDate(value){
+  if(value === null || value === undefined || value === "") return null;
+
+  const s = String(value).trim();
+
+  // Google Sheets date value, for example: Date(2026,10,15)
+  let m = s.match(/^Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})\)$/);
+  if(m){
+    const year = m[1];
+    const month = String(Number(m[2]) + 1).padStart(2, "0");
+    const day = String(m[3]).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  // DD/MM/YYYY or DD-MM-YYYY, for example: 15/11/2026
+  m = s.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+  if(m){
+    const day = String(m[1]).padStart(2, "0");
+    const month = String(m[2]).padStart(2, "0");
+    return `${m[3]}-${month}-${day}`;
+  }
+
+  // D Mon YYYY or DD Month YYYY, for example: 15 Nov 2026
+  const months = {
+    jan:"01", feb:"02", mar:"03", apr:"04",
+    may:"05", jun:"06", jul:"07", aug:"08",
+    sep:"09", oct:"10", nov:"11", dec:"12"
+  };
+  m = s.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+  if(m){
+    const month = months[m[2].slice(0, 3).toLowerCase()];
+    if(month){
+      return `${m[3]}-${month}-${String(m[1]).padStart(2, "0")}`;
+    }
+  }
+
+  // ISO date, optionally followed by a time
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if(m){
+    return `${m[1]}-${String(m[2]).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
+  }
+
+  return null;
+}
+
 async function loadRegistrationCounts(){
   try{
     const table = await fetchSheet("Form responses 1");
     const counts = {};
+
     if(!table || !table.rows) return counts;
+
     table.rows.forEach(row => {
-      if(row.c && row.c[6] && row.c[6].v){
-        const d = String(row.c[6].v).trim();
-        counts[d] = (counts[d]||0)+1;
+      // Column G (index 6) contains the selected Sunday Date.
+      const cell = row.c && row.c[6];
+      if(!cell) return;
+
+      // Prefer the displayed date; fall back to the underlying value.
+      const date = normalizeDate(cell.f) || normalizeDate(cell.v);
+      if(date){
+        counts[date] = (counts[date] || 0) + 1;
       }
     });
+
     return counts;
-  }catch(e){ return {}; }
+  }catch(e){
+    console.error("Could not load registration counts:", e);
+    return {};
+  }
 }
 
 async function loadWinners(){
@@ -414,7 +470,7 @@ async function init(){
     upBody.innerHTML = `<tr><td colspan="4" class="no-past">No upcoming Sundays scheduled yet — check back soon! ♟</td></tr>`;
   }else{
     upBody.innerHTML = upcoming.map(t => {
-      const count    = counts[t.formDate] || 0;
+      const count    = counts[t.iso] || 0;
       const isToday  = t.status === "today";
       const statusHTML = isToday
         ? `<span class="status-badge status-today">Today</span>`
@@ -440,7 +496,7 @@ async function init(){
       const winnerHTML = w.length > 0
         ? w.map(x => `<div style="margin-bottom:4px"><span class="winner-badge">🥇 ${x.name}</span>${x.remark ? `<span class="remarks-tag">${x.remark}</span>` : ""}</div>`).join("")
         : `<span style="color:var(--gray);font-style:italic;font-size:0.82rem;">—</span>`;
-      const attendCount = counts[t.formDate] || 0;
+      const attendCount = counts[t.iso] || 0;
       return `<tr>
         <td><div class="date-cell"><div class="dn">${t.date}</div><div class="dd">${t.day}</div></div></td>
         <td>${winnerHTML}</td>
