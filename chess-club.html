@@ -116,17 +116,36 @@ section.page-section{padding:80px 5%;}
   .club-table th:nth-child(3),.club-table td:nth-child(3){display:none;}
 }
 
-/* PAST EVENTS */
-.past-section{background:var(--cream2);}
-.past-table{width:100%;border-collapse:collapse;margin-top:2.5rem;}
-.past-table th{text-align:left;padding:10px 16px;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em;color:var(--green-dark);border-bottom:2px solid var(--light-gray);background:var(--green-pale);}
-.past-table td{padding:14px 16px;border-bottom:1px solid var(--light-gray);font-size:0.9rem;font-weight:600;color:var(--dark);vertical-align:middle;}
-.past-table tr:last-child td{border-bottom:none;}
-.past-table tr:hover td{background:var(--cream);}
-.winner-badge{display:inline-flex;align-items:center;gap:6px;background:#FFFDE7;color:#7B5E00;font-size:0.82rem;font-weight:700;padding:4px 12px;border-radius:20px;border:1px solid #F9E000;}
-.remarks-tag{display:inline-block;margin-left:6px;font-size:0.68rem;font-weight:700;color:var(--green);background:var(--green-pale);padding:2px 8px;border-radius:20px;}
-.no-past{text-align:center;padding:40px;color:var(--gray);font-size:0.9rem;font-weight:600;font-style:italic;}
+/* WALL OF FAME */
+.wof-section{background:var(--cream2);}
+.podium-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:2.5rem;}
+.podium-card{background:linear-gradient(155deg,var(--green-dark),var(--green));color:var(--white);border-radius:22px;padding:1.8rem 1.5rem;position:relative;overflow:hidden;border:2px solid rgba(245,197,24,0.45);box-shadow:0 12px 32px rgba(30,92,30,0.18);transition:transform 0.2s;}
+.podium-card:hover{transform:translateY(-4px);}
+.podium-card.rank-1{border-color:var(--gold);box-shadow:0 16px 40px rgba(30,92,30,0.28);}
+.podium-card::after{content:attr(data-piece);position:absolute;right:12px;bottom:-14px;font-size:6.5rem;opacity:0.08;line-height:1;pointer-events:none;}
+.podium-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;}
+.rank-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(245,197,24,0.18);border:1px solid rgba(245,197,24,0.5);color:var(--gold);font-size:0.72rem;font-weight:800;letter-spacing:0.06em;text-transform:uppercase;padding:4px 12px;border-radius:50px;}
+.podium-card.rank-1 .rank-pill{background:var(--gold);color:var(--green-dark);border-color:var(--gold);}
+.podium-piece{font-size:1.5rem;line-height:1;}
+.podium-name{font-family:'Fredoka One',cursive;font-size:1.55rem;color:var(--white);line-height:1.2;margin-bottom:0.75rem;position:relative;z-index:1;}
+.titles-badge{display:inline-flex;align-items:center;gap:6px;background:var(--gold);color:var(--green-dark);font-size:0.8rem;font-weight:900;padding:5px 14px;border-radius:50px;margin-bottom:0.85rem;}
+.podium-meta{font-size:0.78rem;font-weight:600;color:rgba(255,255,255,0.78);line-height:1.4;position:relative;z-index:1;}
+
+.honor-subhead{font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--green-dark);margin:2.8rem 0 1.1rem;display:flex;align-items:center;gap:12px;}
+.honor-subhead::after{content:'';flex:1;height:1.5px;background:rgba(42,122,42,0.18);}
+.honor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+.honor-card{background:var(--white);border:1.5px solid var(--light-gray);border-radius:16px;padding:1rem 1.25rem;display:flex;align-items:center;justify-content:space-between;gap:12px;transition:all 0.2s;}
+.honor-card:hover{border-color:var(--green);transform:translateY(-2px);box-shadow:0 6px 18px rgba(42,122,42,0.08);}
+.honor-left{display:flex;align-items:center;gap:12px;min-width:0;}
+.honor-icon{width:38px;height:38px;border-radius:12px;background:var(--green-pale);color:var(--green-dark);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;}
+.honor-name{font-family:'Fredoka One',cursive;font-size:1.05rem;color:var(--green-dark);line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.honor-date{font-size:0.74rem;font-weight:600;color:var(--gray);margin-top:2px;}
+.honor-count{background:#FFFDE7;color:#7B5E00;border:1px solid #F9E000;font-size:0.74rem;font-weight:800;padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;}
+
+.no-past{text-align:center;padding:40px;color:var(--gray);font-size:0.9rem;font-weight:600;font-style:italic;background:var(--white);border-radius:16px;margin-top:2rem;border:1px solid var(--light-gray);}
 .loading-state{text-align:center;padding:40px;color:var(--gray);font-size:0.9rem;}
+@media(max-width:960px){.podium-grid{grid-template-columns:1fr;}.honor-grid{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:600px){.honor-grid{grid-template-columns:1fr;}}
 
 /* CTA SECTION */
 .cta-section{background:var(--cream);}
@@ -186,7 +205,7 @@ footer{background:var(--green-dark);color:rgba(255,255,255,0.75);padding:3.5rem 
       <p>Open for all age groups — come play, compete, and grow with fellow chess enthusiasts. Free entry, Swiss format, medals for winners.</p>
       <div class="hero-btns">
         <a href="#upcoming" class="btn-primary">♟️ Register for a Sunday →</a>
-        <a href="#past" class="btn-secondary">Past Results ↓</a>
+        <a href="#wall-of-fame" class="btn-secondary">Wall of Fame ↓</a>
       </div>
       <div class="hero-stats">
         <div class="stat-item"><div class="stat-num">10 AM</div><div class="stat-label">Start Time</div></div>
@@ -232,24 +251,15 @@ footer{background:var(--green-dark);color:rgba(255,255,255,0.75);padding:3.5rem 
   </div>
 </section>
 
-<!-- PAST EVENTS & WINNERS -->
-<section class="page-section past-section" id="past">
+<!-- WALL OF FAME -->
+<section class="page-section wof-section" id="wall-of-fame">
   <div class="max-w">
-    <div class="section-tag">🏅 Past Events</div>
-    <h2 class="section-title">Results & Winners</h2>
-    <p class="section-sub">Every Sunday's attendance and winners — updated after each event.</p>
-    <table class="past-table" id="pastTable">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Winner(s)</th>
-          <th>Remarks</th>
-        </tr>
-      </thead>
-      <tbody id="pastBody">
-        <tr><td colspan="3" class="loading-state">Loading results...</td></tr>
-      </tbody>
-    </table>
+    <div class="section-tag">🏆 Wall of Fame</div>
+    <h2 class="section-title">All-Time Club Champions</h2>
+    <p class="section-sub">Celebrating our Sunday tournament winners — updated automatically after every event.</p>
+    <div id="wallOfFameContainer">
+      <div class="loading-state">Loading champions...</div>
+    </div>
   </div>
 </section>
 
@@ -362,6 +372,21 @@ function getStatus(iso){
   return iso > TODAY ? "upcoming" : "past";
 }
 
+function formatShortDate(dateKey){
+  const m = String(dateKey).match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if(!m) return dateKey;
+  const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  return `${Number(m[3])} ${monthNames[Number(m[2]) - 1]} ${m[1]}`;
+}
+
+function escapeHTML(str){
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 async function loadClubData(){
   try{
     const res = await fetch(API_URL);
@@ -377,10 +402,98 @@ async function loadClubData(){
   }
 }
 
+function buildLeaderboard(winnersObj){
+  const map = {};
+  Object.entries(winnersObj).forEach(([dateKey, entries]) => {
+    if(!Array.isArray(entries)) return;
+    entries.forEach(entry => {
+      if(!entry || !entry.name) return;
+      const cleanName = entry.name.trim();
+      const key = cleanName.toLowerCase();
+      if(!map[key]){
+        map[key] = {
+          name: cleanName,
+          wins: 0,
+          latestDate: dateKey,
+          latestRemark: entry.remark ? entry.remark.trim() : ""
+        };
+      }
+      map[key].wins += 1;
+      if(dateKey >= map[key].latestDate){
+        map[key].latestDate = dateKey;
+        if(entry.remark && entry.remark.trim()){
+          map[key].latestRemark = entry.remark.trim();
+        }
+      }
+    });
+  });
+
+  return Object.values(map).sort((a, b) => {
+    if(b.wins !== a.wins) return b.wins - a.wins;
+    return b.latestDate.localeCompare(a.latestDate);
+  });
+}
+
+function renderWallOfFame(winnersObj){
+  const container = document.getElementById("wallOfFameContainer");
+  const leaders = buildLeaderboard(winnersObj);
+
+  if(leaders.length === 0){
+    container.innerHTML = `<div class="no-past">No champions crowned yet — play this Sunday to claim the first spot on the Wall of Fame! ♟</div>`;
+    return;
+  }
+
+  const top3 = leaders.slice(0, 3);
+  const rest = leaders.slice(3);
+  const pieces = ["♔", "♕", "♖"];
+
+  const podiumHTML = `
+    <div class="podium-grid">
+      ${top3.map((player, idx) => {
+        const rank = idx + 1;
+        const piece = pieces[idx];
+        const titleLabel = `${player.wins}x Champion`;
+        const metaParts = [`Last won: ${formatShortDate(player.latestDate)}`];
+        if(player.latestRemark) metaParts.push(player.latestRemark);
+        return `
+          <div class="podium-card rank-${rank}" data-piece="${piece}">
+            <div class="podium-top">
+              <span class="rank-pill">#${rank} All-Time</span>
+              <span class="podium-piece">${piece}</span>
+            </div>
+            <div class="podium-name">${escapeHTML(player.name)}</div>
+            <div class="titles-badge">🏆 ${titleLabel}</div>
+            <div class="podium-meta">${escapeHTML(metaParts.join(" · "))}</div>
+          </div>
+        `;
+      }).join("")}
+    </div>
+  `;
+
+  const restHTML = rest.length > 0 ? `
+    <div class="honor-subhead">Sunday Champions Honor Roll</div>
+    <div class="honor-grid">
+      ${rest.map(player => `
+        <div class="honor-card">
+          <div class="honor-left">
+            <div class="honor-icon">♘</div>
+            <div style="min-width:0;">
+              <div class="honor-name">${escapeHTML(player.name)}</div>
+              <div class="honor-date">Won ${escapeHTML(formatShortDate(player.latestDate))}</div>
+            </div>
+          </div>
+          <span class="honor-count">🏅 ${player.wins}x</span>
+        </div>
+      `).join("")}
+    </div>
+  ` : "";
+
+  container.innerHTML = podiumHTML + restHTML;
+}
+
 async function init(){
   const tagged   = CHESS_CLUB.map(t => ({...t, status: getStatus(t.iso)}));
   const upcoming = tagged.filter(t => t.status !== "past");
-  const past     = tagged.filter(t => t.status === "past");
 
   const { counts, winners } = await loadClubData();
 
@@ -406,24 +519,8 @@ async function init(){
     }).join("");
   }
 
-  /* PAST TABLE */
-  const pastBody = document.getElementById("pastBody");
-  if(past.length === 0){
-    pastBody.innerHTML = `<tr><td colspan="3" class="no-past">No past events yet — results will appear here after each Sunday. ♟</td></tr>`;
-  }else{
-    pastBody.innerHTML = past.slice().reverse().map(t => {
-      const w = winners[t.iso] || winners[t.formDate] || [];
-      const winnerHTML = w.length > 0
-        ? w.map(x => `<div style="margin-bottom:4px"><span class="winner-badge">🥇 ${x.name}</span>${x.remark ? `<span class="remarks-tag">${x.remark}</span>` : ""}</div>`).join("")
-        : `<span style="color:var(--gray);font-style:italic;font-size:0.82rem;">—</span>`;
-      const attendCount = counts[t.iso] || 0;
-      return `<tr>
-        <td><div class="date-cell"><div class="dn">${t.date}</div><div class="dd">${t.day}</div></div></td>
-        <td>${winnerHTML}</td>
-        <td><span class="count-pill">👥 ${attendCount} registered</span></td>
-      </tr>`;
-    }).join("");
-  }
+  /* WALL OF FAME */
+  renderWallOfFame(winners);
 }
 
 function toggleNav(){ document.getElementById("navLinks").classList.toggle("open"); }
