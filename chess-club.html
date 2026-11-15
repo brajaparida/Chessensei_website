@@ -199,7 +199,8 @@ footer{background:var(--green-dark);color:rgba(255,255,255,0.75);padding:3.5rem 
       <div class="hero-card">
         <div class="hero-card-label">♟ Club Details</div>
         <div class="info-row"><div class="info-icon">📍</div><div class="info-text"><span>Venue</span>Chessensei Centre, Channasandra, Bangalore</div></div>
-        <div class="info-row"><div class="info-icon">🕘</div><div class="info-text"><span>Timing</span>Every Sunday · 10 AM to 12<br><span style="font-size:0.78rem;color:rgba(255,255,255,0.7);font-weight:600;">Reporting time: 9:45 AM &nbsp;·&nbsp; Registration closes every Saturday 4PM</span></div></div>        <div class="info-row"><div class="info-icon">♟️</div><div class="info-text"><span>Format</span>Swiss System · 8+0 mins (may vary)</div></div>
+        <div class="info-row"><div class="info-icon">🕘</div><div class="info-text"><span>Timing</span>Every Sunday · 10 AM to 12<br><span style="font-size:0.78rem;color:rgba(255,255,255,0.7);font-weight:600;">Reporting time: 9:45 AM &nbsp;·&nbsp; Registration closes every Saturday 4PM</span></div></div>
+        <div class="info-row"><div class="info-icon">♟️</div><div class="info-text"><span>Format</span>Swiss System · 8+0 mins (may vary)</div></div>
         <div class="info-row"><div class="info-icon">🏅</div><div class="info-text"><span>Prize</span>Medals for winners</div></div>
         <div class="info-row"><div class="info-icon">✅</div><div class="info-text"><span>Entry</span>Free · Open for all age groups</div></div>
         <div class="info-row"><div class="info-icon">🗺️</div><div class="info-text"><span>Location</span><a href="https://www.google.com/maps/dir//2nd+floor,+Chessensei+%7C+Innovative+Chess+Training+Institute,+RMM+Enclave,+Shyanubhog+Subbaiah+Layout,+Channasandra,+Bengaluru,+Karnataka+560067/data=!4m6!4m5!1m1!4e2!1m2!1m1!1s0x3bae0fa4dc931417:0x21b56bcaec1b1e6f" target="_blank" style="color:var(--gold);font-weight:700;">RMM Enclave, 2nd Floor,<br>Channasandra, Bangalore – 560067 ↗</a></div></div>
@@ -214,7 +215,8 @@ footer{background:var(--green-dark);color:rgba(255,255,255,0.75);padding:3.5rem 
   <div class="max-w">
     <div class="section-tag">📅 Upcoming Sundays</div>
     <h2 class="section-title">Register for a Sunday</h2>
-    <p class="section-sub">Click Register for your preferred Sunday. The date is captured automatically — no need to type it. Registration closes every <strong>Friday</strong>. Reporting time on the day is <strong>9:45 AM</strong>.</p>    <table class="club-table" id="upcomingTable">
+    <p class="section-sub">Click Register for your preferred Sunday. The date is captured automatically — no need to type it. Registration closes every <strong>Friday</strong>. Reporting time on the day is <strong>9:45 AM</strong>.</p>
+    <table class="club-table" id="upcomingTable">
       <thead>
         <tr>
           <th>Date</th>
@@ -334,17 +336,16 @@ const CHESS_CLUB = [
   { date:"18th Oct 2026", day:"Sunday", month:"October", iso:"2026-10-18", formDate:"18 Oct 2026" },
   { date:"25th Oct 2026", day:"Sunday", month:"October", iso:"2026-10-25", formDate:"25 Oct 2026" },
   // November 2026
-{ date:"1st Nov 2026",  day:"Sunday", month:"November", iso:"2026-11-01", formDate:"1 Nov 2026" },
-{ date:"8th Nov 2026",  day:"Sunday", month:"November", iso:"2026-11-08", formDate:"8 Nov 2026" },
-{ date:"15th Nov 2026", day:"Sunday", month:"November", iso:"2026-11-15", formDate:"15 Nov 2026" },
-{ date:"22nd Nov 2026", day:"Sunday", month:"November", iso:"2026-11-22", formDate:"22 Nov 2026" },
-{ date:"29th Nov 2026", day:"Sunday", month:"November", iso:"2026-11-29", formDate:"29 Nov 2026" },
-
-// December 2026
-{ date:"6th Dec 2026",  day:"Sunday", month:"December", iso:"2026-12-06", formDate:"6 Dec 2026" },
-{ date:"13th Dec 2026", day:"Sunday", month:"December", iso:"2026-12-13", formDate:"13 Dec 2026" },
-{ date:"20th Dec 2026", day:"Sunday", month:"December", iso:"2026-12-20", formDate:"20 Dec 2026" },
-{ date:"27th Dec 2026", day:"Sunday", month:"December", iso:"2026-12-27", formDate:"27 Dec 2026" },
+  { date:"1st Nov 2026",  day:"Sunday", month:"November", iso:"2026-11-01", formDate:"1 Nov 2026" },
+  { date:"8th Nov 2026",  day:"Sunday", month:"November", iso:"2026-11-08", formDate:"8 Nov 2026" },
+  { date:"15th Nov 2026", day:"Sunday", month:"November", iso:"2026-11-15", formDate:"15 Nov 2026" },
+  { date:"22nd Nov 2026", day:"Sunday", month:"November", iso:"2026-11-22", formDate:"22 Nov 2026" },
+  { date:"29th Nov 2026", day:"Sunday", month:"November", iso:"2026-11-29", formDate:"29 Nov 2026" },
+  // December 2026
+  { date:"6th Dec 2026",  day:"Sunday", month:"December", iso:"2026-12-06", formDate:"6 Dec 2026" },
+  { date:"13th Dec 2026", day:"Sunday", month:"December", iso:"2026-12-13", formDate:"13 Dec 2026" },
+  { date:"20th Dec 2026", day:"Sunday", month:"December", iso:"2026-12-20", formDate:"20 Dec 2026" },
+  { date:"27th Dec 2026", day:"Sunday", month:"December", iso:"2026-12-27", formDate:"27 Dec 2026" },
 ];
 const FORM_BASE = "https://docs.google.com/forms/d/e/1FAIpQLSeSaSRmsGhSVLCdvg_EgRv_RhakGRX1CYzwVOAYz7pWH3RvKQ/viewform?usp=pp_url&entry.1169032795=";
 const SHEET_ID  = "1z5IyePjRZJCKg-d26luYwYrQU0hC9zJlvIzp4YO_yiM";
@@ -361,7 +362,7 @@ function getStatus(iso){
 }
 
 async function fetchSheet(sheetName){
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+  const url  = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
   const res  = await fetch(url);
   const text = await res.text();
   const json = JSON.parse(text.slice(text.indexOf("(")+1, text.lastIndexOf(")")));
@@ -373,36 +374,42 @@ function normalizeDate(value){
 
   const s = String(value).trim();
 
-  // Google Visualization date value, for example: Date(2026,10,15)
-  let m = s.match(/^Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})\)$/);
+  // 1. Google Visualization canonical date: Date(2026,10,15) -> months are 0-indexed
+  let m = s.match(/^Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})/);
   if(m){
     return `${m[1]}-${String(Number(m[2]) + 1).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
   }
 
-  // DD/MM/YYYY or DD-MM-YYYY
-  m = s.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+  // 2. ISO date: YYYY-MM-DD
+  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
   if(m){
-    return `${m[3]}-${String(m[2]).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
+    return `${m[1]}-${String(m[2]).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
   }
 
-  // D Mon YYYY or DD Month YYYY
   const months = {
     jan:"01", feb:"02", mar:"03", apr:"04",
     may:"05", jun:"06", jul:"07", aug:"08",
     sep:"09", oct:"10", nov:"11", dec:"12"
   };
-  m = s.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+
+  // 3. "15 Nov 2026", "15-Nov-2026", or "15th Nov 2026"
+  m = s.match(/^(\d{1,2})(?:st|nd|rd|th)?[\s-]+([A-Za-z]+)[\s,-]+(\d{4})$/i);
   if(m){
     const month = months[m[2].slice(0, 3).toLowerCase()];
-    if(month){
-      return `${m[3]}-${month}-${String(m[1]).padStart(2, "0")}`;
-    }
+    if(month) return `${m[3]}-${month}-${String(m[1]).padStart(2, "0")}`;
   }
 
-  // ISO date, optionally followed by a time
-  m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  // 4. "Nov 15, 2026"
+  m = s.match(/^([A-Za-z]+)\s+(\d{1,2})(?:st|nd|rd|th)?,?\s+(\d{4})$/i);
   if(m){
-    return `${m[1]}-${String(m[2]).padStart(2, "0")}-${String(m[3]).padStart(2, "0")}`;
+    const month = months[m[1].slice(0, 3).toLowerCase()];
+    if(month) return `${m[3]}-${month}-${String(m[2]).padStart(2, "0")}`;
+  }
+
+  // 5. DD/MM/YYYY or DD-MM-YYYY
+  m = s.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+  if(m){
+    return `${m[3]}-${String(m[2]).padStart(2, "0")}-${String(m[1]).padStart(2, "0")}`;
   }
 
   return null;
@@ -410,18 +417,37 @@ function normalizeDate(value){
 
 async function loadRegistrationCounts(){
   try{
-    // This must exactly match the Google Sheet tab name.
-    const table = await fetchSheet("Form_Responses");
-    const counts = {};
+    // Try standard Google Form tab name first, then underscored fallback
+    const tabCandidates = ["Form Responses 1", "Form_Responses"];
+    let table = null;
+    let dateColIndex = -1;
 
+    for(const tabName of tabCandidates){
+      const candidateTable = await fetchSheet(tabName);
+      if(candidateTable && candidateTable.cols){
+        const foundIdx = candidateTable.cols.findIndex(col =>
+          col && col.label && /sunday\s*date/i.test(col.label)
+        );
+        if(foundIdx !== -1){
+          table = candidateTable;
+          dateColIndex = foundIdx;
+          break;
+        }
+        if(!table) table = candidateTable;
+      }
+    }
+
+    if(dateColIndex === -1) dateColIndex = 6; // Fallback to Column G
+
+    const counts = {};
     if(!table || !table.rows) return counts;
 
     table.rows.forEach(row => {
-      // Column G (index 6) contains "Sunday Date?"
-      const cell = row.c && row.c[6];
+      const cell = row.c && row.c[dateColIndex];
       if(!cell) return;
 
-      const date = normalizeDate(cell.f) || normalizeDate(cell.v);
+      // Check canonical value (cell.v) BEFORE formatted display text (cell.f)
+      const date = normalizeDate(cell.v) || normalizeDate(cell.f);
       if(date){
         counts[date] = (counts[date] || 0) + 1;
       }
@@ -429,7 +455,7 @@ async function loadRegistrationCounts(){
 
     return counts;
   }catch(e){
-    console.error("Could not load registration counts:", e);
+    console.error("Could not load registration counts (check Sheet sharing & tab name):", e);
     return {};
   }
 }
@@ -441,11 +467,14 @@ async function loadWinners(){
     if(!table || !table.rows) return winners;
     table.rows.forEach(row => {
       if(row.c && row.c[0] && row.c[0].v && row.c[1] && row.c[1].v){
-        const date   = String(row.c[0].v).trim();
-        const name   = String(row.c[1].v).trim();
-        const remark = (row.c[2] && row.c[2].v) ? String(row.c[2].v).trim() : "";
-        if(!winners[date]) winners[date] = [];
-        winners[date].push({ name, remark });
+        const rawDate = String(row.c[0].v).trim();
+        const isoDate = normalizeDate(row.c[0].v) || normalizeDate(row.c[0].f);
+        const name    = String(row.c[1].v).trim();
+        const remark  = (row.c[2] && row.c[2].v) ? String(row.c[2].v).trim() : "";
+
+        const key = isoDate || rawDate;
+        if(!winners[key]) winners[key] = [];
+        winners[key].push({ name, remark });
       }
     });
     return winners;
@@ -453,9 +482,9 @@ async function loadWinners(){
 }
 
 async function init(){
-  const tagged    = CHESS_CLUB.map(t => ({...t, status: getStatus(t.iso)}));
-  const upcoming  = tagged.filter(t => t.status !== "past");
-  const past      = tagged.filter(t => t.status === "past");
+  const tagged   = CHESS_CLUB.map(t => ({...t, status: getStatus(t.iso)}));
+  const upcoming = tagged.filter(t => t.status !== "past");
+  const past     = tagged.filter(t => t.status === "past");
 
   const [counts, winners] = await Promise.all([loadRegistrationCounts(), loadWinners()]);
 
@@ -465,8 +494,8 @@ async function init(){
     upBody.innerHTML = `<tr><td colspan="4" class="no-past">No upcoming Sundays scheduled yet — check back soon! ♟</td></tr>`;
   }else{
     upBody.innerHTML = upcoming.map(t => {
-      const count    = counts[t.iso] || 0;
-      const isToday  = t.status === "today";
+      const count   = counts[t.iso] || 0;
+      const isToday = t.status === "today";
       const statusHTML = isToday
         ? `<span class="status-badge status-today">Today</span>`
         : `<span class="status-badge status-open">Open</span>`;
@@ -487,7 +516,7 @@ async function init(){
     pastBody.innerHTML = `<tr><td colspan="3" class="no-past">No past events yet — results will appear here after each Sunday. ♟</td></tr>`;
   }else{
     pastBody.innerHTML = past.slice().reverse().map(t => {
-      const w = winners[t.formDate] || [];
+      const w = winners[t.iso] || winners[t.formDate] || [];
       const winnerHTML = w.length > 0
         ? w.map(x => `<div style="margin-bottom:4px"><span class="winner-badge">🥇 ${x.name}</span>${x.remark ? `<span class="remarks-tag">${x.remark}</span>` : ""}</div>`).join("")
         : `<span style="color:var(--gray);font-style:italic;font-size:0.82rem;">—</span>`;
